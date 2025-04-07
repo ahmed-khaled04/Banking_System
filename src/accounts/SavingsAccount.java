@@ -17,6 +17,8 @@ public class SavingsAccount extends Account {
     }
 
     public void addInterest() {
-        balance += (balance * interestRate / 100);
+        double interest = balance * interestRate / 100;
+        balance += interest;
+        System.out.printf("Added $%.2f interest to %s%n", interest, accountNumber);
     }
 }

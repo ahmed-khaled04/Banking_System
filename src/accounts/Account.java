@@ -1,5 +1,7 @@
 package accounts;
 
+import transactions.Transaction;
+
 public abstract class Account {
     protected String accountNumber;
     protected String accountHolderName;
@@ -18,7 +20,10 @@ public abstract class Account {
     public abstract void withdraw(double amount); // force child classes to define
 
     public void deposit(double amount) {
-        if (amount > 0) balance += amount;
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Deposited $" + amount + " to " + accountNumber);
+        }
     }
 
     public double getBalance() {
@@ -33,6 +38,15 @@ public abstract class Account {
         System.out.println("Account Number: " + accountNumber);
         System.out.println("Account Holder Name: " + accountHolderName);
         System.out.println("Current Balance: $" + String.format("%.2f", balance));
+    }
+
+    public void processTransaction(Transaction t) {
+        if (t.getToAccount() != null && t.getToAccount().equals(this.accountNumber)) {
+            this.deposit(t.getAmount()); // Credit transaction
+        } 
+        else if (t.getFromAccount() != null && t.getFromAccount().equals(this.accountNumber)) {
+            this.withdraw(t.getAmount()); // Debit transaction
+        }
     }
     
 }
