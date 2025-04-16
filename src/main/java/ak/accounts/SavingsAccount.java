@@ -1,10 +1,16 @@
 package ak.accounts;
 
 public class SavingsAccount extends Account {
-    private double interestRate = 2.5; // % annual
+    private double interestRate = 2.5;
 
-    public SavingsAccount(String accountHolderName) {
-        super(accountHolderName);
+    public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate , String accountNumber) {
+        super(customerId, accountHolderName, initialBalance , accountNumber);
+        this.interestRate = interestRate;
+    }
+
+    public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate) {
+        super(customerId, accountHolderName, initialBalance);
+        this.interestRate = interestRate;
     }
 
     @Override
@@ -17,8 +23,11 @@ public class SavingsAccount extends Account {
     }
 
     public void addInterest() {
-        double interest = balance * interestRate / 100;
-        balance += interest;
-        System.out.printf("Added $%.2f interest to %s%n", interest, accountNumber);
+        double interest = getBalance() * (interestRate / 100);
+        deposit(interest);
+    }
+
+    public double getInterestRate() {
+        return interestRate;
     }
 }

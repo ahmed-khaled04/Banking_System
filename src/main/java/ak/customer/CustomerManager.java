@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 public class CustomerManager {
     
-    public Customer addCustomer(String name, String email, String phoneNumber) {
+    public Customer addCustomer(String name, String email, String phoneNumber , String username, String passwordHash) {
         String customerId = "CUST-" + UUID.randomUUID().toString().substring(0, 8);
-        String sql = "INSERT INTO customers (customer_id, name, email, phone_number) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO customers (customer_id, name, email, phone_number , username , password_hash) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DBconnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -21,9 +21,11 @@ public class CustomerManager {
             pstmt.setString(2, name);
             pstmt.setString(3, email);
             pstmt.setString(4, phoneNumber);
+            pstmt.setString(5, username);
+            pstmt.setString(6, passwordHash);
             pstmt.executeUpdate();
             
-            Customer newCustomer = new Customer(customerId, name, email, phoneNumber);
+            Customer newCustomer = new Customer(customerId, name, email, phoneNumber , username, passwordHash);
             System.out.println("Customer added successfully with ID: " + customerId);
             return newCustomer;
             
@@ -52,7 +54,9 @@ public class CustomerManager {
                     rs.getString("customer_id"),
                     rs.getString("name"),
                     rs.getString("email"),
-                    rs.getString("phone_number")
+                    rs.getString("phone_number"),
+                    rs.getString("username"),
+                    rs.getString("password_hash")
                 );
             }
         } catch (SQLException e) {
@@ -78,7 +82,9 @@ public class CustomerManager {
                     rs.getString("customer_id"),
                     rs.getString("name"),
                     rs.getString("email"),
-                    rs.getString("phone_number")
+                    rs.getString("phone_number"),
+                    rs.getString("username"),
+                    rs.getString("password_hash")
                 ));
             }
         } catch (SQLException e) {
@@ -95,7 +101,7 @@ public class CustomerManager {
      * @param newPhoneNumber New phone number (null to keep existing)
      * @return true if update was successful, false otherwise
      */
-    public boolean updateCustomer(String customerId, String newName, String newEmail, String newPhoneNumber) {
+    public boolean updateCustomer(String customerId, String newName, String newEmail, String newPhoneNumber , String newUsername, String newPasswordHash) {
         // First get the current customer data
         Customer customer = getCustomerById(customerId);
         if (customer == null) {
@@ -107,8 +113,10 @@ public class CustomerManager {
         String name = newName != null ? newName : customer.getName();
         String email = newEmail != null ? newEmail : customer.getEmail();
         String phoneNumber = newPhoneNumber != null ? newPhoneNumber : customer.getPhoneNumber();
+        String username = newUsername != null ? newUsername : customer.getUsername();
+        String passwordHash = newPasswordHash != null ? newPasswordHash : customer.getPasswordHash();
         
-        String sql = "UPDATE customers SET name = ?, email = ?, phone_number = ? WHERE customer_id = ?";
+        String sql = "UPDATE customers SET name = ?, email = ?, phone_number = ?, username = ?, password_hash = ? WHERE customer_id = ?";
         
         try (Connection conn = DBconnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -117,6 +125,8 @@ public class CustomerManager {
             pstmt.setString(2, email);
             pstmt.setString(3, phoneNumber);
             pstmt.setString(4, customerId);
+            pstmt.setString(5, username);
+            pstmt.setString(6, passwordHash);
             
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -238,7 +248,9 @@ public class CustomerManager {
                     rs.getString("customer_id"),
                     rs.getString("name"),
                     rs.getString("email"),
-                    rs.getString("phone_number")
+                    rs.getString("phone_number"),
+                    rs.getString("username"),
+                    rs.getString("password_hash")
                 ));
             }
         } catch (SQLException e) {
@@ -266,11 +278,39 @@ public class CustomerManager {
                     rs.getString("customer_id"),
                     rs.getString("name"),
                     rs.getString("email"),
-                    rs.getString("phone_number")
+                    rs.getString("phone_number"),
+                    rs.getString("username"),
+                    rs.getString("password_hash")
                 );
             }
         } catch (SQLException e) {
             System.out.println("Error finding customer by email: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Customer authenticateCustomer(String username , String password){
+        String sql = "SELECT * FROM customers WHERE username = ? AND password_hash = ?";
+        
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username.trim());
+            pstmt.setString(2, password.trim());
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return new Customer(
+                    rs.getString("customer_id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("phone_number"),
+                    rs.getString("username"),
+                    rs.getString("password_hash")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error authenticating customer: " + e.getMessage());
         }
         return null;
     }

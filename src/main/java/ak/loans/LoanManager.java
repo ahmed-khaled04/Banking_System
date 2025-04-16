@@ -160,7 +160,7 @@ public class LoanManager {
             System.out.println("No loans found for customer: " + customerId);
             return;
         }
-
+    
         System.out.println("\nLoans for customer " + customerId + ":");
         System.out.println("--------------------------------");
         loans.forEach(Loan::printLoanDetails);

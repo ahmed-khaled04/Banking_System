@@ -1,30 +1,41 @@
 package ak.transactions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import ak.accounts.Account;
 import ak.accounts.AccountManager;
+import ak.database.DBconnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionManager {
-    private List<Transaction> transactions;
+    private Connection connection;
     private AccountManager accountManager;
 
     public TransactionManager(AccountManager accountManager) {
-        this.transactions = new ArrayList<>();
         this.accountManager = accountManager;
+        try {
+            this.connection = DBconnection.getConnection();
+            //initializeDatabase();
+        } catch (SQLException e) {
+            System.err.println("Database connection error: " + e.getMessage());
+            throw new RuntimeException("Failed to initialize TransactionManager", e);
+        }
     }
 
-    /**
-     * Records a new transaction in the system
-     * @param amount Transaction amount (must be positive)
-     * @param type Transaction type (e.g., "Deposit", "Withdrawal", "Transfer")
-     * @param fromAccount Source account ID (can be null for deposits)
-     * @param toAccount Destination account ID (can be null for withdrawals)
-     * @return The newly created Transaction object
-     * @throws IllegalArgumentException if amount is invalid or type is null/empty
-     */
+    private void initializeDatabase() throws SQLException {
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS transactions ("
+                + "transaction_id VARCHAR(20) PRIMARY KEY, "
+                + "amount DECIMAL(15,2) NOT NULL, "
+                + "type VARCHAR(50) NOT NULL, "
+                + "from_account VARCHAR(20), "
+                + "to_account VARCHAR(20), "
+                + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(createTableSQL);
+        }
+    }
+
     public Transaction createTransaction(double amount, String type, String fromAccount, String toAccount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Transaction amount must be positive");
@@ -36,146 +47,91 @@ public class TransactionManager {
             throw new IllegalArgumentException("At least one account (from or to) must be specified");
         }
 
-        if (toAccount != null) {
-            // This would require access to AccountManager
-            System.out.println("[DEBUG] Should deposit to " + toAccount);
-        }
-        if (fromAccount != null) {
-            System.out.println("[DEBUG] Should withdraw from " + fromAccount);
-        }
+        String sql = "INSERT INTO transactions (transaction_id, amount, type, from_account, to_account) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            Transaction newTransaction = new Transaction(amount, type, fromAccount, toAccount);
 
+            pstmt.setString(1, newTransaction.getTransactionId());
+            pstmt.setDouble(2, amount);
+            pstmt.setString(3, type);
+            pstmt.setString(4, fromAccount);
+            pstmt.setString(5, toAccount);
+            pstmt.executeUpdate();
 
-        Transaction newTransaction = new Transaction(amount, type, fromAccount, toAccount);
-        transactions.add(newTransaction);
+            // Update account balances
+            if (toAccount != null) {
+                Account acc = accountManager.getAccountByNumber(toAccount);
+                if (acc != null) {
+                    System.out.println("Depositing " + amount + " to account: " + acc.getAccountNumber());
+                    acc.deposit(amount);
+                    accountManager.updateAccountBalance(acc);
+                }
+            }
+            if (fromAccount != null) {
+                Account acc = accountManager.getAccountByNumber(fromAccount);
+                if (acc != null) {
+                    System.out.println("Withdrawing " + amount + " from account: " + acc.getAccountNumber());
+                    acc.withdraw(amount);
+                    accountManager.updateAccountBalance(acc);
+                }
+            }
 
-        // Update account balances
-        if (toAccount != null) {
-            Account acc = accountManager.getAccountByNumber(toAccount);
-            if (acc != null) acc.deposit(amount);
+            System.out.println("Transaction recorded: " + newTransaction.getTransactionId());
+            return newTransaction;
+        } catch (SQLException e) {
+            System.err.println("Error creating transaction: " + e.getMessage());
+            throw new RuntimeException("Failed to create transaction", e);
         }
-        if (fromAccount != null) {
-            Account acc = accountManager.getAccountByNumber(fromAccount);
-            if (acc != null) acc.withdraw(amount);
-        }
-
-        System.out.println("Transaction recorded: " + newTransaction.getTransactionId());
-        return newTransaction;
     }
 
-    /**
-     * Retrieves a transaction by its ID
-     * @param transactionId The ID of the transaction to find
-     * @return The Transaction object if found, null otherwise
-     */
     public Transaction getTransactionById(String transactionId) {
-        return transactions.stream()
-                .filter(t -> t.getTransactionId().equals(transactionId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Retrieves all transactions for a specific account
-     * @param accountId The account ID to search for
-     * @return List of transactions involving the account
-     */
-    public List<Transaction> getTransactionsByAccount(String accountId) {
-        return transactions.stream()
-                .filter(t -> accountId.equals(t.getFromAccount()) || accountId.equals(t.getToAccount()))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieves all transactions in the system
-     * @return List of all transactions
-     */
-    public List<Transaction> getAllTransactions() {
-        return new ArrayList<>(transactions); // Return a copy to prevent external modification
-    }
-
-    /**
-     * Retrieves transactions filtered by type
-     * @param type The transaction type to filter by (e.g., "Deposit")
-     * @return List of matching transactions
-     */
-    public List<Transaction> getTransactionsByType(String type) {
-        return transactions.stream()
-                .filter(t -> t.getType().equalsIgnoreCase(type))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieves transactions within a specific time range
-     * @param startTime Start timestamp (inclusive, format "yyyy-MM-dd HH:mm:ss")
-     * @param endTime End timestamp (inclusive, format "yyyy-MM-dd HH:mm:ss")
-     * @return List of transactions within the time range
-     */
-    public List<Transaction> getTransactionsByTimeRange(String startTime, String endTime) {
-        return transactions.stream()
-                .filter(t -> t.getTimestamp().compareTo(startTime) >= 0 && 
-                             t.getTimestamp().compareTo(endTime) <= 0)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Calculates the total balance change for an account from all transactions
-     * @param accountId The account ID to calculate for
-     * @return Net balance change (positive for deposits, negative for withdrawals)
-     */
-    public double calculateAccountBalanceChange(String accountId) {
-        return transactions.stream()
-                .mapToDouble(t -> {
-                    if (accountId.equals(t.getToAccount())) {
-                        return t.getAmount(); // Deposits to this account
-                    } else if (accountId.equals(t.getFromAccount())) {
-                        return -t.getAmount(); // Withdrawals from this account
-                    }
-                    return 0;
-                })
-                .sum();
-    }
-
-    /**
-     * Prints transaction history for an account
-     * @param accountId The account ID to print history for
-     */
-    public void printAccountStatement(String accountId) {
-        List<Transaction> accountTransactions = getTransactionsByAccount(accountId);
-        if (accountTransactions.isEmpty()) {
-            System.out.println("No transactions found for account: " + accountId);
-            return;
-        }
-
-        System.out.println("Transaction Statement for Account: " + accountId);
-        System.out.println("--------------------------------------------");
-        for (Transaction t : accountTransactions) {
-            t.printTransactionDetails();
-            System.out.println("--------------------------------------------");
-        }
-        System.out.printf("Net Balance Change: $%.2f%n", calculateAccountBalanceChange(accountId));
-    }
-
-    /**
-     * Reverses a transaction by creating an opposite transaction
-     * @param transactionId The ID of the transaction to reverse
-     * @return The reversal transaction, or null if original transaction wasn't found
-     */
-    public Transaction reverseTransaction(String transactionId) {
-        Transaction original = getTransactionById(transactionId);
-        if (original == null) {
-            System.out.println("Transaction not found with ID: " + transactionId);
+        String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, transactionId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return mapResultSetToTransaction(rs);
+            }
             return null;
+        } catch (SQLException e) {
+            System.err.println("Error retrieving transaction: " + e.getMessage());
+            throw new RuntimeException("Database error", e);
         }
+    }
 
-        String reversalType = "Reversal of " + original.getType();
-        Transaction reversal = createTransaction(
-            original.getAmount(),
-            reversalType,
-            original.getToAccount(), // Reverse the flow
-            original.getFromAccount()
+    public List<Transaction> getTransactionsByAccount(String accountId) {
+        String sql = "SELECT * FROM transactions WHERE from_account = ? OR to_account = ?";
+        List<Transaction> transactions = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, accountId);
+            pstmt.setString(2, accountId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                transactions.add(mapResultSetToTransaction(rs));
+            }
+            return transactions;
+        } catch (SQLException e) {
+            System.err.println("Error retrieving transactions: " + e.getMessage());
+            throw new RuntimeException("Database error", e);
+        }
+    }
+
+    private Transaction mapResultSetToTransaction(ResultSet rs) throws SQLException {
+        return new Transaction(
+                rs.getDouble("amount"),
+                rs.getString("type"),
+                rs.getString("from_account"),
+                rs.getString("to_account")
         );
+    }
 
-        System.out.println("Transaction reversed: " + original.getTransactionId());
-        return reversal;
+    public void close() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error closing connection: " + e.getMessage());
+        }
     }
 }

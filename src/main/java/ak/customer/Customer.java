@@ -10,6 +10,8 @@ public class Customer {
     private String name;
     private String email;
     private String phoneNumber;
+    private String username;
+    private String passwordHash;
     private List<Account> accounts;
 
     public Customer(String name, String email, String phoneNumber) {
@@ -20,11 +22,30 @@ public class Customer {
         this.accounts = new ArrayList<>();
     }
 
+    public Customer(String name, String email, String phoneNumber , String username, String passwordHash) {
+        this.customerId = generateCustomerId();
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.accounts = new ArrayList<>();
+    }
+
     public Customer(String customerId, String name, String email, String phoneNumber) {
         this.customerId = customerId;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.accounts = new ArrayList<>();
+    }
+    public Customer(String customerId, String name, String email, String phoneNumber , String username, String passwordHash) {
+        this.customerId = customerId;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.username = username;
+        this.passwordHash = passwordHash;
         this.accounts = new ArrayList<>();
     }
 
@@ -75,5 +96,11 @@ public class Customer {
     
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public String getPasswordHash() {
+        return passwordHash;
     }
 }

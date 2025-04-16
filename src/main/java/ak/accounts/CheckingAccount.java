@@ -3,8 +3,14 @@ package ak.accounts;
 public class CheckingAccount extends Account {
     private double overdraftLimit = 500;
 
-    public CheckingAccount(String accountHolderName) {
-        super(accountHolderName);
+    public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit) {
+        super(customerId, accountHolderName, initialBalance);
+        this.overdraftLimit = overdraftLimit;
+    }
+    
+    public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit , String accountNumber) {
+        super(customerId, accountHolderName, initialBalance , accountNumber);
+        this.overdraftLimit = overdraftLimit;
     }
 
     @Override
@@ -14,5 +20,9 @@ public class CheckingAccount extends Account {
         } else {
             System.out.println("Overdraft limit exceeded in Checking Account.");
         }
+    }
+
+    public double getOverdraftLimit() {
+        return overdraftLimit;
     }
 }

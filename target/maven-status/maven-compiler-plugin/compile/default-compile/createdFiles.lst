@@ -1,12 +1,13 @@
 ak\accounts\AccountManager.class
-ak\database\DBconnection.class
-ak\loans\LoanManager.class
 ak\accounts\Account.class
 ak\BankingApp.class
+ak\Authentication\PasswordUtils.class
+ak\customer\CustomerManager.class
+ak\customer\Customer.class
+ak\database\DBconnection.class
+ak\loans\LoanManager.class
 ak\transactions\Transaction.class
 ak\loans\Loan.class
 ak\transactions\TransactionManager.class
 ak\accounts\CheckingAccount.class
-ak\customer\CustomerManager.class
-ak\customer\Customer.class
 ak\accounts\SavingsAccount.class
