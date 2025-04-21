@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\loans\LoanManager.java
 D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\accounts\SavingsAccount.java
 D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\transactions\Transaction.java
@@ -11,3 +12,22 @@ D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\BankingApp.java
 D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\Authentication\PasswordUtils.java
 D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\loans\Loan.java
 D:\ASU\Junior\SPRING25\Testing\Project\banking\src\main\java\ak\customer\CustomerManager.java
+=======
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\accounts\CheckingAccount.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\customer\Customer.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\loans\Loan.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\ui\SignInController.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\accounts\SavingsAccount.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\database\DBconnection.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\loans\LoanManager.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\transactions\Transaction.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\App.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\Authentication\PasswordUtils.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\accounts\Account.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\accounts\AccountManager.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\customer\CustomerManager.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\SecondaryController.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\module-info.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\PrimaryController.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\transactions\TransactionManager.java
+>>>>>>> ff2d6d0 (GUI)

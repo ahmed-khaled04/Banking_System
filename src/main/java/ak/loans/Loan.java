@@ -5,6 +5,7 @@ import java.util.UUID;
 public class Loan {
     private final String loanId;
     private final String customerId;
+    private final String accountNumber; // New variable for account number
     private final double loanAmount;
     private final double interestRate; // as a percentage, e.g., 5.5 for 5.5%
     private final int durationInMonths;
@@ -12,20 +13,23 @@ public class Loan {
     /**
      * Constructor for creating new loans (auto-generates ID)
      */
-    public Loan(String customerId, double loanAmount, double interestRate, int durationInMonths) {
-        this(generateLoanId(), customerId, loanAmount, interestRate, durationInMonths);
+    public Loan(String customerId, String accountNumber, double loanAmount, double interestRate, int durationInMonths) {
+        this(generateLoanId(), customerId, accountNumber, loanAmount, interestRate, durationInMonths);
     }
 
     /**
      * Constructor for existing loans (with known ID)
      */
-    public Loan(String loanId, String customerId, double loanAmount, 
+    public Loan(String loanId, String customerId, String accountNumber, double loanAmount, 
                double interestRate, int durationInMonths) {
         if (loanId == null || loanId.isEmpty()) {
             throw new IllegalArgumentException("Loan ID cannot be null or empty");
         }
         if (customerId == null || customerId.isEmpty()) {
             throw new IllegalArgumentException("Customer ID cannot be null or empty");
+        }
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            throw new IllegalArgumentException("Account number cannot be null or empty");
         }
         if (loanAmount <= 0) {
             throw new IllegalArgumentException("Loan amount must be positive");
@@ -39,6 +43,7 @@ public class Loan {
 
         this.loanId = loanId;
         this.customerId = customerId;
+        this.accountNumber = accountNumber;
         this.loanAmount = loanAmount;
         this.interestRate = interestRate;
         this.durationInMonths = durationInMonths;
@@ -60,6 +65,7 @@ public class Loan {
     public void printLoanDetails() {
         System.out.println("Loan ID: " + loanId);
         System.out.println("Customer ID: " + customerId);
+        System.out.println("Account Number: " + accountNumber);
         System.out.println("Loan Amount: $" + loanAmount);
         System.out.println("Interest Rate: " + interestRate + "%");
         System.out.println("Duration: " + durationInMonths + " months");
@@ -74,6 +80,10 @@ public class Loan {
 
     public String getCustomerId() {
         return customerId;
+    }
+
+    public String getAccountNumber() { 
+        return accountNumber;
     }
 
     public double getLoanAmount() {

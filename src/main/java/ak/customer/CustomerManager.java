@@ -314,4 +314,30 @@ public class CustomerManager {
         }
         return null;
     }
+
+    public Object getCustomerByUsername(String username) {
+        String sql = "SELECT * FROM customers WHERE username = ?";
+        
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username.trim());
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return new Customer(
+                    rs.getString("customer_id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("phone_number"),
+                    rs.getString("username"),
+                    rs.getString("password_hash")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error authenticating customer: " + e.getMessage());
+        }
+        return null;
+    }
+
 }

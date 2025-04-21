@@ -1,11 +1,9 @@
 package ak.loans;
 
-
 import ak.database.DBconnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LoanManager {
 
@@ -24,34 +22,37 @@ public class LoanManager {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS loans ("
                 + "loan_id VARCHAR(20) PRIMARY KEY, "
                 + "customer_id VARCHAR(20) NOT NULL, "
+                + "account_number VARCHAR(20) NOT NULL, " // Added account_number column
                 + "loan_amount DECIMAL(15,2) NOT NULL, "
                 + "interest_rate DECIMAL(5,2) NOT NULL, "
                 + "duration_months INTEGER NOT NULL, "
                 + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
                 + "FOREIGN KEY (customer_id) REFERENCES customers(customer_id))";
         
+
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTableSQL);
         }
     }
 
-    public Loan createLoan(String customerId, double loanAmount, 
-                          double interestRate, int durationInMonths) {
+    public Loan createLoan(String customerId, String accountNumber, double loanAmount,
+                           double interestRate, int durationInMonths) {
         validateLoanParameters(loanAmount, interestRate, durationInMonths);
-        
-        String sql = "INSERT INTO loans (loan_id, customer_id, loan_amount, interest_rate, duration_months) "
-                   + "VALUES (?, ?, ?, ?, ?)";
-        
+
+        String sql = "INSERT INTO loans (loan_id, customer_id, account_number, loan_amount, interest_rate, duration_months) "
+                   + "VALUES (?, ?, ?, ?, ?, ?)";
+
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            Loan newLoan = new Loan(customerId, loanAmount, interestRate, durationInMonths);
-            
+            Loan newLoan = new Loan(customerId, accountNumber, loanAmount, interestRate, durationInMonths);
+
             pstmt.setString(1, newLoan.getLoanId());
             pstmt.setString(2, customerId);
-            pstmt.setDouble(3, loanAmount);
-            pstmt.setDouble(4, interestRate);
-            pstmt.setInt(5, durationInMonths);
+            pstmt.setString(3, accountNumber); // Set account number
+            pstmt.setDouble(4, loanAmount);
+            pstmt.setDouble(5, interestRate);
+            pstmt.setInt(6, durationInMonths);
             pstmt.executeUpdate();
-            
+
             System.out.println("Loan created successfully: " + newLoan.getLoanId());
             return newLoan;
         } catch (SQLException e) {
@@ -68,11 +69,11 @@ public class LoanManager {
 
     public Loan getLoanById(String loanId) {
         String sql = "SELECT * FROM loans WHERE loan_id = ?";
-        
+
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, loanId);
             ResultSet rs = pstmt.executeQuery();
-            
+
             if (rs.next()) {
                 return mapResultSetToLoan(rs);
             }
@@ -86,11 +87,11 @@ public class LoanManager {
     public List<Loan> getLoansByCustomer(String customerId) {
         String sql = "SELECT * FROM loans WHERE customer_id = ?";
         List<Loan> loans = new ArrayList<>();
-        
+
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, customerId);
             ResultSet rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 loans.add(mapResultSetToLoan(rs));
             }
@@ -104,10 +105,10 @@ public class LoanManager {
     public List<Loan> getAllLoans() {
         String sql = "SELECT * FROM loans";
         List<Loan> loans = new ArrayList<>();
-        
+
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            
+
             while (rs.next()) {
                 loans.add(mapResultSetToLoan(rs));
             }
@@ -122,6 +123,7 @@ public class LoanManager {
         return new Loan(
             rs.getString("loan_id"),
             rs.getString("customer_id"),
+            rs.getString("account_number"), // Map account number
             rs.getDouble("loan_amount"),
             rs.getDouble("interest_rate"),
             rs.getInt("duration_months")
@@ -130,7 +132,6 @@ public class LoanManager {
 
     public boolean removeLoan(String loanId) {
         String sql = "DELETE FROM loans WHERE loan_id = ?";
-        
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, loanId);
             int affectedRows = pstmt.executeUpdate();

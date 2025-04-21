@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.TransferController">
+    <children>
+        <Label text="InstaPay :)" style="-fx-font-size: 20px;" />
+        <TextField fx:id="recipientAccountField" promptText="Recipient Account Number" />
+        <TextField fx:id="transferAmountField" promptText="Amount to Transfer" />
+        <Button text="Transfer" onAction="#handleTransferMoney" />
+        <Button text="Back to Account" onAction="#handleBackToAccount" />
+    </children>
+</VBox>

@@ -1,11 +1,24 @@
 ak\accounts\AccountManager.class
+<<<<<<< HEAD
 ak\accounts\Account.class
 ak\BankingApp.class
 ak\Authentication\PasswordUtils.class
+=======
+ak\PrimaryController.class
+ak\accounts\Account.class
+ak\Authentication\PasswordUtils.class
+ak\ui\SignInController.class
+>>>>>>> ff2d6d0 (GUI)
 ak\customer\CustomerManager.class
 ak\customer\Customer.class
 ak\database\DBconnection.class
 ak\loans\LoanManager.class
+<<<<<<< HEAD
+=======
+ak\App.class
+module-info.class
+ak\SecondaryController.class
+>>>>>>> ff2d6d0 (GUI)
 ak\transactions\Transaction.class
 ak\loans\Loan.class
 ak\transactions\TransactionManager.class

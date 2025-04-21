@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Button?>
+
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.SignInController">
+    <children>
+        <Label text="Sign In" style="-fx-font-size: 20px;" />
+        <TextField fx:id="usernameField" promptText="Username" />
+        <PasswordField fx:id="passwordField" promptText="Password" />
+        <Button text="Sign In As Customer" onAction="#handleSignInAsCustomer" />
+        <Button text="Sign In As Admin" onAction="#handleSignInAsAdmin" /> 
+        <Label fx:id="errorLabel" textFill="red" />
+        <Button text="Register" onAction="#handleRegister" />
+    </children>
+</VBox>

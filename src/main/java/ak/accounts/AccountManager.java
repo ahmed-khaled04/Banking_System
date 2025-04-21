@@ -249,4 +249,68 @@ public Account getAccountByNumber(String accountNumber) {
             System.err.println("Error closing connection: " + e.getMessage());
         }
     }
+
+    public List<Account> getAccountsByCustomerId(String customerId) {
+        String sql = "SELECT * FROM accounts WHERE customer_id = ?";
+        List<Account> accounts = new ArrayList<>();
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, customerId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String accountType = rs.getString("account_type");
+                if ("Savings".equalsIgnoreCase(accountType)) {
+                    accounts.add(new SavingsAccount(
+                        rs.getString("customer_id"),
+                        rs.getString("account_holder_name"),
+                        rs.getDouble("balance"),
+                        rs.getDouble("interest_rate"),
+                        rs.getString("account_number")
+                    ));
+                } else if ("Checking".equalsIgnoreCase(accountType)) {
+                    accounts.add(new CheckingAccount(
+                        rs.getString("customer_id"),
+                        rs.getString("account_holder_name"),
+                        rs.getDouble("balance"),
+                        rs.getDouble("overdraft_limit"),
+                        rs.getString("account_number")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accounts;
+    }
+
+    public List<Account> getAllAccounts() {
+        String sql = "SELECT * FROM accounts";
+        List<Account> accounts = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                String accountType = rs.getString("account_type");
+                if ("Savings".equalsIgnoreCase(accountType)) {
+                    accounts.add(new SavingsAccount(
+                        rs.getString("customer_id"),
+                        rs.getString("account_holder_name"),
+                        rs.getDouble("balance"),
+                        rs.getDouble("interest_rate"),
+                        rs.getString("account_number")
+                    ));
+                } else if ("Checking".equalsIgnoreCase(accountType)) {
+                    accounts.add(new CheckingAccount(
+                        rs.getString("customer_id"),
+                        rs.getString("account_holder_name"),
+                        rs.getDouble("balance"),
+                        rs.getDouble("overdraft_limit"),
+                        rs.getString("account_number")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accounts;
+    }
 }
