@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.LoanRequestController">
-    <children>
-        <Label text="Loan Request" style="-fx-font-size: 20px;" />
-        <TextField fx:id="loanAmountField" promptText="Loan Amount" />
-        <TextField fx:id="loanReasonField" promptText="Reason for Loan" />
-        <Button text="Submit Request" onAction="#handleSubmitLoanRequest" />
-        <Button text="Back to Account" onAction="#handleBackToAccount" />
-    </children>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171" 
+           xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="ak.ui.LoanRequestController"
+           stylesheets="@css/style.css">
+    <VBox styleClass="vbox" alignment="CENTER" spacing="15.0">
+        <children>
+            <Label text="Loan Request" styleClass="header-label" style="-fx-text-fill: #2c3e50;"/>
+            <TextField fx:id="loanAmountField" promptText="Loan Amount" styleClass="text-field" />
+            <TextField fx:id="loanReasonField" promptText="Reason for Loan" styleClass="text-field" />
+            <Button text="Submit Request" onAction="#handleSubmitLoanRequest" styleClass="action-button" />
+            <Button text="Back to Account" onAction="#handleBackToAccount" styleClass="nav-button" />
+        </children>
+    </VBox>
+</StackPane>

@@ -4,16 +4,17 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.AccountController">
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="ak.ui.AccountController" stylesheets="@css/style.css">
     <children>
-        <Label text="Account Details" style="-fx-font-size: 20px;" />
-        <Label fx:id="accountNumberLabel" />
-        <Label fx:id="accountTypeLabel" />
-        <Label fx:id="balanceLabel" />
-        <Label fx:id="activationStatusLabel" style="-fx-text-fill: red;" />
-        <Button text="Transfer Money" fx:id="transferButton" onAction="#handleGoToTransfer" />
-        <Button text="Apply for Loan" fx:id="loanButton" onAction="#handleGoToLoanRequest" />
-        <Button text="View Transaction History" fx:id="transactionHistoryButton" onAction="#handleViewTransactionHistory" />
-        <Button text="Back to Dashboard" onAction="#handleBackToDashboard" />
+        <Label text="Account Details" styleClass="header-label" />
+        <Label fx:id="accountNumberLabel" styleClass="detail-label" />
+        <Label fx:id="accountTypeLabel" styleClass="detail-label" />
+        <Label fx:id="balanceLabel" styleClass="detail-label" />
+        <Label fx:id="activationStatusLabel" styleClass="error-label" />
+        <Button text="Transfer Money" fx:id="transferButton" onAction="#handleGoToTransfer" styleClass="action-button" />
+        <Button text="Apply for Loan" fx:id="loanButton" onAction="#handleGoToLoanRequest" styleClass="action-button" />
+        <Button text="View Transaction History" fx:id="transactionHistoryButton" onAction="#handleViewTransactionHistory" styleClass="action-button" />
+        <Button text="Back to Dashboard" onAction="#handleBackToDashboard" styleClass="nav-button" />
     </children>
 </VBox>

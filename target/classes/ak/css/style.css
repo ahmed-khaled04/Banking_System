@@ -1,0 +1,158 @@
+/* ====================
+   ROOT & CONTAINERS
+   ==================== */
+   .root {
+    -fx-background-color: linear-gradient(to bottom right, #213b79, #1a2f5f);
+}
+
+.vbox {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
+    -fx-max-width: 350px;
+    -fx-max-height: 420px;
+}
+
+#signInVBox {
+    -fx-max-width: 300px;
+    -fx-alignment: center;
+    -fx-spacing: 12px;
+}
+
+/* ====================
+   TYPOGRAPHY
+   ==================== */
+.label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.header-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 0 10px 0;
+}
+
+.detail-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.error-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+}
+
+.registration-prompt {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 2px 0;
+}
+
+#errorLabel {
+    -fx-font-size: 12px;
+    -fx-text-fill: #e74c3c;
+}
+
+/* ====================
+   FORM ELEMENTS
+   ==================== */
+.text-field, .password-field {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+    -fx-max-width: 250px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #3498db;
+}
+
+/* ====================
+   BUTTONS
+   ==================== */
+.button {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 0 10px;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.action-button {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 0 10px;
+    -fx-min-width: 200px;
+}
+
+.action-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.nav-button {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 0 10px;
+    -fx-min-width: 200px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+.equal-width-btn {
+    -fx-min-width: 120px;
+    -fx-pref-width: 120px;
+    -fx-max-width: 120px;
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.equal-width-btn:hover {
+    -fx-background-color: #2980b9;
+}
+
+.register-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-underline: true;
+    -fx-padding: 0 5px;
+    -fx-cursor: hand;
+}
+
+.register-button:hover {
+    -fx-text-fill: #35aeff;
+    -fx-background-color: transparent;
+}
