@@ -87,6 +87,13 @@ public class ReviewLoanRequestsController {
             return;
         }
 
+        // Check if the account is activated
+        String accountNumber = selectedRequest.getAccountNumber();
+        if (!accountManager.getAccountByNumber(accountNumber).isActivated()) {
+            showAlert("Error", "The account associated with this loan request is not activated. Loan requests can only be accepted for activated accounts.");
+            return;
+        }
+
         Optional<ButtonType> result = showConfirmation("Accept Loan Request", "Are you sure you want to accept this loan request?");
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Show a dialog to get loan duration and interest rate
@@ -100,17 +107,14 @@ public class ReviewLoanRequestsController {
             if (success) {
                 // Create a loan and deposit the money into the account
                 TransactionManager transactionManager = new TransactionManager(accountManager);
-                String accountNumber = selectedRequest.getAccountNumber();
                 String custID = accountManager.getAccountByNumber(accountNumber).getCustomerId();
                 Loan loanCreated = loanManager.createLoan(custID, accountNumber, selectedRequest.getLoanAmount(), loanDetails.getInterestRate(), loanDetails.getDurationInMonths());
                 if (loanCreated != null) {
                     // Deposit the loan amount into the account
-                    Transaction transaction = transactionManager.createTransaction(selectedRequest.getLoanAmount(), "Deposit" ,null , selectedRequest.getAccountNumber());
-                    if(transaction != null) {
+                    Transaction transaction = transactionManager.createTransaction(selectedRequest.getLoanAmount(), "Deposit", null, selectedRequest.getAccountNumber());
+                    if (transaction != null) {
                         // Update the account balance
-                        showAlert("Success", "Loan Added");
                         showAlert("Success", "Loan request accepted and loan created. Amount deposited into the account.");
-                        
                     } else {
                         showAlert("Error", "Failed to deposit money into the account.");
                     }

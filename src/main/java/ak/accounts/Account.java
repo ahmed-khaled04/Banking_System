@@ -6,10 +6,12 @@ public abstract class Account {
     protected String accountNumber;
     protected String accountHolderName;
     protected double balance;
+    protected boolean activated;
     protected String customerId; // New field for customer ID
     static int accountID = 1;
 
-    public Account(String customerId, String accountHolderName, double initialBalance, String accountNumber) {
+    public Account(String customerId, String accountHolderName, double initialBalance, String accountNumber , boolean activated) {
+        this.activated = activated;
         this.customerId = customerId;
         this.accountHolderName = accountHolderName;
         if (accountNumber != null && !accountNumber.isEmpty()) {
@@ -19,7 +21,8 @@ public abstract class Account {
         }             
         this.balance = initialBalance;
     }
-    public Account(String customerId, String accountHolderName, double initialBalance) {
+    public Account(String customerId, String accountHolderName, double initialBalance , boolean activated) {
+        this.activated = activated;
         this.customerId = customerId;
         this.accountHolderName = accountHolderName;            
         this.accountNumber = generateAccountNumber();
@@ -57,6 +60,15 @@ public abstract class Account {
 
     public String getAccountType() {
         return this.getClass().getSimpleName();
+    }
+
+     // Getter and Setter for activated
+     public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     public void displayAccountInfo() {

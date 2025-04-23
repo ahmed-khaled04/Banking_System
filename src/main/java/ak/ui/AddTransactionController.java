@@ -47,47 +47,62 @@ public class AddTransactionController {
         String fromAccount = fromAccountField.getText();
         String toAccount = toAccountField.getText();
         String amountText = amountField.getText();
-
+    
         if (transactionType == null || amountText.isEmpty()) {
             showAlert("Error", "Transaction type and amount are required.");
             return;
         }
-
+    
         try {
             double amount = Double.parseDouble(amountText);
-
+    
+            // Check account activation status
+            if (transactionType.equals("Deposit") || transactionType.equals("Transfer")) {
+                if (!toAccount.isEmpty() && !accountManager.getAccountByNumber(toAccount).isActivated()) {
+                    showAlert("Error", "The destination account is not activated. Transactions can only be made to activated accounts.");
+                    return;
+                }
+            }
+    
+            if (transactionType.equals("Withdrawal") || transactionType.equals("Transfer")) {
+                if (!fromAccount.isEmpty() && !accountManager.getAccountByNumber(fromAccount).isActivated()) {
+                    showAlert("Error", "The source account is not activated. Transactions can only be made from activated accounts.");
+                    return;
+                }
+            }
+    
             Transaction success = null; // Initialize success variable
-
+    
             switch (transactionType) {
                 case "Deposit":
                     if (toAccount.isEmpty()) {
                         showAlert("Error", "To Account is required for a deposit.");
                         return;
                     }
-                    success = transactionManager.createTransaction(amount,"Deposit" , null, toAccount);
+                    success = transactionManager.createTransaction(amount, "Deposit", null, toAccount);
                     break;
-
+    
                 case "Withdrawal":
                     if (fromAccount.isEmpty()) {
                         showAlert("Error", "From Account is required for a withdrawal.");
                         return;
                     }
-                    success = transactionManager.createTransaction(amount,"Deposit" , fromAccount, null);
+                    success = transactionManager.createTransaction(amount, "Withdrawal", fromAccount, null);
                     break;
-
+    
                 case "Transfer":
                     if (fromAccount.isEmpty() || toAccount.isEmpty()) {
                         showAlert("Error", "Both From Account and To Account are required for a transfer.");
                         return;
                     }
-                    success = transactionManager.createTransaction(amount,"Deposit" , fromAccount, toAccount);
+                    success = transactionManager.createTransaction(amount, "Transfer", fromAccount, toAccount);
                     break;
-
+    
                 default:
                     showAlert("Error", "Invalid transaction type.");
                     return;
             }
-
+    
             if (success != null) {
                 showAlert("Success", "Transaction added successfully!");
                 clearFields();
@@ -99,6 +114,7 @@ public class AddTransactionController {
         }
     }
 
+    
     @FXML
     private void handleBack() {
         try {

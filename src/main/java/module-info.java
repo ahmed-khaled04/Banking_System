@@ -8,5 +8,6 @@ module ak {
     opens ak.accounts to javafx.base;
     opens ak.customer to javafx.base;
     opens ak.loans to javafx.base;
+    opens ak.transactions to javafx.base;
     exports ak;
 }

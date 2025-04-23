@@ -3,13 +3,13 @@ package ak.accounts;
 public class CheckingAccount extends Account {
     private double overdraftLimit = 500;
 
-    public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit) {
-        super(customerId, accountHolderName, initialBalance);
+    public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit , boolean activated) {
+        super(customerId, accountHolderName, initialBalance , activated);
         this.overdraftLimit = overdraftLimit;
     }
     
-    public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit , String accountNumber) {
-        super(customerId, accountHolderName, initialBalance , accountNumber);
+    public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit , String accountNumber , boolean activated) {
+        super(customerId, accountHolderName, initialBalance , accountNumber, activated);
         this.overdraftLimit = overdraftLimit;
     }
 

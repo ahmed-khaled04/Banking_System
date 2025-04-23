@@ -49,7 +49,7 @@ public class TransactionManager {
 
         String sql = "INSERT INTO transactions (transaction_id, amount, type, from_account, to_account) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            Transaction newTransaction = new Transaction(amount, type, fromAccount, toAccount);
+            Transaction newTransaction = new Transaction(amount, type, fromAccount, toAccount , "");
 
             pstmt.setString(1, newTransaction.getTransactionId());
             pstmt.setDouble(2, amount);
@@ -121,7 +121,8 @@ public class TransactionManager {
                 rs.getDouble("amount"),
                 rs.getString("type"),
                 rs.getString("from_account"),
-                rs.getString("to_account")
+                rs.getString("to_account"),
+                rs.getString("created_at")
         );
     }
 
@@ -134,4 +135,21 @@ public class TransactionManager {
             System.err.println("Error closing connection: " + e.getMessage());
         }
     }
+
+    public String getCreatedAt(String transactionID){
+        String sql = "SELECT created_at FROM transactions WHERE transaction_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, transactionID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("created_at");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving transaction timestamp: " + e.getMessage());
+        }
+        return null;
+
+    } 
+
+
 }

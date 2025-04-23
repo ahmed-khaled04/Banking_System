@@ -3,6 +3,7 @@ package ak.ui;
 import ak.App;
 import ak.accounts.Account;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.io.IOException;
@@ -20,6 +21,22 @@ public class AccountController {
     @FXML
     private Label balanceLabel;
 
+    @FXML
+    private Label activationStatusLabel;
+
+    
+    @FXML
+    private Button transferButton;
+
+
+    @FXML
+    private Button loanButton;
+
+    @FXML
+    private Button transactionHistoryButton;
+
+
+
     public void loadAccountDetails(Account account) {
 
         this.currentAccount = account; // Set the current account
@@ -27,6 +44,43 @@ public class AccountController {
         accountNumberLabel.setText("Account Number: " + account.getAccountNumber());
         accountTypeLabel.setText("Account Type: " + account.getAccountType());
         balanceLabel.setText("Balance: $" + account.getBalance());
+
+
+        // Update activation status
+        if (account.isActivated()) {
+            activationStatusLabel.setText("Status: Activated");
+            activationStatusLabel.setStyle("-fx-text-fill: green;");
+            transferButton.setDisable(false);
+            loanButton.setDisable(false);
+        } else {
+            activationStatusLabel.setText("Status: Not Activated");
+            activationStatusLabel.setStyle("-fx-text-fill: red;");
+            transferButton.setDisable(true);
+            loanButton.setDisable(true);
+        }
+
+
+        
+    }
+
+    private void showAlert(String title, String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleViewTransactionHistory() {
+        try {
+            App.setRoot("transactionHistory"); // Navigate to the transaction history page
+            TransactionHistoryController controller = App.getController();
+            controller.loadTransactionsForAccount(currentAccount.getAccountNumber());
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load transaction history.");
+        }
     }
 
     @FXML

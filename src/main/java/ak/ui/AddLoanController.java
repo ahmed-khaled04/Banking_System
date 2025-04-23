@@ -3,6 +3,7 @@ package ak.ui;
 import java.io.IOException;
 
 import ak.App;
+import ak.accounts.AccountManager;
 import ak.loans.Loan;
 import ak.loans.LoanManager;
 import javafx.fxml.FXML;
@@ -16,7 +17,7 @@ public class AddLoanController {
     private TextField customerIdField;
 
     @FXML
-    private TextField accountNumberField; // New field for account number
+    private TextField accountNumberField; 
 
     @FXML
     private TextField loanAmountField;
@@ -25,21 +26,21 @@ public class AddLoanController {
     private TextField interestRateField;
 
     @FXML
-    private TextField durationField; // New field for loan duration in months
+    private TextField durationField; 
 
     private LoanManager loanManager;
 
     public AddLoanController() {
-        this.loanManager = new LoanManager(); // Ensure LoanManager is properly initialized
+        this.loanManager = new LoanManager(); 
     }
 
     @FXML
     private void handleAddLoan() {
         String customerId = customerIdField.getText();
-        String accountNumber = accountNumberField.getText(); // Get account number input
+        String accountNumber = accountNumberField.getText(); 
         String loanAmountText = loanAmountField.getText();
         String interestRateText = interestRateField.getText();
-        String durationText = durationField.getText(); // Get duration input
+        String durationText = durationField.getText(); 
 
         if (customerId.isEmpty() || accountNumber.isEmpty() || loanAmountText.isEmpty() || interestRateText.isEmpty() || durationText.isEmpty()) {
             showAlert("Error", "All fields are required.");
@@ -49,9 +50,16 @@ public class AddLoanController {
         try {
             double loanAmount = Double.parseDouble(loanAmountText);
             double interestRate = Double.parseDouble(interestRateText);
-            int duration = Integer.parseInt(durationText); // Parse duration as an integer
+            int duration = Integer.parseInt(durationText); 
 
-            // Add the loan using LoanManager
+           
+            AccountManager accountManager = new AccountManager(); 
+            if (!accountManager.getAccountByNumber(accountNumber).isActivated()) {
+                showAlert("Error", "The account associated with this loan is not activated. Loans can only be added to activated accounts.");
+                return;
+            }
+
+            
             Loan success = loanManager.createLoan(customerId, accountNumber, loanAmount, interestRate, duration);
 
             if (success != null) {
@@ -64,11 +72,10 @@ public class AddLoanController {
             showAlert("Error", "Invalid loan amount, interest rate, or duration. Please enter valid numbers.");
         }
     }
-
     @FXML
     private void handleBack() {
         try {
-            App.setRoot("admin"); // Navigate back to the admin dashboard
+            App.setRoot("admin"); 
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,9 +91,9 @@ public class AddLoanController {
 
     private void clearFields() {
         customerIdField.clear();
-        accountNumberField.clear(); // Clear the account number field
+        accountNumberField.clear(); 
         loanAmountField.clear();
         interestRateField.clear();
-        durationField.clear(); // Clear the duration field
+        durationField.clear(); 
     }
 }

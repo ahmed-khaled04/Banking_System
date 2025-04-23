@@ -1,26 +1,31 @@
 ak\accounts\AccountManager.class
-<<<<<<< HEAD
+ak\ui\AccountController.class
 ak\accounts\Account.class
-ak\BankingApp.class
-ak\Authentication\PasswordUtils.class
-=======
-ak\PrimaryController.class
-ak\accounts\Account.class
-ak\Authentication\PasswordUtils.class
-ak\ui\SignInController.class
->>>>>>> ff2d6d0 (GUI)
-ak\customer\CustomerManager.class
+ak\ui\AddTransactionController.class
+ak\ui\TransferController.class
 ak\customer\Customer.class
 ak\database\DBconnection.class
+ak\ui\AdminController.class
+ak\ui\RegisterController.class
+ak\ui\DashboardController.class
 ak\loans\LoanManager.class
-<<<<<<< HEAD
-=======
+ak\ui\TransactionHistoryController.class
 ak\App.class
+ak\ui\LoanRequestController.class
 module-info.class
-ak\SecondaryController.class
->>>>>>> ff2d6d0 (GUI)
 ak\transactions\Transaction.class
-ak\loans\Loan.class
 ak\transactions\TransactionManager.class
 ak\accounts\CheckingAccount.class
+ak\ui\AddLoanController.class
+ak\loans\LoanRequest.class
+ak\loans\LoanDetails.class
+ak\Authentication\PasswordUtils.class
+ak\ui\SignInController.class
+ak\customer\CustomerManager.class
+ak\admins\Admin.class
+ak\admins\AdminManager.class
+ak\loans\Loan.class
+ak\ui\AddAccountController.class
+ak\ui\ReviewLoanRequestsController.class
+ak\loans\LoanRequestManager.class
 ak\accounts\SavingsAccount.class

@@ -3,13 +3,13 @@ package ak.accounts;
 public class SavingsAccount extends Account {
     private double interestRate = 2.5;
 
-    public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate , String accountNumber) {
-        super(customerId, accountHolderName, initialBalance , accountNumber);
+    public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate , String accountNumber , boolean activated) {
+        super(customerId, accountHolderName, initialBalance , accountNumber , activated);
         this.interestRate = interestRate;
     }
 
-    public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate) {
-        super(customerId, accountHolderName, initialBalance);
+    public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate , boolean activated) {
+        super(customerId, accountHolderName, initialBalance , activated);
         this.interestRate = interestRate;
     }
 

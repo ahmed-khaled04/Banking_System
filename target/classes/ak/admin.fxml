@@ -33,8 +33,11 @@
                 <TableColumn text="Account Number" fx:id="accountNumberColumn" prefWidth="200" />
                 <TableColumn text="Account Type" fx:id="accountTypeColumn" prefWidth="300" />
                 <TableColumn text="Balance" fx:id="accountBalanceColumn" prefWidth="300" />
+                <TableColumn text="Activated" fx:id="accountActivatedColumn" prefWidth="150" />
             </columns>
         </TableView>
+        <Button text="Toggle Activation" onAction="#handleToggleActivation" />
+        <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
         
         <!-- Logout button -->
         <Button text="Log Out" onAction="#handleLogout" />

@@ -10,15 +10,15 @@ public class Transaction {
     private String type; // e.g., "Deposit", "Withdrawal", "Transfer"
     private String fromAccount;
     private String toAccount;
-    private String timestamp;
+    private String createdAt;
 
-    public Transaction(double amount, String type, String fromAccount, String toAccount) {
+    public Transaction(double amount, String type, String fromAccount, String toAccount , String createdAt) {
         this.transactionId = generateTransactionId();
         this.amount = amount;
         this.type = type;
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
-        this.timestamp = generateTimestamp();
+        this.createdAt = createdAt;
     }
 
     private String generateTransactionId() {
@@ -36,7 +36,7 @@ public class Transaction {
         System.out.println("Amount: $" + amount);
         System.out.println("From: " + fromAccount);
         System.out.println("To: " + toAccount);
-        System.out.println("Time: " + timestamp);
+        System.out.println("Time: " + createdAt);
     }
 
     // Getters
@@ -61,6 +61,10 @@ public class Transaction {
     }
 
     public String getTimestamp() {
-        return timestamp;
+        return createdAt;
+    }
+
+    public String getDate(){
+        return createdAt;
     }
 }

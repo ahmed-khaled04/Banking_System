@@ -46,12 +46,18 @@ public class RegisterController {
         String phone = phoneField.getText();
         String username = usernameField.getText();
         String password = passwordField.getText();
-    
+
         if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || username.isEmpty() || password.isEmpty()) {
             errorLabel.setText("All fields are required.");
             return;
         }
-    
+
+        // Validate email format
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")  || !email.endsWith(".com")) {
+            errorLabel.setText("Please enter a valid email address.");
+            return;
+        }
+
         // Check if the username already exists
         if (customerManager.getCustomerByUsername(username) != null) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -61,18 +67,18 @@ public class RegisterController {
             alert.showAndWait();
             return;
         }
-    
+
         // Hash the password and add the customer
         String hashedPassword = PasswordUtils.hashPassword(password);
         customerManager.addCustomer(name, email, phone, username, hashedPassword);
-    
+
         // Show success message
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Registration Successful");
         alert.setHeaderText(null);
         alert.setContentText("Registration successful! Redirecting to the sign-in page...");
         alert.showAndWait();
-    
+
         // Redirect to the sign-in page
         try {
             App.setRoot("signin");
@@ -81,6 +87,9 @@ public class RegisterController {
             e.printStackTrace();
         }
     }
+
+
+
     @FXML
     private void handleBackToSignIn() {
         try {

@@ -33,7 +33,7 @@ public class AccountManager {
     }
 
     public Account createSavingsAccount(String customerId, String holderName, double initialDeposit, double interestRate) {
-        Account account = new SavingsAccount(customerId, holderName, initialDeposit, interestRate);
+        Account account = new SavingsAccount(customerId, holderName, initialDeposit, interestRate , true);
         createAccount(account);
         return account;
     }
@@ -42,7 +42,7 @@ public class AccountManager {
         if (overdraftLimit < 0) {
             throw new IllegalArgumentException("Overdraft limit cannot be negative");
         }
-        Account account = new CheckingAccount(customerId, holderName, initialDeposit, overdraftLimit);
+        Account account = new CheckingAccount(customerId, holderName, initialDeposit, overdraftLimit , true);
         createAccount(account);
         return account;
     }
@@ -168,7 +168,7 @@ public class AccountManager {
                 double interestRate = rs.getDouble("interest_rate");
                 String customerId = rs.getString("customer_id");
     
-                SavingsAccount account = new SavingsAccount(customerId, accountNumber, balance, interestRate);
+                SavingsAccount account = new SavingsAccount(customerId, accountNumber, balance, interestRate , rs.getBoolean("activated"));
                 account.addInterest();
     
                 updateAccountBalance(account);
@@ -214,10 +214,10 @@ public Account getAccountByNumber(String accountNumber) {
             Account account;
             if ("Savings".equalsIgnoreCase(accountType)) {
                 double interestRate = rs.getDouble("interest_rate");
-                account = new SavingsAccount(customerId, accountHolderName, balance, interestRate , accountNumber);
+                account = new SavingsAccount(customerId, accountHolderName, balance, interestRate , accountNumber , rs.getBoolean("activated"));
             } else if ("Checking".equalsIgnoreCase(accountType)) {
                 double overdraftLimit = rs.getDouble("overdraft_limit");
-                account = new CheckingAccount(customerId, accountHolderName, balance, overdraftLimit , accountNumber);
+                account = new CheckingAccount(customerId, accountHolderName, balance, overdraftLimit , accountNumber , rs.getBoolean("activated"));
             } else {
                 return null;
             }
@@ -265,7 +265,8 @@ public Account getAccountByNumber(String accountNumber) {
                         rs.getString("account_holder_name"),
                         rs.getDouble("balance"),
                         rs.getDouble("interest_rate"),
-                        rs.getString("account_number")
+                        rs.getString("account_number"),
+                        rs.getBoolean("activated")
                     ));
                 } else if ("Checking".equalsIgnoreCase(accountType)) {
                     accounts.add(new CheckingAccount(
@@ -273,7 +274,8 @@ public Account getAccountByNumber(String accountNumber) {
                         rs.getString("account_holder_name"),
                         rs.getDouble("balance"),
                         rs.getDouble("overdraft_limit"),
-                        rs.getString("account_number")
+                        rs.getString("account_number") ,
+                        rs.getBoolean("activated")
                     ));
                 }
             }
@@ -296,7 +298,8 @@ public Account getAccountByNumber(String accountNumber) {
                         rs.getString("account_holder_name"),
                         rs.getDouble("balance"),
                         rs.getDouble("interest_rate"),
-                        rs.getString("account_number")
+                        rs.getString("account_number"),
+                        rs.getBoolean("activated")
                     ));
                 } else if ("Checking".equalsIgnoreCase(accountType)) {
                     accounts.add(new CheckingAccount(
@@ -304,7 +307,8 @@ public Account getAccountByNumber(String accountNumber) {
                         rs.getString("account_holder_name"),
                         rs.getDouble("balance"),
                         rs.getDouble("overdraft_limit"),
-                        rs.getString("account_number")
+                        rs.getString("account_number"),
+                        rs.getBoolean("activated")
                     ));
                 }
             }
@@ -313,4 +317,21 @@ public Account getAccountByNumber(String accountNumber) {
         }
         return accounts;
     }
+
+
+    public boolean updateAccountActivation(String accountNumber, boolean activated) {
+        String query = "UPDATE accounts SET activated = ? WHERE account_number = ?";
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+    
+            stmt.setBoolean(1, activated);
+            stmt.setString(2, accountNumber);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

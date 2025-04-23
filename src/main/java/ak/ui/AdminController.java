@@ -12,6 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -43,6 +45,12 @@ public class AdminController {
 
     @FXML
     private TableColumn<Account, Double> accountBalanceColumn;
+    
+    @FXML
+    private TableColumn<Account, Boolean> accountActivatedColumn;
+
+    @FXML
+    private Label errorLabel;
 
     public AdminController() {
         this.customerManager = new CustomerManager();
@@ -58,6 +66,7 @@ public class AdminController {
         accountNumberColumn.setCellValueFactory(new PropertyValueFactory<>("accountNumber"));
         accountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
         accountBalanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
+        accountActivatedColumn.setCellValueFactory(new PropertyValueFactory<>("activated"));
     }
 
     @FXML
@@ -107,6 +116,29 @@ public class AdminController {
     }
 
     @FXML
+    private void handleDeleteAccount() {
+        errorLabel.setText(""); // Clear any previous error messages
+
+        Account selectedAccount = accountsTable.getSelectionModel().getSelectedItem();
+        if (selectedAccount == null) {
+            errorLabel.setText("No account selected. Please select an account to delete.");
+            return;
+        }
+
+        boolean success = accountManager.deleteAccount(selectedAccount.getAccountNumber());
+        if (success) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Account deleted successfully.");
+            alert.showAndWait();
+            handleViewAccounts(); // Refresh the accounts table
+        } else {
+            errorLabel.setText("Failed to delete the account. Please try again.");
+        }
+    }
+
+    @FXML
     private void handleLogout() {
         try {
             App.setRoot("signin"); // Redirect to the sign-in page
@@ -122,6 +154,27 @@ public class AdminController {
             App.setRoot("reviewLoanRequests");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void handleToggleActivation() {
+        Account selectedAccount = accountsTable.getSelectionModel().getSelectedItem();
+        if (selectedAccount == null) {
+            errorLabel.setText("No account selected. Please select an account to toggle activation.");
+            return;
+        }
+
+        boolean newStatus = !selectedAccount.isActivated();
+        boolean success = accountManager.updateAccountActivation(selectedAccount.getAccountNumber(), newStatus);
+
+        if (success) {
+            selectedAccount.setActivated(newStatus);
+            accountsTable.refresh(); // Refresh the table
+            errorLabel.setText("Account activation status updated successfully.");
+        } else {
+            errorLabel.setText("Failed to update account activation status.");
         }
     }
 

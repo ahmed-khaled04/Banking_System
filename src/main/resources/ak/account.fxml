@@ -10,8 +10,10 @@
         <Label fx:id="accountNumberLabel" />
         <Label fx:id="accountTypeLabel" />
         <Label fx:id="balanceLabel" />
-        <Button text="Transfer Money" onAction="#handleGoToTransfer" />
-        <Button text="Apply for Loan" onAction="#handleGoToLoanRequest" />
+        <Label fx:id="activationStatusLabel" style="-fx-text-fill: red;" />
+        <Button text="Transfer Money" fx:id="transferButton" onAction="#handleGoToTransfer" />
+        <Button text="Apply for Loan" fx:id="loanButton" onAction="#handleGoToLoanRequest" />
+        <Button text="View Transaction History" fx:id="transactionHistoryButton" onAction="#handleViewTransactionHistory" />
         <Button text="Back to Dashboard" onAction="#handleBackToDashboard" />
     </children>
 </VBox>
