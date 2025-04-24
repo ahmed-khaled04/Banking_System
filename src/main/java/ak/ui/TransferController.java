@@ -50,6 +50,26 @@ public class TransferController {
                 return;
             }
 
+            // Retrieve the current account details
+            Account currentAccount = accountManager.getAccountByNumber(currentAccountNumber);
+            if (currentAccount == null) {
+                showAlert("Error", "Current account not found.");
+                return;
+            }
+
+            // Check if the transfer amount exceeds the available balance
+            if (transferAmount > currentAccount.getBalance()) {
+                showAlert("Error", "Insufficient balance. You cannot transfer more than your available balance.");
+                return;
+            }
+
+            // Check if the recipient account exists
+            Account recipientAccount = accountManager.getAccountByNumber(recipientAccountNumber);
+            if (recipientAccount == null) {
+                showAlert("Error", "Recipient account not found. Please check the account number.");
+                return;
+            }
+
             // Perform the transfer
             Transaction transaction = transactionManager.createTransaction(
                 transferAmount,

@@ -6,6 +6,7 @@ import ak.accounts.AccountManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -54,7 +55,7 @@ public class DashboardController {
     private void handleGoToAccount() {
         Account selectedAccount = accountsTable.getSelectionModel().getSelectedItem();
         if (selectedAccount == null) {
-            System.out.println("No account selected.");
+            showAlert("Error", "No account selected. Please select an account to proceed.");
             return;
         }
 
@@ -66,6 +67,7 @@ public class DashboardController {
             controller.loadAccountDetails(selectedAccount);
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to navigate to the account page. Please try again.");
         }
     }
 
@@ -75,6 +77,15 @@ public class DashboardController {
             App.setRoot("signin"); // Redirect to the sign-in page
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to log out. Please try again.");
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.AddLoanController">
-    <children>
-        <TextField fx:id="customerIdField" promptText="Customer ID" />
-        <TextField fx:id="accountNumberField" promptText="Account Number" />
-        <TextField fx:id="loanAmountField" promptText="Loan Amount" />
-        <TextField fx:id="interestRateField" promptText="Interest Rate (%)" />
-        <TextField fx:id="durationField" promptText="Duration (Months)" />
-        <Button text="Add Loan" onAction="#handleAddLoan" />
-        <Button text="Back" onAction="#handleBack" />
-    </children>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ak.ui.AddLoanController"
+           stylesheets="@css/style.css"
+           styleClass="root">
+
+    <VBox alignment="CENTER" spacing="15.0" styleClass="vbox">
+        <children>
+            <TextField fx:id="customerIdField" promptText="Customer ID" />
+            <TextField fx:id="accountNumberField" promptText="Account Number" />
+            <TextField fx:id="loanAmountField" promptText="Loan Amount" />
+            <TextField fx:id="interestRateField" promptText="Interest Rate (%)" />
+            <TextField fx:id="durationField" promptText="Duration (Months)" />
+            <Button text="Add Loan" onAction="#handleAddLoan" styleClass="button equal-width-btn" />
+            <Button text="Back" onAction="#handleBack" styleClass="button equal-width-btn" />
+        </children>
+    </VBox>
+
+</StackPane>

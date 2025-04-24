@@ -133,18 +133,18 @@ public class ReviewLoanRequestsController {
         Dialog<LoanDetails> dialog = new Dialog<>();
         dialog.setTitle("Loan Details");
         dialog.setHeaderText("Enter the loan duration and interest rate");
-
+    
         // Set the button types
         ButtonType confirmButtonType = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
-
+    
         // Create the input fields
         TextField durationField = new TextField();
         durationField.setPromptText("Duration (Months)");
-
+    
         TextField interestRateField = new TextField();
         interestRateField.setPromptText("Interest Rate (%)");
-
+    
         // Add the fields to a grid pane
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -153,15 +153,26 @@ public class ReviewLoanRequestsController {
         grid.add(durationField, 1, 0);
         grid.add(new Label("Interest Rate (%):"), 0, 1);
         grid.add(interestRateField, 1, 1);
-
+    
         dialog.getDialogPane().setContent(grid);
-
+    
         // Convert the result to a LoanDetails object when the confirm button is clicked
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
                 try {
                     int duration = Integer.parseInt(durationField.getText());
                     double interestRate = Double.parseDouble(interestRateField.getText());
+    
+                    // Validate duration and interest rate
+                    if (duration <= 0) {
+                        showAlert("Error", "Duration must be a positive number.");
+                        return null;
+                    }
+                    if (interestRate <= 0) {
+                        showAlert("Error", "Interest rate must be a positive number.");
+                        return null;
+                    }
+    
                     return new LoanDetails(duration, interestRate);
                 } catch (NumberFormatException e) {
                     showAlert("Error", "Invalid input. Please enter valid numbers for duration and interest rate.");
@@ -170,7 +181,7 @@ public class ReviewLoanRequestsController {
             }
             return null;
         });
-
+    
         Optional<LoanDetails> result = dialog.showAndWait();
         return result.orElse(null);
     }

@@ -42,6 +42,16 @@ public class Admin {
         return passwordHash;
     }
 
+    //Setters fot testing purposes
+    public void setCustomerManager(CustomerManager customerManager) {
+        this.customerManager = customerManager;
+    }
+
+    public void setAccountManager(AccountManager accountManager) {
+        this.accountManager = accountManager;
+    }
+
+
     // Admin functionality
     public List<Customer> getAllCustomers() {
         return customerManager.getAllCustomers();

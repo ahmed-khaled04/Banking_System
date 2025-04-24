@@ -56,18 +56,35 @@ public class AddTransactionController {
         try {
             double amount = Double.parseDouble(amountText);
     
-            // Check account activation status
+            if (amount <= 0) {
+                showAlert("Error", "Transaction amount must be greater than zero.");
+                return;
+            }
+    
+            // Check account activation status and balance
             if (transactionType.equals("Deposit") || transactionType.equals("Transfer")) {
-                if (!toAccount.isEmpty() && !accountManager.getAccountByNumber(toAccount).isActivated()) {
-                    showAlert("Error", "The destination account is not activated. Transactions can only be made to activated accounts.");
-                    return;
+                if (!toAccount.isEmpty()) {
+                    Account destinationAccount = accountManager.getAccountByNumber(toAccount);
+                    if (destinationAccount == null || !destinationAccount.isActivated()) {
+                        showAlert("Error", "The destination account is not activated or does not exist. Transactions can only be made to activated accounts.");
+                        return;
+                    }
                 }
             }
     
             if (transactionType.equals("Withdrawal") || transactionType.equals("Transfer")) {
-                if (!fromAccount.isEmpty() && !accountManager.getAccountByNumber(fromAccount).isActivated()) {
-                    showAlert("Error", "The source account is not activated. Transactions can only be made from activated accounts.");
-                    return;
+                if (!fromAccount.isEmpty()) {
+                    Account sourceAccount = accountManager.getAccountByNumber(fromAccount);
+                    if (sourceAccount == null || !sourceAccount.isActivated()) {
+                        showAlert("Error", "The source account is not activated or does not exist. Transactions can only be made from activated accounts.");
+                        return;
+                    }
+    
+                    // Check if the source account has sufficient balance
+                    if (amount > sourceAccount.getBalance()) {
+                        showAlert("Error", "Insufficient balance in the source account. Transaction cannot be completed.");
+                        return;
+                    }
                 }
             }
     
@@ -113,7 +130,6 @@ public class AddTransactionController {
             showAlert("Error", "Invalid amount. Please enter a valid number.");
         }
     }
-
     
     @FXML
     private void handleBack() {

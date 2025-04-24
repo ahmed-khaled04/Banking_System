@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.AddTransactionController">
-    <children>
-        <Label text="Add Transaction" style="-fx-font-size: 20px;" />
-        <ComboBox fx:id="transactionTypeField" promptText="Transaction Type" />
-        <TextField fx:id="fromAccountField" promptText="From Account" />
-        <TextField fx:id="toAccountField" promptText="To Account" />
-        <TextField fx:id="amountField" promptText="Amount" />
-        <Button text="Add Transaction" onAction="#handleAddTransaction" />
-        <Button text="Back to Admin Dashboard" onAction="#handleBack" />
-    </children>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ak.ui.AddTransactionController"
+           stylesheets="@css/style.css"
+           styleClass="root">
+
+    <VBox alignment="CENTER" spacing="15.0" styleClass="vbox">
+        <children>
+            <Label text="Add Transaction" styleClass="header-label"/>
+
+            <ComboBox fx:id="transactionTypeField" promptText="Transaction Type" />
+
+            <TextField fx:id="fromAccountField" promptText="From Account" styleClass="text-field"/>
+            <TextField fx:id="toAccountField" promptText="To Account" styleClass="text-field"/>
+            <TextField fx:id="amountField" promptText="Amount" styleClass="text-field"/>
+
+            <Button text="Add Transaction" onAction="#handleAddTransaction" styleClass="action-button"/>
+            <Button text="Back to Admin Dashboard" onAction="#handleBack" styleClass="nav-button"/>
+        </children>
+    </VBox>
+</StackPane>

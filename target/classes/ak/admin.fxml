@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.AdminController">
-    <children>
-        <Label text="Admin Dashboard" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
-        
-        <!-- Buttons for adding loans, accounts, and transactions -->
-        <Button text="Add Account" onAction="#handleAddAccount" />
-        <Button text="Add Transaction" onAction="#handleAddTransaction" />
-        <Button text="Add Loan" onAction="#handleAddLoan" />
-        <Button text="Review Loan Requests" onAction="#handleReviewLoanRequests" />
-        
-        <!-- Button to view all customers -->
-        <Button text="View All Customers" onAction="#handleViewCustomers" />
-        <TableView fx:id="customersTable" prefWidth="800" style="-fx-font-size: 14px;">
-            <columns>
-                <TableColumn text="Customer ID" fx:id="customerIdColumn" prefWidth="200" />
-                <TableColumn text="Name" fx:id="customerNameColumn" prefWidth="300" />
-                <TableColumn text="Email" fx:id="customerEmailColumn" prefWidth="300" />
-            </columns>
-        </TableView>
-        
-        <!-- Button to view all accounts -->
-        <Button text="View All Accounts" onAction="#handleViewAccounts" />
-        <TableView fx:id="accountsTable" prefWidth="800" style="-fx-font-size: 14px;">
-            <columns>
-                <TableColumn text="Account Number" fx:id="accountNumberColumn" prefWidth="200" />
-                <TableColumn text="Account Type" fx:id="accountTypeColumn" prefWidth="300" />
-                <TableColumn text="Balance" fx:id="accountBalanceColumn" prefWidth="300" />
-                <TableColumn text="Activated" fx:id="accountActivatedColumn" prefWidth="150" />
-            </columns>
-        </TableView>
-        <Button text="Toggle Activation" onAction="#handleToggleActivation" />
-        <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
-        
-        <!-- Logout button -->
-        <Button text="Log Out" onAction="#handleLogout" />
-    </children>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ak.ui.AdminController"
+           stylesheets="@css/style.css"
+           styleClass="root">
+
+    <VBox alignment="CENTER" spacing="15.0">
+        <children>
+            <Label text="Admin Dashboard" styleClass="header-label"/>
+
+            <Button text="Add Account" onAction="#handleAddAccount" styleClass="button equal-width-btn"/>
+            <Button text="Add Transaction" onAction="#handleAddTransaction" styleClass="button equal-width-btn"/>
+            <Button text="Add Loan" onAction="#handleAddLoan" styleClass="button equal-width-btn"/>
+            <Button text="Review Loan Requests" onAction="#handleReviewLoanRequests" styleClass="button equal-width-btn"/>
+            <Button text="View All Customers" onAction="#handleViewCustomers" styleClass="button equal-width-btn"/>
+
+            <TableView fx:id="customersTable" prefWidth="800" styleClass="table-view">
+                <columns>
+                    <TableColumn text="Customer ID" fx:id="customerIdColumn" prefWidth="200" />
+                    <TableColumn text="Name" fx:id="customerNameColumn" prefWidth="300" />
+                    <TableColumn text="Email" fx:id="customerEmailColumn" prefWidth="300" />
+                </columns>
+            </TableView>
+
+            <Button text="View All Accounts" onAction="#handleViewAccounts" styleClass="button equal-width-btn"/>
+            <TableView fx:id="accountsTable" prefWidth="800" styleClass="table-view">
+                <columns>
+                    <TableColumn text="Account Number" fx:id="accountNumberColumn" prefWidth="200" />
+                    <TableColumn text="Account Type" fx:id="accountTypeColumn" prefWidth="300" />
+                    <TableColumn text="Balance" fx:id="accountBalanceColumn" prefWidth="300" />
+                    <TableColumn text="Activated" fx:id="accountActivatedColumn" prefWidth="150" />
+                </columns>
+            </TableView>
+
+            <Button text="Toggle Activation" onAction="#handleToggleActivation" styleClass="button equal-width-btn"/>
+            <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
+            <Button text="Log Out" onAction="#handleLogout" styleClass="button equal-width-btn"/>
+        </children>
+    </VBox>
+</StackPane>

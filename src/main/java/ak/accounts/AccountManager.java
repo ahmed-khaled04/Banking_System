@@ -334,4 +334,24 @@ public Account getAccountByNumber(String accountNumber) {
     }
 
 
+    public boolean isAccountOwnedByCustomer(String accountNumber, String customerId) {
+        String sql = "SELECT COUNT(*) FROM accounts WHERE account_number = ? AND customer_id = ?";
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, accountNumber);
+            pstmt.setString(2, customerId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Return true if the count is greater than 0
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if an error occurs or the account does not belong to the customer
+    }
+
+
+
+
+
 }

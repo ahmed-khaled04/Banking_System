@@ -1,25 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.ReviewLoanRequestsController">
-    <children>
-        <Label text="Review Loan Requests" style="-fx-font-size: 20px;" />
-        <TableView fx:id="loanRequestsTable" prefWidth="800">
-            <columns>
-                <TableColumn text="Request ID" fx:id="requestIdColumn" prefWidth="150" />
-                <TableColumn text="Account Number" fx:id="accountNumberColumn" prefWidth="200" />
-                <TableColumn text="Loan Amount" fx:id="loanAmountColumn" prefWidth="150" />
-                <TableColumn text="Reason" fx:id="loanReasonColumn" prefWidth="300" />
-                <TableColumn text="Status" fx:id="statusColumn" prefWidth="150" />
-            </columns>
-        </TableView>
-        <Button text="Accept Request" onAction="#handleAcceptRequest" />
-        <Button text="Reject Request" onAction="#handleRejectRequest" />
-        <Button text="Back to Admin Dashboard" onAction="#handleBackToAdmin" />
-    </children>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ak.ui.ReviewLoanRequestsController"
+           stylesheets="@css/style.css"
+           styleClass="root">
+
+    <VBox alignment="CENTER" spacing="15.0">
+        <children>
+            <Label text="Review Loan Requests" styleClass="header-label"/>
+
+            <!-- Loan Requests Table -->
+            <TableView fx:id="loanRequestsTable" prefWidth="800" styleClass="table-view">
+                <columns>
+                    <TableColumn text="Request ID" fx:id="requestIdColumn" prefWidth="160"/>
+                    <TableColumn text="Account Number" fx:id="accountNumberColumn" prefWidth="160"/>
+                    <TableColumn text="Loan Amount" fx:id="loanAmountColumn" prefWidth="160"/>
+                    <TableColumn text="Reason" fx:id="loanReasonColumn" prefWidth="160"/>
+                    <TableColumn text="Status" fx:id="statusColumn" prefWidth="160"/>
+                </columns>
+            </TableView>
+
+            <!-- Action Buttons -->
+            <Button text="Accept Request" onAction="#handleAcceptRequest" styleClass="button equal-width-btn"/>
+            <Button text="Reject Request" onAction="#handleRejectRequest" styleClass="button equal-width-btn"/>
+            <Button text="Back to Admin Dashboard" onAction="#handleBackToAdmin" styleClass="button equal-width-btn"/>
+        </children>
+    </VBox>
+</StackPane>

@@ -5,18 +5,29 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.DashboardController">
+<VBox alignment="TOP_CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" 
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.DashboardController"
+      stylesheets="@css/style.css">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+    
     <children>
-        <Label text="Dashboard" style="-fx-font-size: 20px;" />
-        <TableView fx:id="accountsTable" prefWidth="600">
+        <Label text="Dashboard" styleClass="header-label" />
+        <TableView fx:id="accountsTable" styleClass="dashboard-table">
             <columns>
                 <TableColumn text="Account Number" fx:id="accountNumberColumn" />
                 <TableColumn text="Account Type" fx:id="accountTypeColumn" />
                 <TableColumn text="Balance" fx:id="balanceColumn" />
             </columns>
         </TableView>
-        <Button text="Go to Account" onAction="#handleGoToAccount" />
-        <Button text="Log Out" onAction="#handleLogout" />
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Go to Account" onAction="#handleGoToAccount" styleClass="action-button" />
+            <Button text="Log Out" onAction="#handleLogout" styleClass="nav-button" />
+        </HBox>
     </children>
 </VBox>

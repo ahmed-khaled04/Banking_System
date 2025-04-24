@@ -7,18 +7,69 @@
 
 .vbox {
     -fx-background-color: white;
-    -fx-padding: 30px;
+    -fx-padding: 20px;
     -fx-border-radius: 10px;
     -fx-background-radius: 10px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
-    -fx-max-width: 350px;
-    -fx-max-height: 420px;
+    -fx-max-width: infinity;
+    -fx-spacing: 15px;
 }
 
 #signInVBox {
     -fx-max-width: 300px;
     -fx-alignment: center;
     -fx-spacing: 12px;
+}
+
+/* ====================
+   DASHBOARD TABLE
+   ==================== */
+.dashboard-table {
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
+    -fx-max-width: infinity;
+    -fx-min-width: -1;
+    -fx-pref-width: -1;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.dashboard-table .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #3498db, #2980b9);
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-border-radius: 5px 5px 0 0;
+    -fx-padding: 0 0 5px 0;
+}
+
+.dashboard-table .column-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER;
+}
+
+.dashboard-table .table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+}
+
+.dashboard-table .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.dashboard-table .table-row-cell:selected {
+    -fx-background-color: #e3f2fd;
+}
+
+.dashboard-table .table-cell {
+    -fx-alignment: CENTER;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-border-color: transparent;
 }
 
 /* ====================
@@ -39,7 +90,7 @@
 
 .detail-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: #ffffff;
 }
 
 .error-label {
@@ -88,7 +139,7 @@
     -fx-background-color: #3498db;
     -fx-text-fill: white;
     -fx-cursor: hand;
-    -fx-padding: 0 10px;
+    -fx-padding: 0 15px;
 }
 
 .button:hover {
@@ -103,8 +154,8 @@
     -fx-background-color: #3498db;
     -fx-text-fill: white;
     -fx-cursor: hand;
-    -fx-padding: 0 10px;
-    -fx-min-width: 200px;
+    -fx-padding: 0 15px;
+    -fx-min-width: 120px;
 }
 
 .action-button:hover {
@@ -119,8 +170,8 @@
     -fx-background-color: #95a5a6;
     -fx-text-fill: white;
     -fx-cursor: hand;
-    -fx-padding: 0 10px;
-    -fx-min-width: 200px;
+    -fx-padding: 0 15px;
+    -fx-min-width: 120px;
 }
 
 .nav-button:hover {
@@ -155,4 +206,73 @@
 .register-button:hover {
     -fx-text-fill: #35aeff;
     -fx-background-color: transparent;
+}
+
+/* ====================
+   BUTTON CONTAINERS
+   ==================== */
+.button-container {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+    -fx-padding: 10px 0 0 0;
+}
+/* ====================
+   TABLE VIEW - LOAN REQUESTS
+   ==================== */
+   .table-view {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #213b79, #1a2f5f);
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-padding: 0 0 5px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: rgba(255,255,255,0.3);
+}
+
+.table-view .table-cell {
+    -fx-padding: 12px 15px;
+    -fx-alignment: CENTER;
+    -fx-border-color: transparent transparent #ecf0f1 transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Table rows */
+.table-row-cell {
+    -fx-cell-size: 45px;
+    -fx-background-color: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #2c3e50;
+}
+
+.table-view .scroll-bar:horizontal,
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #bdc3c7;
+    -fx-background-radius: 5px;
 }

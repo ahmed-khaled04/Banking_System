@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.AddAccountController">
-    <children>
-        <Label text="Add Account" style="-fx-font-size: 20px;" />
-        <TextField fx:id="customerIdField" promptText="Customer ID" />
-        <TextField fx:id="holderNameField" promptText="Holder Name" />
-        <TextField fx:id="accountTypeField" promptText="Account Type (Savings/Checking)" />
-        <TextField fx:id="initialDepositField" promptText="Initial Deposit" />
-        <TextField fx:id="interestRateField" promptText="Interest Rate (Savings Only)" />
-        <TextField fx:id="overdraftLimitField" promptText="Overdraft Limit (Checking Only)" />
-        <Button text="Add Account" onAction="#handleAddAccount" />
-        <Button text="Back to Admin Dashboard" onAction="#handleBack" />
-    </children>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ak.ui.AddAccountController"
+           stylesheets="@css/style.css"
+           styleClass="root">
+
+    <VBox alignment="CENTER" spacing="15.0" styleClass="vbox">
+        <children>
+            <Label text="Add Account" style="-fx-text-fill: #2c3e50"/>
+
+            <TextField fx:id="customerIdField" promptText="Customer ID"/>
+            <TextField fx:id="holderNameField" promptText="Holder Name"/>
+            <TextField fx:id="accountTypeField" promptText="Account Type (Savings/Checking)"/>
+            <TextField fx:id="initialDepositField" promptText="Initial Deposit"/>
+            <TextField fx:id="interestRateField" promptText="Interest Rate (Savings Only)"/>
+            <TextField fx:id="overdraftLimitField" promptText="Overdraft Limit (Checking Only)"/>
+
+            <Button text="Add Account" onAction="#handleAddAccount" styleClass="button equal-width-btn"/>
+            <Button text="Back to Admin Dashboard" onAction="#handleBack" styleClass="button equal-width-btn"/>
+        </children>
+    </VBox>
+
+</StackPane>

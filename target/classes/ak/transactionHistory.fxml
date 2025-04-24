@@ -5,15 +5,24 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ak.ui.TransactionHistoryController">
+<VBox alignment="CENTER" spacing="15.0"
+      styleClass="vbox"
+      xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ak.ui.TransactionHistoryController"
+      stylesheets="@css/style.css">
     <children>
-        <TableView fx:id="transactionTable" prefWidth="600" prefHeight="400">
+        <TableView fx:id="transactionTable"
+                   styleClass="dashboard-table"
+                   prefWidth="600" prefHeight="400">
             <columns>
                 <TableColumn text="Date" fx:id="dateColumn" prefWidth="200" />
                 <TableColumn text="Type" fx:id="typeColumn" prefWidth="200" />
                 <TableColumn text="Amount" fx:id="amountColumn" prefWidth="200" />
             </columns>
         </TableView>
-        <Button text="Back to Account" onAction="#handleBackToAccount" />
+        <Button text="Back to Account"
+                styleClass="nav-button"
+                onAction="#handleBackToAccount" />
     </children>
 </VBox>
