@@ -12,7 +12,7 @@ public class DBconnection {
     }
 
     public static void clearDatabase() {
-        String[] tables = {"transactions", "accounts", "customers", "loans"}; // Add all table names here
+        String[] tables = {"transactions", "accounts", "customers", "loans" , "admins" , "loan_requests"}; // Add all table names here
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement()) {
             // Disable foreign key checks
@@ -29,6 +29,19 @@ public class DBconnection {
             System.out.println("All data in the database has been erased.");
         } catch (SQLException e) {
             System.err.println("Error clearing database: " + e.getMessage());
+        }
+    }
+
+    public static void closeConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                if (!connection.isClosed()) {
+                    connection.close();
+                    System.out.println("Database connection closed successfully.");
+                }
+            } catch (SQLException e) {
+                System.err.println("Error closing database connection: " + e.getMessage());
+            }
         }
     }
 }

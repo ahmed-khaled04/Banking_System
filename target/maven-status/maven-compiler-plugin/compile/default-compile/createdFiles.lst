@@ -18,12 +18,14 @@ ak\transactions\TransactionManager.class
 ak\accounts\CheckingAccount.class
 ak\ui\AddLoanController.class
 ak\loans\LoanRequest.class
+ak\Authentication\AuthService.class
 ak\loans\LoanDetails.class
 ak\Authentication\PasswordUtils.class
 ak\ui\SignInController.class
 ak\customer\CustomerManager.class
 ak\admins\Admin.class
 ak\admins\AdminManager.class
+ak\financial\InterestCalculator.class
 ak\loans\Loan.class
 ak\ui\AddAccountController.class
 ak\ui\ReviewLoanRequestsController.class

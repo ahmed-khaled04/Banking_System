@@ -14,6 +14,21 @@ public class Transaction {
 
     public Transaction(double amount, String type, String fromAccount, String toAccount , String createdAt) {
         this.transactionId = generateTransactionId();
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Transaction amount must be positive");
+        }
+        if (type == null || type.trim().isEmpty()) {
+            throw new IllegalArgumentException("Transaction type cannot be empty");
+        }
+        if (fromAccount == null && toAccount == null) {
+            throw new IllegalArgumentException("At least one account (from or to) must be specified");
+        }
+        if(type.equalsIgnoreCase("transfer")){
+            if (fromAccount == null || toAccount == null) {
+                throw new IllegalArgumentException("Both accounts must be specified for transfer transactions");
+            }
+        }
+        
         this.amount = amount;
         this.type = type;
         this.fromAccount = fromAccount;

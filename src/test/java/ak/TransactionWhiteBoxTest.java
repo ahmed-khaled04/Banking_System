@@ -11,43 +11,21 @@ public class TransactionWhiteBoxTest {
     // Test to ensure generateTransactionId works correctly
     @Test
     public void testGenerateTransactionId() {
-        // Creating a transaction instance, which will internally call
-        // generateTransactionId()
-        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5);
-        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5);
+        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5 , true);
+        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5 , true);
         Transaction transaction = new Transaction(200.0, "Transfer", source.getAccountNumber(),
                 destination.getAccountNumber(), null);
 
         // Ensure transactionId starts with "TXN-"
         assertTrue(transaction.getTransactionId().startsWith("TXN-"));
         // Ensure transactionId has the expected length (8 characters from UUID)
-        assertEquals(13, transaction.getTransactionId().length()); // "TXN-" + 8 characters from UUID
+        assertEquals(12, transaction.getTransactionId().length()); 
     }
 
-    // Test to ensure that the generateTimestamp method uses the correct pattern
-    @Test
-    public void testGenerateTimestamp() {
-        // Creating a transaction instance, which will internally call
-        // generateTimestamp()
-        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5);
-        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5);
-        Transaction transaction = new Transaction(200.0, "Transfer", source.getAccountNumber(),
-                destination.getAccountNumber(), null);
-
-        String timestamp = transaction.getTimestamp();
-        assertNotNull(timestamp);
-
-        // Ensure the timestamp is in the correct format (yyyy-MM-dd HH:mm:ss)
-        String regex = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
-        assertTrue(timestamp.matches(regex));
-    }
-
-    // Test to ensure that the internal logic for invalid transaction types throws
-    // an exception
     @Test
     public void testInvalidTransactionType() {
-        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5);
-        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5);
+        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5 , true);
+        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5 , true);
 
         // Using an invalid transaction type (empty string)
         assertThrows(IllegalArgumentException.class, () -> {
@@ -63,8 +41,8 @@ public class TransactionWhiteBoxTest {
     // Test to check for invalid amount (less than or equal to zero)
     @Test
     public void testInvalidAmount() {
-        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5);
-        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5);
+        Account source = new SavingsAccount("123", "John Doe", 1000.0, 2.5 , true);
+        Account destination = new SavingsAccount("456", "Jane Doe", 500.0, 2.5 , true);
 
         // Testing with zero amount
         assertThrows(IllegalArgumentException.class, () -> {

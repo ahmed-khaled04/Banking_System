@@ -2,6 +2,10 @@ package ak;
 
 import ak.loans.LoanRequestManager;
 import ak.loans.LoanRequest;
+import ak.accounts.Account;
+import ak.accounts.AccountManager;
+import ak.customer.Customer;
+import ak.customer.CustomerManager;
 import ak.database.DBconnection;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,21 +17,34 @@ import java.util.List;
 
 public class LoanRequestManagerTest {
     private LoanRequestManager loanRequestManager;
+    private AccountManager accountManager;
+    private CustomerManager customerManager;
+    private Customer customer;
+    private Account account;
 
     @BeforeEach
     public void setUp() throws SQLException {
         DBconnection.clearDatabase(); // Clear the database before each test
         loanRequestManager = new LoanRequestManager();
+        accountManager = new AccountManager();
+        customerManager = new CustomerManager();
+        customer = customerManager.addCustomer("John Doe","email.com" , "1111" , "username1" , "passwordHash1"); 
+        account = accountManager.createSavingsAccount(customer.getCustomerId(), "Savings", 1000.0, 2.5);
     }
 
     @AfterEach
     public void tearDown() {
-        DBconnection.closeConnection(); // Close the database connection after each test
+        try {
+            DBconnection.closeConnection(DBconnection.getConnection()); // Close the database connection after each test
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception for debugging purposes
+            fail("Failed to close the database connection: " + e.getMessage());
+        }
     }
 
     @Test
     public void testSubmitLoanRequest() {
-        boolean result = loanRequestManager.submitLoanRequest("ACC123", 5000.0, "Education");
+        boolean result = loanRequestManager.submitLoanRequest(account.getAccountNumber(), 5000.0, "Education");
         assertTrue(result);
         List<LoanRequest> requests = loanRequestManager.getAllLoanRequests();
         assertNotNull(requests);
@@ -43,12 +60,12 @@ public class LoanRequestManagerTest {
 
     @Test
     public void testUpdateLoanRequestStatus() {
-        boolean result = loanRequestManager.submitLoanRequest("ACC123", 5000.0, "Education");
-        assertTrue(result);
-        boolean updateResult = loanRequestManager.updateLoanRequestStatus("1", "Approved");
+        LoanRequest loanRequest = loanRequestManager.submitRequest(account.getAccountNumber(), 5000.0, "Education");
+        assertNotNull(loanRequest);
+        boolean updateResult = loanRequestManager.updateLoanRequestStatus(loanRequest.getRequestId(), "Accepted");
         assertTrue(updateResult);
         List<LoanRequest> requests = loanRequestManager.getAllLoanRequests();
         LoanRequest request = requests.get(0);
-        assertEquals("Approved", request.getStatus());
+        assertEquals("Accepted", request.getStatus());
     }
 }

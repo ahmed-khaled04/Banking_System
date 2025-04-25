@@ -61,4 +61,32 @@ public class LoanRequestManager {
             return false;
         }
     }
+
+    public LoanRequest submitRequest(String accountNumber, double loanAmount, String loanReason) {
+        String sql = "INSERT INTO loan_requests (account_number, loan_amount, loan_reason, status) VALUES (?, ?, ?, 'Pending')";
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setString(1, accountNumber);
+            pstmt.setDouble(2, loanAmount);
+            pstmt.setString(3, loanReason);
+            int affectedRows = pstmt.executeUpdate();
+    
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return new LoanRequest(
+                            generatedKeys.getString(1), // Assuming the ID is auto-generated
+                            accountNumber,
+                            loanAmount,
+                            loanReason,
+                            "Pending"
+                        );
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if the loan request could not be created
+    }
 }

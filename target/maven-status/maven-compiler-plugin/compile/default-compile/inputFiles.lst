@@ -5,6 +5,7 @@ D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\l
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\loans\LoanDetails.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\database\DBconnection.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\loans\LoanManager.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\Authentication\AuthService.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\ui\AddLoanController.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\ui\AddTransactionController.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\accounts\AccountManager.java
@@ -20,6 +21,7 @@ D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\a
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\ui\AccountController.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\loans\LoanRequest.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\loans\LoanRequestManager.java
+D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\financial\InterestCalculator.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\transactions\Transaction.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\App.java
 D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\src\main\java\ak\ui\TransferController.java

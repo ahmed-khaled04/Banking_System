@@ -13,20 +13,27 @@ public class AccountTest {
 
     @BeforeEach
     public void setUp() {
-        account = new CheckingAccount("C123", "Yousef Sameh", 1000.0, 500.0, "ACC001", true);
+        account = new CheckingAccount("C123", "Yousef Sameh", 1000.0, 500.0, true);
     }
 
     // ACCOUNT CREATION
     @Test
     public void testAccountCreation() {
-        assertEquals("ACC001", account.getAccountNumber());
+        assertNotNull(account, "Account should be created successfully.");
         assertEquals(1000.0, account.getBalance(), 0.01); // Use delta for double comparison
+    }
+
+    @Test
+    public void testAccountNumberFormat() {
+        String accountNumber = account.getAccountNumber();
+        assertTrue(accountNumber.matches("ACC-\\d{6}"), "Account number should start with 'ACC-' followed by 6 digits.");
     }
 
     @Test
     public void testAccountCreationWithNegativeBalance() {
         assertThrows(IllegalArgumentException.class, () -> 
-            new CheckingAccount("C124", "Someone", -500.0, 500.0, "ACC002", true)
+            new CheckingAccount("C124", "Someone", -500.0, 500.0, true),
+            "Expected IllegalArgumentException for negative initial balance."
         );
     }
 
@@ -51,7 +58,10 @@ public class AccountTest {
 
     @Test
     public void testWithdrawAmountGreaterThanBalance() {
-        assertThrows(IllegalArgumentException.class, () -> account.withdraw(1500.0));
+        assertThrows(IllegalArgumentException.class, () -> 
+            account.withdraw(1600.0),
+            "Expected IllegalArgumentException for withdrawal amount greater than balance."
+        );
     }
 
     @Test

@@ -61,7 +61,7 @@ public class CustomerTest {
     @Test
     public void testRetrieveMultipleAccounts() {
         Account acc1 = new CheckingAccount("123", "Jane Doe", 500.0, 500.0, "ACC124", true);
-        Account acc2 = new SavingsAccount("123", "Jane Doe", 1500.0, 2.5);
+        Account acc2 = new SavingsAccount("123", "Jane Doe", 1500.0, 2.5 , true);
 
         customer.addAccount(acc1);
         customer.addAccount(acc2);
@@ -75,7 +75,7 @@ public class CustomerTest {
     // Test adding null account
     @Test
     public void testAddNullAccount() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             customer.addAccount(null);
         });
     }

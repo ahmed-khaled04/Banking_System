@@ -19,6 +19,9 @@ public abstract class Account {
         } else {
             this.accountNumber = generateAccountNumber();
         }             
+        if(balance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
         this.balance = initialBalance;
     }
     public Account(String customerId, String accountHolderName, double initialBalance , boolean activated) {
@@ -26,11 +29,14 @@ public abstract class Account {
         this.customerId = customerId;
         this.accountHolderName = accountHolderName;            
         this.accountNumber = generateAccountNumber();
+        if(balance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
         this.balance = initialBalance;
     }
 
     protected String generateAccountNumber() {
-        return "ACC-" + (int) (Math.random() * 100000);
+        return "ACC-" + String.format("%06d", (int) (Math.random() * 1000000));
     }
 
     public abstract void withdraw(double amount);
@@ -39,6 +45,9 @@ public abstract class Account {
         if (amount > 0) {
             balance += amount;
             System.out.println("Deposited $" + amount + " to " + accountNumber);
+        }
+        else {
+            throw new IllegalArgumentException("Deposit amount must be positive.");
         }
     }
 

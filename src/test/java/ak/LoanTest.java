@@ -30,11 +30,9 @@ public class LoanTest {
 
     @Test
     public void testLoanWithNullCustomerThrowsException() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Loan("LOAN123", null, "ACC123", 5000.0, 0.05, 12);
         });
     }
 
-    // Since the Loan class does not have repayment methods, we cannot test repayment logic here.
-    // These tests should be moved to LoanProcessorTest if LoanProcessor handles repayments.
 }

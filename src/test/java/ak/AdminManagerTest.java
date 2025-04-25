@@ -2,6 +2,8 @@ package ak;
 
 import ak.admins.Admin;
 import ak.admins.AdminManager;
+import ak.database.DBconnection;
+
 // import ak.customer.Customer;
 // import ak.accounts.Account;
 // import ak.accounts.AccountManager;
@@ -19,6 +21,9 @@ public class AdminManagerTest {
 
     @BeforeEach
     public void setUp() throws SQLException {
+
+        DBconnection.clearDatabase(); 
+
         adminManager = new AdminManager();
         
         // Assuming you have a method to add an admin to the database for testing

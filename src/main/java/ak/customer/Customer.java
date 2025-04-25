@@ -16,6 +16,15 @@ public class Customer {
 
     public Customer(String name, String email, String phoneNumber) {
         this.customerId = generateCustomerId();
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be null or empty");
+        }
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -24,6 +33,21 @@ public class Customer {
 
     public Customer(String name, String email, String phoneNumber , String username, String passwordHash) {
         this.customerId = generateCustomerId();
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be null or empty");
+        }
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (passwordHash == null || passwordHash.isEmpty()) {
+            throw new IllegalArgumentException("Password hash cannot be null or empty");
+        }
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -33,6 +57,19 @@ public class Customer {
     }
 
     public Customer(String customerId, String name, String email, String phoneNumber) {
+        if (customerId == null || customerId.isEmpty()) {
+            throw new IllegalArgumentException("Customer ID cannot be null or empty");
+        }
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be null or empty");
+        }
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+
         this.customerId = customerId;
         this.name = name;
         this.email = email;
@@ -40,6 +77,24 @@ public class Customer {
         this.accounts = new ArrayList<>();
     }
     public Customer(String customerId, String name, String email, String phoneNumber , String username, String passwordHash) {
+        if (customerId == null || customerId.isEmpty()) {
+            throw new IllegalArgumentException("Customer ID cannot be null or empty");
+        }
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (passwordHash == null || passwordHash.isEmpty()) {
+            throw new IllegalArgumentException("Password hash cannot be null or empty");
+        }
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be null or empty");
+        }
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
         this.customerId = customerId;
         this.name = name;
         this.email = email;
@@ -54,6 +109,9 @@ public class Customer {
     }
 
     public void addAccount(Account account) {
+        if (account == null) {
+            throw new IllegalArgumentException("Account cannot be null");
+        }
         accounts.add(account);
         System.out.println("Account added for customer: " + name);
     }

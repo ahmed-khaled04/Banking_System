@@ -35,11 +35,14 @@ class AccountWhiteBoxTest {
      */
     @Test
     void depositRejectsZeroOrNegative() {
-        Account acc = new SavingsAccount("C2", "Saver", 100, 3.0);
-        acc.deposit(0); // should NO‑OP
+        Account acc = new SavingsAccount("C2", "Saver", 100, 3.0 , true);
+        assertThrows(IllegalArgumentException.class, () -> acc.deposit(0) , 
+        "Expected IllegalArgumentException for zero deposit.");
         assertEquals(100, acc.getBalance());
-
-        acc.deposit(-10); // should NO‑OP
+        
+    
+        assertThrows(IllegalArgumentException.class, () -> acc.deposit(-10) , 
+        "Expected IllegalArgumentException for zero deposit.");
         assertEquals(100, acc.getBalance());
     }
 
@@ -64,9 +67,10 @@ class AccountWhiteBoxTest {
     @Test
     void processTransaction_invalidBothNull() {
         Account acc = new SavingsAccount("C3", "Uniq", 200, 2.0, true);
-        Transaction t = new Transaction(50, "Bad", null, null, null);
-
-        acc.processTransaction(t);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Transaction t = new Transaction(50, "Bad", null, null, null);
+            acc.processTransaction(t);
+        });
         // balance unchanged
         assertEquals(200, acc.getBalance());
     }
@@ -78,7 +82,7 @@ class AccountWhiteBoxTest {
      */
     @Test
     void savingsWithdraw_exactBalance() {
-        SavingsAccount sa = new SavingsAccount("C4", "SaverX", 100, 1.0);
+        SavingsAccount sa = new SavingsAccount("C4", "SaverX", 100, 1.0 , true);
         sa.withdraw(100);
         assertEquals(0, sa.getBalance(), 0.0001);
     }
@@ -114,7 +118,7 @@ class AccountWhiteBoxTest {
      */
     @Test
     void addInterest_tinyBalanceRoundsUp() {
-        SavingsAccount sa = new SavingsAccount("C7", "Tiny", 0.01, 10.0);
+        SavingsAccount sa = new SavingsAccount("C7", "Tiny", 0.01, 10.0 , true);
         sa.addInterest(); // adds 0.001
 
         assertTrue(sa.getBalance() > 0.01); // balance increased
@@ -128,7 +132,8 @@ class AccountWhiteBoxTest {
     @Test
     void overdraftSlightlyOverLimitRejected() {
         CheckingAccount ca = new CheckingAccount("C8", "Edge", 0, 100, "ACC‑EDGE", true);
-        ca.withdraw(100.01); // exceeds limit
+        assertThrows(IllegalArgumentException.class, () -> ca.withdraw(100.0001),
+                "Expected IllegalArgumentException for overdraft slightly over limit.");
 
         assertEquals(0, ca.getBalance(), 0.0001); // unchanged
     }

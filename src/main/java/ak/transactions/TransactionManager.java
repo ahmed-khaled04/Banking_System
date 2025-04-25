@@ -46,6 +46,11 @@ public class TransactionManager {
         if (fromAccount == null && toAccount == null) {
             throw new IllegalArgumentException("At least one account (from or to) must be specified");
         }
+        if(type.equalsIgnoreCase("transfer")){
+            if (fromAccount == null || toAccount == null) {
+                throw new IllegalArgumentException("Both accounts must be specified for transfer transactions");
+            }
+        }
 
         String sql = "INSERT INTO transactions (transaction_id, amount, type, from_account, to_account) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
