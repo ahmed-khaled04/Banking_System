@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.accounts</a> &gt; <span class="el_source">AccountManager.java</span></div><h1>AccountManager.java</h1><pre class="source lang-java linenums">package ak.accounts;
+
+import ak.database.DBconnection;
+import ak.transactions.Transaction;
+
+import java.sql.*;
+import java.util.*;
+
+public class AccountManager {
+    private Connection connection;
+
+<span class="fc" id="L12">    public AccountManager() {</span>
+        try {
+<span class="fc" id="L14">            this.connection = DBconnection.getConnection();</span>
+            // initializeDatabase();
+<span class="nc" id="L16">        } catch (SQLException e) {</span>
+<span class="nc" id="L17">            System.err.println(&quot;Database connection error: &quot; + e.getMessage());</span>
+<span class="nc" id="L18">            throw new RuntimeException(&quot;Failed to initialize AccountManager&quot;, e);</span>
+<span class="fc" id="L19">        }</span>
+<span class="fc" id="L20">    }</span>
+
+    private void initializeDatabase() throws SQLException {
+<span class="nc" id="L23">        String createTableSQL = &quot;CREATE TABLE IF NOT EXISTS accounts (&quot;</span>
+                + &quot;account_number VARCHAR(20) PRIMARY KEY, &quot;
+                + &quot;account_holder_name VARCHAR(100) NOT NULL, &quot;
+                + &quot;balance DECIMAL(15,2) NOT NULL, &quot;
+                + &quot;account_type VARCHAR(20) NOT NULL, &quot;
+                + &quot;interest_rate DECIMAL(5,2), &quot; 
+                + &quot;overdraft_limit DECIMAL(15,2))&quot;; 
+<span class="nc" id="L30">        try (Statement stmt = connection.createStatement()) {</span>
+<span class="nc" id="L31">            stmt.execute(createTableSQL);</span>
+        }
+<span class="nc" id="L33">    }</span>
+
+    public Account createSavingsAccount(String customerId, String holderName, double initialDeposit, double interestRate) {
+<span class="fc" id="L36">        Account account = new SavingsAccount(customerId, holderName, initialDeposit, interestRate , true);</span>
+<span class="fc" id="L37">        createAccount(account);</span>
+<span class="fc" id="L38">        return account;</span>
+    }
+
+    public Account createCheckingAccount(String customerId, String holderName, double initialDeposit, double overdraftLimit) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (overdraftLimit &lt; 0) {</span>
+<span class="nc" id="L43">            throw new IllegalArgumentException(&quot;Overdraft limit cannot be negative&quot;);</span>
+        }
+<span class="fc" id="L45">        Account account = new CheckingAccount(customerId, holderName, initialDeposit, overdraftLimit , true);</span>
+<span class="fc" id="L46">        createAccount(account);</span>
+<span class="fc" id="L47">        return account;</span>
+    }
+
+    public boolean createAccount(Account account) {
+<span class="fc" id="L51">        String sql = &quot;INSERT INTO accounts (account_number, customer_id, account_holder_name, balance, account_type, interest_rate, overdraft_limit) &quot;</span>
+                   + &quot;VALUES (?, ?, ?, ?, ?, ?, ?)&quot;;
+<span class="fc" id="L53">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L54">            pstmt.setString(1, account.getAccountNumber());</span>
+<span class="fc" id="L55">            pstmt.setString(2, account.getCustomerId());</span>
+<span class="fc" id="L56">            pstmt.setString(3, account.getAccountHolderName());</span>
+<span class="fc" id="L57">            pstmt.setDouble(4, account.getBalance());</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            pstmt.setString(5, account instanceof SavingsAccount ? &quot;Savings&quot; : &quot;Checking&quot;);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            pstmt.setObject(6, account instanceof SavingsAccount ? ((SavingsAccount) account).getInterestRate() : null);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            pstmt.setObject(7, account instanceof CheckingAccount ? ((CheckingAccount) account).getOverdraftLimit() : null);</span>
+<span class="fc" id="L61">            pstmt.executeUpdate();</span>
+<span class="fc" id="L62">            System.out.println(&quot;Account created successfully for &quot; + account.getAccountHolderName());</span>
+<span class="fc" id="L63">            return true;</span>
+<span class="nc" id="L64">        } catch (SQLException e) {</span>
+<span class="nc" id="L65">            System.err.println(&quot;Error creating account: &quot; + e.getMessage());</span>
+<span class="nc" id="L66">            return false;</span>
+        }
+    }
+
+    public boolean deleteAccount(String accountNumber) {
+<span class="fc" id="L71">        String sql = &quot;DELETE FROM accounts WHERE account_number = ?&quot;;</span>
+<span class="fc" id="L72">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L73">            pstmt.setString(1, accountNumber);</span>
+<span class="fc" id="L74">            int rowsAffected = pstmt.executeUpdate();</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">            if (rowsAffected &gt; 0) {</span>
+<span class="fc" id="L76">                System.out.println(&quot;Account deleted.&quot;);</span>
+<span class="fc" id="L77">                return true;</span>
+            } else {
+<span class="nc" id="L79">                System.out.println(&quot;Account not found.&quot;);</span>
+<span class="nc" id="L80">                return false;</span>
+            }
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L83">            System.err.println(&quot;Error deleting account: &quot; + e.getMessage());</span>
+<span class="nc" id="L84">            return false;</span>
+        }
+    }
+
+    public boolean processTransaction(Transaction transaction) {
+        try {
+<span class="nc" id="L90">            connection.setAutoCommit(false);</span>
+    
+<span class="nc" id="L92">            String fromAccountNumber = transaction.getFromAccount();</span>
+<span class="nc" id="L93">            String toAccountNumber = transaction.getToAccount();</span>
+<span class="nc" id="L94">            double amount = transaction.getAmount();</span>
+    
+
+            //Deposit
+<span class="nc bnc" id="L98" title="All 4 branches missed.">            if (fromAccountNumber == null &amp;&amp; toAccountNumber != null) {</span>
+<span class="nc" id="L99">                Account toAccount = getAccountByNumber(toAccountNumber);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                if (toAccount == null) {</span>
+<span class="nc" id="L101">                    System.out.println(&quot;To account not found: &quot; + toAccountNumber);</span>
+<span class="nc" id="L102">                    return false;</span>
+                }
+<span class="nc" id="L104">                toAccount.deposit(amount);</span>
+<span class="nc" id="L105">                updateAccountBalance(toAccount);</span>
+<span class="nc bnc" id="L106" title="All 4 branches missed.">            } else if (fromAccountNumber != null &amp;&amp; toAccountNumber == null) {</span>
+<span class="nc" id="L107">                Account fromAccount = getAccountByNumber(fromAccountNumber);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">                if (fromAccount == null) {</span>
+<span class="nc" id="L109">                    System.out.println(&quot;From account not found: &quot; + fromAccountNumber);</span>
+<span class="nc" id="L110">                    return false;</span>
+                }
+<span class="nc bnc" id="L112" title="All 2 branches missed.">                if (fromAccount.getBalance() &lt; amount) {</span>
+<span class="nc" id="L113">                    System.out.println(&quot;Insufficient funds in account: &quot; + fromAccountNumber);</span>
+<span class="nc" id="L114">                    return false;</span>
+                }
+<span class="nc" id="L116">                fromAccount.withdraw(amount);</span>
+<span class="nc" id="L117">                updateAccountBalance(fromAccount);</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">            } else if (fromAccountNumber != null &amp;&amp; toAccountNumber != null) {</span>
+<span class="nc" id="L119">                Account fromAccount = getAccountByNumber(fromAccountNumber);</span>
+<span class="nc" id="L120">                Account toAccount = getAccountByNumber(toAccountNumber);</span>
+    
+<span class="nc bnc" id="L122" title="All 4 branches missed.">                if (fromAccount == null || toAccount == null) {</span>
+<span class="nc" id="L123">                    System.out.println(&quot;One or both accounts not found.&quot;);</span>
+<span class="nc" id="L124">                    return false;</span>
+                }
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                if (fromAccount.getBalance() &lt; amount) {</span>
+<span class="nc" id="L127">                    System.out.println(&quot;Insufficient funds in account: &quot; + fromAccountNumber);</span>
+<span class="nc" id="L128">                    return false;</span>
+                }
+    
+<span class="nc" id="L131">                fromAccount.withdraw(amount);</span>
+<span class="nc" id="L132">                toAccount.deposit(amount);</span>
+    
+<span class="nc" id="L134">                updateAccountBalance(fromAccount);</span>
+<span class="nc" id="L135">                updateAccountBalance(toAccount);</span>
+<span class="nc" id="L136">            } else {</span>
+<span class="nc" id="L137">                System.out.println(&quot;Invalid transaction: both accounts are null.&quot;);</span>
+<span class="nc" id="L138">                return false;</span>
+            }
+    
+<span class="nc" id="L141">            connection.commit();</span>
+<span class="nc" id="L142">            System.out.println(&quot;Transaction processed successfully: &quot; + transaction.getTransactionId());</span>
+<span class="nc" id="L143">            return true;</span>
+<span class="nc" id="L144">        } catch (SQLException e) {</span>
+            try {
+<span class="nc" id="L146">                connection.rollback();</span>
+<span class="nc" id="L147">            } catch (SQLException rollbackEx) {</span>
+<span class="nc" id="L148">                System.err.println(&quot;Error rolling back transaction: &quot; + rollbackEx.getMessage());</span>
+<span class="nc" id="L149">            }</span>
+<span class="nc" id="L150">            System.err.println(&quot;Error processing transaction: &quot; + e.getMessage());</span>
+<span class="nc" id="L151">            return false;</span>
+        } finally {
+            try {
+<span class="nc" id="L154">                connection.setAutoCommit(true);</span>
+<span class="nc" id="L155">            } catch (SQLException ex) {</span>
+<span class="nc" id="L156">                System.err.println(&quot;Error resetting auto-commit: &quot; + ex.getMessage());</span>
+<span class="nc" id="L157">            }</span>
+        }
+    }
+
+    public void applyInterestToSavingsAccounts() {
+<span class="nc" id="L162">        String sql = &quot;SELECT * FROM accounts WHERE account_type = 'Savings'&quot;;</span>
+<span class="nc" id="L163">        try (PreparedStatement pstmt = connection.prepareStatement(sql);</span>
+<span class="nc" id="L164">             ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L166">                String accountNumber = rs.getString(&quot;account_number&quot;);</span>
+<span class="nc" id="L167">                double balance = rs.getDouble(&quot;balance&quot;);</span>
+<span class="nc" id="L168">                double interestRate = rs.getDouble(&quot;interest_rate&quot;);</span>
+<span class="nc" id="L169">                String customerId = rs.getString(&quot;customer_id&quot;);</span>
+    
+<span class="nc" id="L171">                SavingsAccount account = new SavingsAccount(customerId, accountNumber, balance, interestRate , rs.getBoolean(&quot;activated&quot;));</span>
+<span class="nc" id="L172">                account.addInterest();</span>
+    
+<span class="nc" id="L174">                updateAccountBalance(account);</span>
+<span class="nc" id="L175">            }</span>
+<span class="nc" id="L176">            System.out.println(&quot;Interest applied to all savings accounts.&quot;);</span>
+<span class="nc" id="L177">        } catch (SQLException e) {</span>
+<span class="nc" id="L178">            System.err.println(&quot;Error applying interest: &quot; + e.getMessage());</span>
+<span class="nc" id="L179">        }</span>
+<span class="nc" id="L180">    }</span>
+    public void displayAllAccounts() {
+<span class="nc" id="L182">        String sql = &quot;SELECT * FROM accounts&quot;;</span>
+<span class="nc" id="L183">        try (PreparedStatement pstmt = connection.prepareStatement(sql);</span>
+<span class="nc" id="L184">             ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L186">                System.out.println(&quot;Account Number: &quot; + rs.getString(&quot;account_number&quot;));</span>
+<span class="nc" id="L187">                System.out.println(&quot;Holder Name: &quot; + rs.getString(&quot;account_holder_name&quot;));</span>
+<span class="nc" id="L188">                System.out.println(&quot;Balance: $&quot; + rs.getDouble(&quot;balance&quot;));</span>
+<span class="nc" id="L189">                System.out.println(&quot;Account Type: &quot; + rs.getString(&quot;account_type&quot;));</span>
+<span class="nc" id="L190">                System.out.println(&quot;----------------------------&quot;);</span>
+            }
+<span class="nc" id="L192">        } catch (SQLException e) {</span>
+<span class="nc" id="L193">            System.err.println(&quot;Error displaying accounts: &quot; + e.getMessage());</span>
+<span class="nc" id="L194">        }</span>
+<span class="nc" id="L195">    }</span>
+
+<span class="fc" id="L197">private final Map&lt;String, Account&gt; accountCache = new HashMap&lt;&gt;();</span>
+
+public Account getAccountByNumber(String accountNumber) {
+    // Check if the account is already in the cache
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    if (accountCache.containsKey(accountNumber)) {</span>
+<span class="fc" id="L202">        return accountCache.get(accountNumber);</span>
+    }
+
+<span class="fc" id="L205">    String sql = &quot;SELECT * FROM accounts WHERE account_number = ?&quot;;</span>
+<span class="fc" id="L206">    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L207">        pstmt.setString(1, accountNumber);</span>
+<span class="fc" id="L208">        ResultSet rs = pstmt.executeQuery();</span>
+<span class="pc bpc" id="L209" title="1 of 2 branches missed.">        if (rs.next()) {</span>
+<span class="fc" id="L210">            String customerId = rs.getString(&quot;customer_id&quot;);</span>
+<span class="fc" id="L211">            String accountType = rs.getString(&quot;account_type&quot;);</span>
+<span class="fc" id="L212">            String accountHolderName = rs.getString(&quot;account_holder_name&quot;);</span>
+<span class="fc" id="L213">            double balance = rs.getDouble(&quot;balance&quot;);</span>
+            Account account;
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">            if (&quot;Savings&quot;.equalsIgnoreCase(accountType)) {</span>
+<span class="fc" id="L216">                double interestRate = rs.getDouble(&quot;interest_rate&quot;);</span>
+<span class="fc" id="L217">                account = new SavingsAccount(customerId, accountHolderName, balance, interestRate , accountNumber , rs.getBoolean(&quot;activated&quot;));</span>
+<span class="pc bnc" id="L218" title="All 2 branches missed.">            } else if (&quot;Checking&quot;.equalsIgnoreCase(accountType)) {</span>
+<span class="nc" id="L219">                double overdraftLimit = rs.getDouble(&quot;overdraft_limit&quot;);</span>
+<span class="nc" id="L220">                account = new CheckingAccount(customerId, accountHolderName, balance, overdraftLimit , accountNumber , rs.getBoolean(&quot;activated&quot;));</span>
+<span class="nc" id="L221">            } else {</span>
+<span class="nc" id="L222">                return null;</span>
+            }
+            // Cache the account for future use
+<span class="fc" id="L225">            accountCache.put(accountNumber, account);</span>
+<span class="fc" id="L226">            return account;</span>
+        }
+<span class="pc bpc" id="L228" title="3 of 4 branches missed.">    } catch (SQLException e) {</span>
+<span class="nc" id="L229">        System.err.println(&quot;Error retrieving account: &quot; + e.getMessage());</span>
+<span class="nc" id="L230">    }</span>
+<span class="nc" id="L231">    return null;</span>
+}
+
+    public void updateAccountBalance(Account account) throws SQLException {
+<span class="fc" id="L235">        String sql = &quot;UPDATE accounts SET balance = ? WHERE account_number = ?&quot;;</span>
+<span class="fc" id="L236">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L237">            pstmt.setDouble(1, account.getBalance());</span>
+<span class="fc" id="L238">            pstmt.setString(2, account.getAccountNumber());</span>
+<span class="fc" id="L239">            pstmt.executeUpdate();</span>
+        }
+<span class="fc" id="L241">    }</span>
+
+    public void close() {
+        try {
+<span class="nc bnc" id="L245" title="All 4 branches missed.">            if (connection != null &amp;&amp; !connection.isClosed()) {</span>
+<span class="nc" id="L246">                connection.close();</span>
+            }
+<span class="nc" id="L248">        } catch (SQLException e) {</span>
+<span class="nc" id="L249">            System.err.println(&quot;Error closing connection: &quot; + e.getMessage());</span>
+<span class="nc" id="L250">        }</span>
+<span class="nc" id="L251">    }</span>
+
+    public List&lt;Account&gt; getAccountsByCustomerId(String customerId) {
+<span class="nc" id="L254">        String sql = &quot;SELECT * FROM accounts WHERE customer_id = ?&quot;;</span>
+<span class="nc" id="L255">        List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L256">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L257">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L258">            pstmt.setString(1, customerId);</span>
+<span class="nc" id="L259">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L261">                String accountType = rs.getString(&quot;account_type&quot;);</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">                if (&quot;Savings&quot;.equalsIgnoreCase(accountType)) {</span>
+<span class="nc" id="L263">                    accounts.add(new SavingsAccount(</span>
+<span class="nc" id="L264">                        rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L265">                        rs.getString(&quot;account_holder_name&quot;),</span>
+<span class="nc" id="L266">                        rs.getDouble(&quot;balance&quot;),</span>
+<span class="nc" id="L267">                        rs.getDouble(&quot;interest_rate&quot;),</span>
+<span class="nc" id="L268">                        rs.getString(&quot;account_number&quot;),</span>
+<span class="nc" id="L269">                        rs.getBoolean(&quot;activated&quot;)</span>
+                    ));
+<span class="nc bnc" id="L271" title="All 2 branches missed.">                } else if (&quot;Checking&quot;.equalsIgnoreCase(accountType)) {</span>
+<span class="nc" id="L272">                    accounts.add(new CheckingAccount(</span>
+<span class="nc" id="L273">                        rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L274">                        rs.getString(&quot;account_holder_name&quot;),</span>
+<span class="nc" id="L275">                        rs.getDouble(&quot;balance&quot;),</span>
+<span class="nc" id="L276">                        rs.getDouble(&quot;overdraft_limit&quot;),</span>
+<span class="nc" id="L277">                        rs.getString(&quot;account_number&quot;) ,</span>
+<span class="nc" id="L278">                        rs.getBoolean(&quot;activated&quot;)</span>
+                    ));
+                }
+<span class="nc" id="L281">            }</span>
+<span class="nc" id="L282">        } catch (SQLException e) {</span>
+<span class="nc" id="L283">            e.printStackTrace();</span>
+<span class="nc" id="L284">        }</span>
+<span class="nc" id="L285">        return accounts;</span>
+    }
+
+    public List&lt;Account&gt; getAllAccounts() {
+<span class="fc" id="L289">        String sql = &quot;SELECT * FROM accounts&quot;;</span>
+<span class="fc" id="L290">        List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L291">        try (PreparedStatement pstmt = connection.prepareStatement(sql);</span>
+<span class="fc" id="L292">             ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L293" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L294">                String accountType = rs.getString(&quot;account_type&quot;);</span>
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">                if (&quot;Savings&quot;.equalsIgnoreCase(accountType)) {</span>
+<span class="nc" id="L296">                    accounts.add(new SavingsAccount(</span>
+<span class="nc" id="L297">                        rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L298">                        rs.getString(&quot;account_holder_name&quot;),</span>
+<span class="nc" id="L299">                        rs.getDouble(&quot;balance&quot;),</span>
+<span class="nc" id="L300">                        rs.getDouble(&quot;interest_rate&quot;),</span>
+<span class="nc" id="L301">                        rs.getString(&quot;account_number&quot;),</span>
+<span class="nc" id="L302">                        rs.getBoolean(&quot;activated&quot;)</span>
+                    ));
+<span class="pc bpc" id="L304" title="1 of 2 branches missed.">                } else if (&quot;Checking&quot;.equalsIgnoreCase(accountType)) {</span>
+<span class="fc" id="L305">                    accounts.add(new CheckingAccount(</span>
+<span class="fc" id="L306">                        rs.getString(&quot;customer_id&quot;),</span>
+<span class="fc" id="L307">                        rs.getString(&quot;account_holder_name&quot;),</span>
+<span class="fc" id="L308">                        rs.getDouble(&quot;balance&quot;),</span>
+<span class="fc" id="L309">                        rs.getDouble(&quot;overdraft_limit&quot;),</span>
+<span class="fc" id="L310">                        rs.getString(&quot;account_number&quot;),</span>
+<span class="fc" id="L311">                        rs.getBoolean(&quot;activated&quot;)</span>
+                    ));
+                }
+<span class="fc" id="L314">            }</span>
+<span class="nc" id="L315">        } catch (SQLException e) {</span>
+<span class="nc" id="L316">            e.printStackTrace();</span>
+<span class="fc" id="L317">        }</span>
+<span class="fc" id="L318">        return accounts;</span>
+    }
+
+
+    public boolean updateAccountActivation(String accountNumber, boolean activated) {
+<span class="nc" id="L323">        String query = &quot;UPDATE accounts SET activated = ? WHERE account_number = ?&quot;;</span>
+<span class="nc" id="L324">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L325">             PreparedStatement stmt = conn.prepareStatement(query)) {</span>
+    
+<span class="nc" id="L327">            stmt.setBoolean(1, activated);</span>
+<span class="nc" id="L328">            stmt.setString(2, accountNumber);</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            return stmt.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L330">        } catch (SQLException e) {</span>
+<span class="nc" id="L331">            e.printStackTrace();</span>
+<span class="nc" id="L332">            return false;</span>
+        }
+    }
+
+
+    public boolean isAccountOwnedByCustomer(String accountNumber, String customerId) {
+<span class="nc" id="L338">        String sql = &quot;SELECT COUNT(*) FROM accounts WHERE account_number = ? AND customer_id = ?&quot;;</span>
+<span class="nc" id="L339">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L340">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L341">            pstmt.setString(1, accountNumber);</span>
+<span class="nc" id="L342">            pstmt.setString(2, customerId);</span>
+<span class="nc" id="L343">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc bnc" id="L345" title="All 2 branches missed.">                return rs.getInt(1) &gt; 0; // Return true if the count is greater than 0</span>
+            }
+<span class="nc bnc" id="L347" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L348">            e.printStackTrace();</span>
+<span class="nc" id="L349">        }</span>
+<span class="nc" id="L350">        return false; // Return false if an error occurs or the account does not belong to the customer</span>
+    }
+
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

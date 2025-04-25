@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReviewLoanRequestsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.ui</a> &gt; <span class="el_source">ReviewLoanRequestsController.java</span></div><h1>ReviewLoanRequestsController.java</h1><pre class="source lang-java linenums">package ak.ui;
+
+import ak.App;
+import ak.accounts.AccountManager;
+import ak.loans.LoanRequestManager;
+import ak.transactions.Transaction;
+import ak.transactions.TransactionManager;
+import ak.loans.Loan;
+import ak.loans.LoanDetails;
+import ak.loans.LoanManager;
+import ak.loans.LoanRequest;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+
+import java.io.IOException;
+import java.util.Optional;
+
+public class ReviewLoanRequestsController {
+
+    @FXML
+    private TableView&lt;LoanRequest&gt; loanRequestsTable;
+
+    @FXML
+    private TableColumn&lt;LoanRequest, String&gt; requestIdColumn;
+
+    @FXML
+    private TableColumn&lt;LoanRequest, String&gt; accountNumberColumn;
+
+    @FXML
+    private TableColumn&lt;LoanRequest, Double&gt; loanAmountColumn;
+
+    @FXML
+    private TableColumn&lt;LoanRequest, String&gt; loanReasonColumn;
+
+    @FXML
+    private TableColumn&lt;LoanRequest, String&gt; statusColumn;
+
+    private LoanManager loanManager;
+    private LoanRequestManager loanRequestManager;
+    private AccountManager accountManager;
+    
+
+<span class="nc" id="L54">    public ReviewLoanRequestsController() {</span>
+<span class="nc" id="L55">        this.loanRequestManager = new LoanRequestManager();</span>
+<span class="nc" id="L56">        this.loanManager = new LoanManager();</span>
+<span class="nc" id="L57">        this.accountManager = new AccountManager();</span>
+<span class="nc" id="L58">    }</span>
+
+    @FXML
+    public void initialize() {
+<span class="nc" id="L62">        requestIdColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;requestId&quot;));</span>
+<span class="nc" id="L63">        accountNumberColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;accountNumber&quot;));</span>
+<span class="nc" id="L64">        loanAmountColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;loanAmount&quot;));</span>
+<span class="nc" id="L65">        loanReasonColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;loanReason&quot;));</span>
+<span class="nc" id="L66">        statusColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;status&quot;));</span>
+
+<span class="nc" id="L68">        loadLoanRequests();</span>
+<span class="nc" id="L69">    }</span>
+
+    private void loadLoanRequests() {
+<span class="nc" id="L72">        ObservableList&lt;LoanRequest&gt; loanRequests = FXCollections.observableArrayList(loanRequestManager.getAllLoanRequests());</span>
+<span class="nc" id="L73">        loanRequestsTable.setItems(loanRequests);</span>
+<span class="nc" id="L74">    }</span>
+
+    @FXML
+    private void handleAcceptRequest() {
+<span class="nc" id="L78">        LoanRequest selectedRequest = loanRequestsTable.getSelectionModel().getSelectedItem();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (selectedRequest == null) {</span>
+<span class="nc" id="L80">            showAlert(&quot;Error&quot;, &quot;No loan request selected.&quot;);</span>
+<span class="nc" id="L81">            return;</span>
+        }
+
+        // Check if the request is already accepted or rejected
+<span class="nc bnc" id="L85" title="All 4 branches missed.">        if (&quot;Accepted&quot;.equalsIgnoreCase(selectedRequest.getStatus()) || &quot;Rejected&quot;.equalsIgnoreCase(selectedRequest.getStatus())) {</span>
+<span class="nc" id="L86">            showAlert(&quot;Error&quot;, &quot;This loan request has already been processed.&quot;);</span>
+<span class="nc" id="L87">            return;</span>
+        }
+
+        // Check if the account is activated
+<span class="nc" id="L91">        String accountNumber = selectedRequest.getAccountNumber();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (!accountManager.getAccountByNumber(accountNumber).isActivated()) {</span>
+<span class="nc" id="L93">            showAlert(&quot;Error&quot;, &quot;The account associated with this loan request is not activated. Loan requests can only be accepted for activated accounts.&quot;);</span>
+<span class="nc" id="L94">            return;</span>
+        }
+
+<span class="nc" id="L97">        Optional&lt;ButtonType&gt; result = showConfirmation(&quot;Accept Loan Request&quot;, &quot;Are you sure you want to accept this loan request?&quot;);</span>
+<span class="nc bnc" id="L98" title="All 4 branches missed.">        if (result.isPresent() &amp;&amp; result.get() == ButtonType.OK) {</span>
+            // Show a dialog to get loan duration and interest rate
+<span class="nc" id="L100">            LoanDetails loanDetails = showLoanDetailsDialog();</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">            if (loanDetails == null) {</span>
+<span class="nc" id="L102">                showAlert(&quot;Error&quot;, &quot;Loan creation canceled.&quot;);</span>
+<span class="nc" id="L103">                return;</span>
+            }
+
+<span class="nc" id="L106">            boolean success = loanRequestManager.updateLoanRequestStatus(selectedRequest.getRequestId(), &quot;Accepted&quot;);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            if (success) {</span>
+                // Create a loan and deposit the money into the account
+<span class="nc" id="L109">                TransactionManager transactionManager = new TransactionManager(accountManager);</span>
+<span class="nc" id="L110">                String custID = accountManager.getAccountByNumber(accountNumber).getCustomerId();</span>
+<span class="nc" id="L111">                Loan loanCreated = loanManager.createLoan(custID, accountNumber, selectedRequest.getLoanAmount(), loanDetails.getInterestRate(), loanDetails.getDurationInMonths());</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">                if (loanCreated != null) {</span>
+                    // Deposit the loan amount into the account
+<span class="nc" id="L114">                    Transaction transaction = transactionManager.createTransaction(selectedRequest.getLoanAmount(), &quot;Deposit&quot;, null, selectedRequest.getAccountNumber());</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                    if (transaction != null) {</span>
+                        // Update the account balance
+<span class="nc" id="L117">                        showAlert(&quot;Success&quot;, &quot;Loan request accepted and loan created. Amount deposited into the account.&quot;);</span>
+                    } else {
+<span class="nc" id="L119">                        showAlert(&quot;Error&quot;, &quot;Failed to deposit money into the account.&quot;);</span>
+                    }
+<span class="nc" id="L121">                } else {</span>
+<span class="nc" id="L122">                    showAlert(&quot;Error&quot;, &quot;Failed to create loan or deposit money into the account.&quot;);</span>
+                }
+<span class="nc" id="L124">                loadLoanRequests();</span>
+<span class="nc" id="L125">            } else {</span>
+<span class="nc" id="L126">                showAlert(&quot;Error&quot;, &quot;Failed to accept loan request.&quot;);</span>
+            }
+        }
+<span class="nc" id="L129">    }</span>
+
+    private LoanDetails showLoanDetailsDialog() {
+        // Create a custom dialog for loan details
+<span class="nc" id="L133">        Dialog&lt;LoanDetails&gt; dialog = new Dialog&lt;&gt;();</span>
+<span class="nc" id="L134">        dialog.setTitle(&quot;Loan Details&quot;);</span>
+<span class="nc" id="L135">        dialog.setHeaderText(&quot;Enter the loan duration and interest rate&quot;);</span>
+    
+        // Set the button types
+<span class="nc" id="L138">        ButtonType confirmButtonType = new ButtonType(&quot;Confirm&quot;, ButtonBar.ButtonData.OK_DONE);</span>
+<span class="nc" id="L139">        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);</span>
+    
+        // Create the input fields
+<span class="nc" id="L142">        TextField durationField = new TextField();</span>
+<span class="nc" id="L143">        durationField.setPromptText(&quot;Duration (Months)&quot;);</span>
+    
+<span class="nc" id="L145">        TextField interestRateField = new TextField();</span>
+<span class="nc" id="L146">        interestRateField.setPromptText(&quot;Interest Rate (%)&quot;);</span>
+    
+        // Add the fields to a grid pane
+<span class="nc" id="L149">        GridPane grid = new GridPane();</span>
+<span class="nc" id="L150">        grid.setHgap(10);</span>
+<span class="nc" id="L151">        grid.setVgap(10);</span>
+<span class="nc" id="L152">        grid.add(new Label(&quot;Duration (Months):&quot;), 0, 0);</span>
+<span class="nc" id="L153">        grid.add(durationField, 1, 0);</span>
+<span class="nc" id="L154">        grid.add(new Label(&quot;Interest Rate (%):&quot;), 0, 1);</span>
+<span class="nc" id="L155">        grid.add(interestRateField, 1, 1);</span>
+    
+<span class="nc" id="L157">        dialog.getDialogPane().setContent(grid);</span>
+    
+        // Convert the result to a LoanDetails object when the confirm button is clicked
+<span class="nc" id="L160">        dialog.setResultConverter(dialogButton -&gt; {</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (dialogButton == confirmButtonType) {</span>
+                try {
+<span class="nc" id="L163">                    int duration = Integer.parseInt(durationField.getText());</span>
+<span class="nc" id="L164">                    double interestRate = Double.parseDouble(interestRateField.getText());</span>
+    
+                    // Validate duration and interest rate
+<span class="nc bnc" id="L167" title="All 2 branches missed.">                    if (duration &lt;= 0) {</span>
+<span class="nc" id="L168">                        showAlert(&quot;Error&quot;, &quot;Duration must be a positive number.&quot;);</span>
+<span class="nc" id="L169">                        return null;</span>
+                    }
+<span class="nc bnc" id="L171" title="All 2 branches missed.">                    if (interestRate &lt;= 0) {</span>
+<span class="nc" id="L172">                        showAlert(&quot;Error&quot;, &quot;Interest rate must be a positive number.&quot;);</span>
+<span class="nc" id="L173">                        return null;</span>
+                    }
+    
+<span class="nc" id="L176">                    return new LoanDetails(duration, interestRate);</span>
+<span class="nc" id="L177">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L178">                    showAlert(&quot;Error&quot;, &quot;Invalid input. Please enter valid numbers for duration and interest rate.&quot;);</span>
+<span class="nc" id="L179">                    return null;</span>
+                }
+            }
+<span class="nc" id="L182">            return null;</span>
+        });
+    
+<span class="nc" id="L185">        Optional&lt;LoanDetails&gt; result = dialog.showAndWait();</span>
+<span class="nc" id="L186">        return result.orElse(null);</span>
+    }
+
+    
+    @FXML
+    private void handleRejectRequest() {
+<span class="nc" id="L192">        LoanRequest selectedRequest = loanRequestsTable.getSelectionModel().getSelectedItem();</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (selectedRequest == null) {</span>
+<span class="nc" id="L194">            showAlert(&quot;Error&quot;, &quot;No loan request selected.&quot;);</span>
+<span class="nc" id="L195">            return;</span>
+        }
+
+        // Check if the request is already accepted or rejected
+<span class="nc bnc" id="L199" title="All 4 branches missed.">        if (&quot;Accepted&quot;.equalsIgnoreCase(selectedRequest.getStatus()) || &quot;Rejected&quot;.equalsIgnoreCase(selectedRequest.getStatus())) {</span>
+<span class="nc" id="L200">            showAlert(&quot;Error&quot;, &quot;This loan request has already been processed.&quot;);</span>
+<span class="nc" id="L201">            return;</span>
+        }
+
+<span class="nc" id="L204">        Optional&lt;ButtonType&gt; result = showConfirmation(&quot;Reject Loan Request&quot;, &quot;Are you sure you want to reject this loan request?&quot;);</span>
+<span class="nc bnc" id="L205" title="All 4 branches missed.">        if (result.isPresent() &amp;&amp; result.get() == ButtonType.OK) {</span>
+<span class="nc" id="L206">            boolean success = loanRequestManager.updateLoanRequestStatus(selectedRequest.getRequestId(), &quot;Rejected&quot;);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if (success) {</span>
+<span class="nc" id="L208">                showAlert(&quot;Success&quot;, &quot;Loan request rejected.&quot;);</span>
+<span class="nc" id="L209">                loadLoanRequests();</span>
+            } else {
+<span class="nc" id="L211">                showAlert(&quot;Error&quot;, &quot;Failed to reject loan request.&quot;);</span>
+            }
+        }
+<span class="nc" id="L214">    }</span>
+
+    @FXML
+    private void handleBackToAdmin() {
+        try {
+<span class="nc" id="L219">            App.setRoot(&quot;admin&quot;);</span>
+<span class="nc" id="L220">        } catch (IOException e) {</span>
+<span class="nc" id="L221">            e.printStackTrace();</span>
+<span class="nc" id="L222">        }</span>
+<span class="nc" id="L223">    }</span>
+
+    private void showAlert(String title, String message) {
+<span class="nc" id="L226">        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L227">        alert.setTitle(title);</span>
+<span class="nc" id="L228">        alert.setHeaderText(null);</span>
+<span class="nc" id="L229">        alert.setContentText(message);</span>
+<span class="nc" id="L230">        alert.showAndWait();</span>
+<span class="nc" id="L231">    }</span>
+
+    private Optional&lt;ButtonType&gt; showConfirmation(String title, String message) {
+<span class="nc" id="L234">        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);</span>
+<span class="nc" id="L235">        alert.setTitle(title);</span>
+<span class="nc" id="L236">        alert.setHeaderText(null);</span>
+<span class="nc" id="L237">        alert.setContentText(message);</span>
+<span class="nc" id="L238">        return alert.showAndWait();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

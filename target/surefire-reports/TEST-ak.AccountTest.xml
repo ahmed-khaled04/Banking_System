@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ak.AccountTest" time="0.053" tests="9" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ak.AccountTest" time="0.137" tests="9" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
-    <property name="sun.java.command" value="C:\Users\Rabbit\AppData\Local\Temp\surefire11691685144595238579\surefirebooter-20250425164922877_3.jar C:\Users\Rabbit\AppData\Local\Temp\surefire11691685144595238579 2025-04-25T16-49-22_790-jvmRun1 surefire-20250425164922877_1tmp surefire_0-20250425164922877_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982\surefirebooter-20250426003614876_3.jar C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982 2025-04-26T00-36-14_687-jvmRun1 surefire-20250426003614876_1tmp surefire_0-20250426003614876_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\target\test-classes;D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\target\classes;C:\Users\Rabbit\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\Rabbit\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-suite-api\1.9.3\junit-platform-suite-api-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.3\junit-jupiter-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-controls\13\javafx-controls-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-controls\13\javafx-controls-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-graphics\13\javafx-graphics-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-graphics\13\javafx-graphics-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-base\13\javafx-base-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-base\13\javafx-base-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-fxml\13\javafx-fxml-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-fxml\13\javafx-fxml-13-win.jar;C:\Users\Rabbit\.m2\repository\org\postgresql\postgresql\42.7.2\postgresql-42.7.2.jar;C:\Users\Rabbit\.m2\repository\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Rabbit\AppData\Local\Temp\surefire11691685144595238579\surefirebooter-20250425164922877_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982\surefirebooter-20250426003614876_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.2+13-LTS-58"/>
@@ -58,16 +58,16 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testWithdrawValidAmount" classname="ak.AccountTest" time="0.023"/>
-  <testcase name="testAccountCreation" classname="ak.AccountTest" time="0.001"/>
-  <testcase name="testAccountNumberFormat" classname="ak.AccountTest" time="0.001"/>
+  <testcase name="testWithdrawValidAmount" classname="ak.AccountTest" time="0.068"/>
+  <testcase name="testAccountCreation" classname="ak.AccountTest" time="0.003"/>
+  <testcase name="testAccountNumberFormat" classname="ak.AccountTest" time="0.003"/>
   <testcase name="testGetBalance" classname="ak.AccountTest" time="0.001"/>
-  <testcase name="testDepositNegativeAmount" classname="ak.AccountTest" time="0.001"/>
-  <testcase name="testDepositPositiveAmount" classname="ak.AccountTest" time="0.006">
-    <system-out><![CDATA[Deposited $500.0 to ACC-046518
+  <testcase name="testDepositNegativeAmount" classname="ak.AccountTest" time="0.004"/>
+  <testcase name="testDepositPositiveAmount" classname="ak.AccountTest" time="0.014">
+    <system-out><![CDATA[Deposited $500.0 to ACC-336066
 ]]></system-out>
   </testcase>
-  <testcase name="testWithdrawNegativeAmount" classname="ak.AccountTest" time="0.0"/>
-  <testcase name="testWithdrawAmountGreaterThanBalance" classname="ak.AccountTest" time="0.0"/>
-  <testcase name="testAccountCreationWithNegativeBalance" classname="ak.AccountTest" time="0.001"/>
+  <testcase name="testWithdrawNegativeAmount" classname="ak.AccountTest" time="0.001"/>
+  <testcase name="testWithdrawAmountGreaterThanBalance" classname="ak.AccountTest" time="0.002"/>
+  <testcase name="testAccountCreationWithNegativeBalance" classname="ak.AccountTest" time="0.002"/>
 </testsuite>

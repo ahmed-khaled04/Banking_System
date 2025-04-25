@@ -28,6 +28,9 @@ public class Transaction {
                 throw new IllegalArgumentException("Both accounts must be specified for transfer transactions");
             }
         }
+        if(!type.equalsIgnoreCase("transfer") && !type.equalsIgnoreCase("withdraw")&& !type.equalsIgnoreCase("deposit")){
+            throw new IllegalArgumentException("Transaction Type Incorrect");
+        }
         
         this.amount = amount;
         this.type = type;
@@ -40,7 +43,7 @@ public class Transaction {
         return "TXN-" + UUID.randomUUID().toString().substring(0, 8);
     }
 
-    private String generateTimestamp() {
+    public String generateTimestamp() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return dtf.format(LocalDateTime.now());
     }

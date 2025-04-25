@@ -27,6 +27,9 @@ public class CheckingAccount extends Account {
 
     @Override
     public void withdraw(double amount) {
+        if(!activated){
+            throw new IllegalStateException("Account Is Inactive");
+        }
         if(amount <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive.");
         }

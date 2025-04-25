@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionHistoryController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.ui</a> &gt; <span class="el_source">TransactionHistoryController.java</span></div><h1>TransactionHistoryController.java</h1><pre class="source lang-java linenums">package ak.ui;
+
+import java.io.IOException;
+
+import ak.App;
+import ak.accounts.AccountManager;
+import ak.transactions.Transaction;
+import ak.transactions.TransactionManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+public class TransactionHistoryController {
+
+    @FXML
+    private TableView&lt;Transaction&gt; transactionTable;
+
+    @FXML
+    private TableColumn&lt;Transaction, String&gt; dateColumn;
+
+    @FXML
+    private TableColumn&lt;Transaction, String&gt; typeColumn;
+
+    @FXML
+    private TableColumn&lt;Transaction, Double&gt; amountColumn;
+
+    private TransactionManager transactionManager;
+    private AccountManager accountManager;
+    private String currentAccountNumber;
+
+<span class="nc" id="L34">    public TransactionHistoryController() {</span>
+<span class="nc" id="L35">        this.accountManager = new AccountManager();</span>
+<span class="nc" id="L36">        this.transactionManager = new TransactionManager(accountManager);</span>
+<span class="nc" id="L37">    }</span>
+
+    @FXML
+    public void initialize() {
+        // Initialize table columns
+<span class="nc" id="L42">        dateColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;date&quot;));</span>
+<span class="nc" id="L43">        typeColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;type&quot;));</span>
+<span class="nc" id="L44">        amountColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;amount&quot;));</span>
+<span class="nc" id="L45">    }</span>
+
+    public void loadTransactionsForAccount(String accountNumber) {
+<span class="nc" id="L48">        currentAccountNumber = accountNumber;</span>
+<span class="nc" id="L49">        ObservableList&lt;Transaction&gt; transactions = FXCollections.observableArrayList(</span>
+<span class="nc" id="L50">            transactionManager.getTransactionsByAccount(accountNumber)</span>
+        );
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (transactions.isEmpty()) {</span>
+<span class="nc" id="L54">            System.out.println(&quot;No transactions found for account: &quot; + accountNumber);</span>
+        }
+
+<span class="nc" id="L57">        transactionTable.setItems(transactions);</span>
+<span class="nc" id="L58">    }</span>
+
+    @FXML
+    private void handleBackToAccount() {
+        try {
+<span class="nc" id="L63">            App.setRoot(&quot;account&quot;); // Navigate back to the account view</span>
+<span class="nc" id="L64">            AccountController controller = App.getController();</span>
+<span class="nc" id="L65">            controller.loadAccountDetails(accountManager.getAccountByNumber(currentAccountNumber));</span>
+<span class="nc" id="L66">        } catch (IOException e) {</span>
+<span class="nc" id="L67">            e.printStackTrace();</span>
+<span class="nc" id="L68">            showAlert(&quot;Error&quot;, &quot;Failed to navigate back to the account view.&quot;);</span>
+<span class="nc" id="L69">        }</span>
+<span class="nc" id="L70">    }</span>
+
+    private void showAlert(String title, String message) {
+<span class="nc" id="L73">        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);</span>
+<span class="nc" id="L74">        alert.setTitle(title);</span>
+<span class="nc" id="L75">        alert.setHeaderText(null);</span>
+<span class="nc" id="L76">        alert.setContentText(message);</span>
+<span class="nc" id="L77">        alert.showAndWait();</span>
+<span class="nc" id="L78">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -42,6 +42,9 @@ public abstract class Account {
     public abstract void withdraw(double amount);
 
     public void deposit(double amount) {
+        if(!activated){
+            throw new IllegalStateException("Account is Deactivated");
+        }
         if (amount > 0) {
             balance += amount;
             System.out.println("Deposited $" + amount + " to " + accountNumber);

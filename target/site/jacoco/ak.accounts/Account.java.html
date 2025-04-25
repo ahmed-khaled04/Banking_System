@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Account.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.accounts</a> &gt; <span class="el_source">Account.java</span></div><h1>Account.java</h1><pre class="source lang-java linenums">package ak.accounts;
+
+import ak.transactions.Transaction;
+
+public abstract class Account {
+    protected String accountNumber;
+    protected String accountHolderName;
+    protected double balance;
+    protected boolean activated;
+    protected String customerId; // New field for customer ID
+<span class="fc" id="L11">    static int accountID = 1;</span>
+
+<span class="fc" id="L13">    public Account(String customerId, String accountHolderName, double initialBalance, String accountNumber , boolean activated) {</span>
+<span class="fc" id="L14">        this.activated = activated;</span>
+<span class="fc" id="L15">        this.customerId = customerId;</span>
+<span class="fc" id="L16">        this.accountHolderName = accountHolderName;</span>
+<span class="pc bpc" id="L17" title="2 of 4 branches missed.">        if (accountNumber != null &amp;&amp; !accountNumber.isEmpty()) {</span>
+<span class="fc" id="L18">            this.accountNumber = accountNumber;</span>
+        } else {
+<span class="nc" id="L20">            this.accountNumber = generateAccountNumber();</span>
+        }             
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if(balance &lt; 0) {</span>
+<span class="nc" id="L23">            throw new IllegalArgumentException(&quot;Initial balance cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L25">        this.balance = initialBalance;</span>
+<span class="fc" id="L26">    }</span>
+<span class="fc" id="L27">    public Account(String customerId, String accountHolderName, double initialBalance , boolean activated) {</span>
+<span class="fc" id="L28">        this.activated = activated;</span>
+<span class="fc" id="L29">        this.customerId = customerId;</span>
+<span class="fc" id="L30">        this.accountHolderName = accountHolderName;            </span>
+<span class="fc" id="L31">        this.accountNumber = generateAccountNumber();</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if(balance &lt; 0) {</span>
+<span class="nc" id="L33">            throw new IllegalArgumentException(&quot;Initial balance cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L35">        this.balance = initialBalance;</span>
+<span class="fc" id="L36">    }</span>
+
+    protected String generateAccountNumber() {
+<span class="fc" id="L39">        return &quot;ACC-&quot; + String.format(&quot;%06d&quot;, (int) (Math.random() * 1000000));</span>
+    }
+
+    public abstract void withdraw(double amount);
+
+    public void deposit(double amount) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if(!activated){</span>
+<span class="fc" id="L46">            throw new IllegalStateException(&quot;Account is Deactivated&quot;);</span>
+        }
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (amount &gt; 0) {</span>
+<span class="fc" id="L49">            balance += amount;</span>
+<span class="fc" id="L50">            System.out.println(&quot;Deposited $&quot; + amount + &quot; to &quot; + accountNumber);</span>
+        }
+        else {
+<span class="fc" id="L53">            throw new IllegalArgumentException(&quot;Deposit amount must be positive.&quot;);</span>
+        }
+<span class="fc" id="L55">    }</span>
+
+    public double getBalance() {
+<span class="fc" id="L58">        return balance;</span>
+    }
+
+    public String getAccountNumber() {
+<span class="fc" id="L62">        return accountNumber;</span>
+    }
+
+    public String getAccountHolderName() {
+<span class="fc" id="L66">        return accountHolderName;</span>
+    }
+
+    public String getCustomerId() {
+<span class="fc" id="L70">        return customerId;</span>
+    }
+
+    public String getAccountType() {
+<span class="nc" id="L74">        return this.getClass().getSimpleName();</span>
+    }
+
+     // Getter and Setter for activated
+     public boolean isActivated() {
+<span class="fc" id="L79">        return activated;</span>
+    }
+
+    public void setActivated(boolean activated) {
+<span class="fc" id="L83">        this.activated = activated;</span>
+<span class="fc" id="L84">    }</span>
+
+    public void displayAccountInfo() {
+<span class="nc" id="L87">        System.out.println(&quot;Account Number: &quot; + accountNumber);</span>
+<span class="nc" id="L88">        System.out.println(&quot;Account Holder Name: &quot; + accountHolderName);</span>
+<span class="nc" id="L89">        System.out.println(&quot;Customer ID: &quot; + customerId);</span>
+<span class="nc" id="L90">        System.out.println(&quot;Current Balance: $&quot; + String.format(&quot;%.2f&quot;, balance));</span>
+<span class="nc" id="L91">    }</span>
+
+    public void processTransaction(Transaction t) {
+<span class="pc bpc" id="L94" title="2 of 4 branches missed.">        if (t.getToAccount() != null &amp;&amp; t.getToAccount().equals(this.accountNumber)) {</span>
+<span class="nc" id="L95">            this.deposit(t.getAmount());</span>
+<span class="pc bpc" id="L96" title="2 of 4 branches missed.">        } else if (t.getFromAccount() != null &amp;&amp; t.getFromAccount().equals(this.accountNumber)) {</span>
+<span class="nc" id="L97">            this.withdraw(t.getAmount());</span>
+        }
+<span class="fc" id="L99">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -3,6 +3,7 @@ package ak;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+
 @Suite
 @SelectClasses({
     AccountTest.class,
@@ -10,6 +11,7 @@ import org.junit.platform.suite.api.Suite;
     TransactionTest.class,
     TransactionManagerTest.class,
     LoanTest.class,
+    LoanManagerTest.class,
     LoanDetailsTest.class, // Added LoanDetailsTest
     LoanRequestTest.class, // Added LoanRequestTest
     LoanRequestManagerTest.class, // Added LoanRequestManagerTest

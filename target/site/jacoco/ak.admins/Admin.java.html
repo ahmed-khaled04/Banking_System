@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Admin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.admins</a> &gt; <span class="el_source">Admin.java</span></div><h1>Admin.java</h1><pre class="source lang-java linenums">package ak.admins;
+
+import ak.customer.Customer;
+import ak.customer.CustomerManager;
+import ak.accounts.Account;
+import ak.accounts.AccountManager;
+
+import java.util.List;
+
+public class Admin {
+    private String adminId;
+    private String name;
+    private String username;
+    private String passwordHash;
+
+    private CustomerManager customerManager;
+    private AccountManager accountManager;
+
+<span class="fc" id="L19">    public Admin(String adminId, String name, String username, String passwordHash) {</span>
+<span class="fc" id="L20">        this.adminId = adminId;</span>
+<span class="fc" id="L21">        this.name = name;</span>
+<span class="fc" id="L22">        this.username = username;</span>
+<span class="fc" id="L23">        this.passwordHash = passwordHash;</span>
+<span class="fc" id="L24">        this.customerManager = new CustomerManager();</span>
+<span class="fc" id="L25">        this.accountManager = new AccountManager();</span>
+<span class="fc" id="L26">    }</span>
+
+    // Getters
+    public String getAdminId() {
+<span class="fc" id="L30">        return adminId;</span>
+    }
+
+    public String getName() {
+<span class="fc" id="L34">        return name;</span>
+    }
+
+    public String getUsername() {
+<span class="fc" id="L38">        return username;</span>
+    }
+
+    public String getPasswordHash() {
+<span class="fc" id="L42">        return passwordHash;</span>
+    }
+
+    //Setters fot testing purposes
+    public void setCustomerManager(CustomerManager customerManager) {
+<span class="fc" id="L47">        this.customerManager = customerManager;</span>
+<span class="fc" id="L48">    }</span>
+
+    public void setAccountManager(AccountManager accountManager) {
+<span class="fc" id="L51">        this.accountManager = accountManager;</span>
+<span class="fc" id="L52">    }</span>
+
+
+    // Admin functionality
+    public List&lt;Customer&gt; getAllCustomers() {
+<span class="fc" id="L57">        return customerManager.getAllCustomers();</span>
+    }
+
+    public List&lt;Account&gt; getAllAccounts() {
+<span class="fc" id="L61">        return accountManager.getAllAccounts();</span>
+    }
+
+    public boolean deleteCustomer(String customerId) {
+<span class="fc" id="L65">        return customerManager.removeCustomer(customerId);</span>
+    }
+
+    public boolean deleteAccount(String accountNumber) {
+<span class="fc" id="L69">        return accountManager.deleteAccount(accountNumber);</span>
+    }
+
+    public Customer addCustomer(String name, String email, String phoneNumber, String username, String passwordHash) {
+<span class="fc" id="L73">        return customerManager.addCustomer(name, email, phoneNumber, username, passwordHash);</span>
+    }
+
+    public Account addSavingsAccount(String customerId, String holderName, double initialDeposit, double interestRate){
+<span class="fc" id="L77">        return accountManager.createSavingsAccount(customerId, holderName, initialDeposit, interestRate);</span>
+    }
+    public Account addCheckingAccount(String customerId, String holderName, double initialDeposit, double overdraft_limit){
+<span class="fc" id="L80">        return accountManager.createCheckingAccount(customerId, holderName, initialDeposit, overdraft_limit);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

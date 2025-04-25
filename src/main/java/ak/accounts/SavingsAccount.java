@@ -27,6 +27,9 @@ public class SavingsAccount extends Account {
 
     @Override
     public void withdraw(double amount) {
+        if(!activated){
+            throw new IllegalStateException("Account Is Inactive");
+        }
         if(amount <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive.");
         }
@@ -38,8 +41,14 @@ public class SavingsAccount extends Account {
     }
 
     public void addInterest() {
-        double interest = getBalance() * (interestRate / 100);
-        deposit(interest);
+        if(activated){
+            
+            double interest = getBalance() * (interestRate / 100);
+            deposit(interest);
+        }
+        else{
+            throw new IllegalStateException("Account is Deactivated");
+        }
     }
 
     public double getInterestRate() {

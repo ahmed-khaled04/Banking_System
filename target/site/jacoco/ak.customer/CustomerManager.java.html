@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.customer</a> &gt; <span class="el_source">CustomerManager.java</span></div><h1>CustomerManager.java</h1><pre class="source lang-java linenums">package ak.customer;
+
+import ak.accounts.Account;
+import ak.accounts.CheckingAccount;
+import ak.accounts.SavingsAccount;
+import ak.database.*;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L13">public class CustomerManager {</span>
+    
+    public Customer addCustomer(String name, String email, String phoneNumber , String username, String passwordHash) {
+<span class="fc" id="L16">        String customerId = &quot;CUST-&quot; + UUID.randomUUID().toString().substring(0, 8);</span>
+<span class="fc" id="L17">        String sql = &quot;INSERT INTO customers (customer_id, name, email, phone_number , username , password_hash) VALUES (?, ?, ?, ?, ?, ?)&quot;;</span>
+        
+<span class="fc" id="L19">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L20">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="fc" id="L22">            pstmt.setString(1, customerId);</span>
+<span class="fc" id="L23">            pstmt.setString(2, name);</span>
+<span class="fc" id="L24">            pstmt.setString(3, email);</span>
+<span class="fc" id="L25">            pstmt.setString(4, phoneNumber);</span>
+<span class="fc" id="L26">            pstmt.setString(5, username);</span>
+<span class="fc" id="L27">            pstmt.setString(6, passwordHash);</span>
+<span class="fc" id="L28">            pstmt.executeUpdate();</span>
+            
+<span class="fc" id="L30">            Customer newCustomer = new Customer(customerId, name, email, phoneNumber , username, passwordHash);</span>
+<span class="fc" id="L31">            System.out.println(&quot;Customer added successfully with ID: &quot; + customerId);</span>
+<span class="fc" id="L32">            return newCustomer;</span>
+            
+<span class="nc" id="L34">        } catch (SQLException e) {</span>
+<span class="nc" id="L35">            System.out.println(&quot;Error adding customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L36">            return null;</span>
+        }
+    }
+
+    /**
+     * Retrieves a customer by their ID
+     * @param customerId The ID of the customer to find
+     * @return The Customer object if found, null otherwise
+     */
+    public Customer getCustomerById(String customerId) {
+<span class="nc" id="L46">        String sql = &quot;SELECT * FROM customers WHERE customer_id = ?&quot;;</span>
+        
+<span class="nc" id="L48">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L49">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L51">            pstmt.setString(1, customerId);</span>
+<span class="nc" id="L52">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L55">                return new Customer(</span>
+<span class="nc" id="L56">                    rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L57">                    rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L58">                    rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L59">                    rs.getString(&quot;phone_number&quot;),</span>
+<span class="nc" id="L60">                    rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L61">                    rs.getString(&quot;password_hash&quot;)</span>
+                );
+            }
+<span class="nc bnc" id="L64" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L65">            System.out.println(&quot;Error retrieving customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L66">        }</span>
+<span class="nc" id="L67">        return null;</span>
+    }
+
+    /**
+     * Retrieves all customers in the system
+     * @return List of all customers
+     */
+    public List&lt;Customer&gt; getAllCustomers() {
+<span class="fc" id="L75">        List&lt;Customer&gt; customers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L76">        String sql = &quot;SELECT * FROM customers&quot;;</span>
+        
+<span class="fc" id="L78">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L79">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L80">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+            
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L83">                customers.add(new Customer(</span>
+<span class="fc" id="L84">                    rs.getString(&quot;customer_id&quot;),</span>
+<span class="fc" id="L85">                    rs.getString(&quot;name&quot;),</span>
+<span class="fc" id="L86">                    rs.getString(&quot;email&quot;),</span>
+<span class="fc" id="L87">                    rs.getString(&quot;phone_number&quot;),</span>
+<span class="fc" id="L88">                    rs.getString(&quot;username&quot;),</span>
+<span class="fc" id="L89">                    rs.getString(&quot;password_hash&quot;)</span>
+                ));
+            }
+<span class="nc" id="L92">        } catch (SQLException e) {</span>
+<span class="nc" id="L93">            System.out.println(&quot;Error retrieving customers: &quot; + e.getMessage());</span>
+<span class="fc" id="L94">        }</span>
+<span class="fc" id="L95">        return customers;</span>
+    }
+
+    /**
+     * Updates customer information
+     * @param customerId ID of the customer to update
+     * @param newName New name (null to keep existing)
+     * @param newEmail New email (null to keep existing)
+     * @param newPhoneNumber New phone number (null to keep existing)
+     * @return true if update was successful, false otherwise
+     */
+    public boolean updateCustomer(String customerId, String newName, String newEmail, String newPhoneNumber , String newUsername, String newPasswordHash) {
+        // First get the current customer data
+<span class="nc" id="L108">        Customer customer = getCustomerById(customerId);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (customer == null) {</span>
+<span class="nc" id="L110">            System.out.println(&quot;Customer not found with ID: &quot; + customerId);</span>
+<span class="nc" id="L111">            return false;</span>
+        }
+        
+        // Use existing values if new ones are null
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        String name = newName != null ? newName : customer.getName();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        String email = newEmail != null ? newEmail : customer.getEmail();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        String phoneNumber = newPhoneNumber != null ? newPhoneNumber : customer.getPhoneNumber();</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        String username = newUsername != null ? newUsername : customer.getUsername();</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        String passwordHash = newPasswordHash != null ? newPasswordHash : customer.getPasswordHash();</span>
+        
+<span class="nc" id="L121">        String sql = &quot;UPDATE customers SET name = ?, email = ?, phone_number = ?, username = ?, password_hash = ? WHERE customer_id = ?&quot;;</span>
+        
+<span class="nc" id="L123">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L124">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L126">            pstmt.setString(1, name);</span>
+<span class="nc" id="L127">            pstmt.setString(2, email);</span>
+<span class="nc" id="L128">            pstmt.setString(3, phoneNumber);</span>
+<span class="nc" id="L129">            pstmt.setString(4, customerId);</span>
+<span class="nc" id="L130">            pstmt.setString(5, username);</span>
+<span class="nc" id="L131">            pstmt.setString(6, passwordHash);</span>
+            
+<span class="nc" id="L133">            int rowsUpdated = pstmt.executeUpdate();</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            if (rowsUpdated &gt; 0) {</span>
+<span class="nc" id="L135">                System.out.println(&quot;Customer updated successfully: &quot; + customerId);</span>
+<span class="nc" id="L136">                return true;</span>
+            }
+<span class="nc bnc" id="L138" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L139">            System.out.println(&quot;Error updating customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">        return false;</span>
+    }
+
+    /**
+     * Removes a customer from the system
+     * @param customerId ID of the customer to remove
+     * @return true if removal was successful, false otherwise
+     */
+    public boolean removeCustomer(String customerId) {
+<span class="fc" id="L150">        String sql = &quot;DELETE FROM customers WHERE customer_id = ?&quot;;</span>
+        
+<span class="fc" id="L152">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L153">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="fc" id="L155">            pstmt.setString(1, customerId);</span>
+<span class="fc" id="L156">            int rowsDeleted = pstmt.executeUpdate();</span>
+            
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">            if (rowsDeleted &gt; 0) {</span>
+<span class="fc" id="L159">                System.out.println(&quot;Customer removed successfully: &quot; + customerId);</span>
+<span class="fc" id="L160">                return true;</span>
+            } else {
+<span class="nc" id="L162">                System.out.println(&quot;Customer not found with ID: &quot; + customerId);</span>
+<span class="nc" id="L163">                return false;</span>
+            }
+<span class="pc bpc" id="L165" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L166">            System.out.println(&quot;Error removing customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L167">            return false;</span>
+        }
+    }
+
+    /**
+     * Adds an account to a customer
+     * @param customerId ID of the customer
+     * @param account Account to add
+     * @return true if operation was successful, false otherwise
+     */
+    public boolean addAccountToCustomer(String customerId, Account account) {
+        // First verify customer exists
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (getCustomerById(customerId) == null) {</span>
+<span class="nc" id="L180">            System.out.println(&quot;Customer not found with ID: &quot; + customerId);</span>
+<span class="nc" id="L181">            return false;</span>
+        }
+        
+        // The actual account creation should be handled by AccountManager
+        // This method would just link the account to customer in database
+<span class="nc" id="L186">        String sql = &quot;UPDATE accounts SET customer_id = ? WHERE account_number = ?&quot;;</span>
+        
+<span class="nc" id="L188">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L189">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L191">            pstmt.setString(1, customerId);</span>
+<span class="nc" id="L192">            pstmt.setString(2, account.getAccountNumber());</span>
+            
+<span class="nc" id="L194">            int rowsUpdated = pstmt.executeUpdate();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">            return rowsUpdated &gt; 0;</span>
+            
+<span class="nc" id="L197">        } catch (SQLException e) {</span>
+<span class="nc" id="L198">            System.out.println(&quot;Error adding account to customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L199">            return false;</span>
+        }
+    }
+
+    /**
+     * Lists all accounts for a specific customer
+     * @param customerId ID of the customer
+     */
+    public void listCustomerAccounts(String customerId) {
+        // This would be better implemented in AccountManager
+        // Here we'll just demonstrate a database approach
+<span class="nc" id="L210">        String sql = &quot;SELECT * FROM accounts WHERE customer_id = ?&quot;;</span>
+        
+<span class="nc" id="L212">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L213">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L215">            pstmt.setString(1, customerId);</span>
+<span class="nc" id="L216">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc" id="L218">            System.out.println(&quot;Accounts for customer ID: &quot; + customerId);</span>
+<span class="nc" id="L219">            System.out.println(&quot;----------------------------&quot;);</span>
+            
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L222">                System.out.println(&quot;Account Number: &quot; + rs.getString(&quot;account_number&quot;));</span>
+<span class="nc" id="L223">                System.out.println(&quot;Type: &quot; + rs.getString(&quot;account_type&quot;));</span>
+<span class="nc" id="L224">                System.out.println(&quot;Balance: $&quot; + rs.getDouble(&quot;balance&quot;));</span>
+<span class="nc" id="L225">                System.out.println(&quot;----------------------------&quot;);</span>
+            }
+            
+<span class="nc" id="L228">        } catch (SQLException e) {</span>
+<span class="nc" id="L229">            System.out.println(&quot;Error listing customer accounts: &quot; + e.getMessage());</span>
+<span class="nc" id="L230">        }</span>
+<span class="nc" id="L231">    }</span>
+
+    /**
+     * Finds customers by name (case-insensitive partial match)
+     * @param name Name or part of name to search for
+     * @return List of matching customers
+     */
+    public List&lt;Customer&gt; findCustomersByName(String name) {
+<span class="nc" id="L239">        List&lt;Customer&gt; matchingCustomers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L240">        String sql = &quot;SELECT * FROM customers WHERE LOWER(name) LIKE LOWER(?)&quot;;</span>
+        
+<span class="nc" id="L242">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L243">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L245">            pstmt.setString(1, &quot;%&quot; + name + &quot;%&quot;);</span>
+<span class="nc" id="L246">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L248" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L249">                matchingCustomers.add(new Customer(</span>
+<span class="nc" id="L250">                    rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L251">                    rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L252">                    rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L253">                    rs.getString(&quot;phone_number&quot;),</span>
+<span class="nc" id="L254">                    rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L255">                    rs.getString(&quot;password_hash&quot;)</span>
+                ));
+            }
+<span class="nc" id="L258">        } catch (SQLException e) {</span>
+<span class="nc" id="L259">            System.out.println(&quot;Error finding customers by name: &quot; + e.getMessage());</span>
+<span class="nc" id="L260">        }</span>
+<span class="nc" id="L261">        return matchingCustomers;</span>
+    }
+
+    /**
+     * Finds a customer by email (exact match)
+     * @param email Email to search for
+     * @return The Customer object if found, null otherwise
+     */
+    public Customer findCustomerByEmail(String email) {
+<span class="nc" id="L270">        String sql = &quot;SELECT * FROM customers WHERE email = ?&quot;;</span>
+        
+<span class="nc" id="L272">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L273">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L275">            pstmt.setString(1, email.trim());</span>
+<span class="nc" id="L276">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L279">                return new Customer(</span>
+<span class="nc" id="L280">                    rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L281">                    rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L282">                    rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L283">                    rs.getString(&quot;phone_number&quot;),</span>
+<span class="nc" id="L284">                    rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L285">                    rs.getString(&quot;password_hash&quot;)</span>
+                );
+            }
+<span class="nc bnc" id="L288" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L289">            System.out.println(&quot;Error finding customer by email: &quot; + e.getMessage());</span>
+<span class="nc" id="L290">        }</span>
+<span class="nc" id="L291">        return null;</span>
+    }
+
+    public Customer authenticateCustomer(String username , String password){
+<span class="nc" id="L295">        String sql = &quot;SELECT * FROM customers WHERE username = ? AND password_hash = ?&quot;;</span>
+        
+<span class="nc" id="L297">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L298">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L300">            pstmt.setString(1, username.trim());</span>
+<span class="nc" id="L301">            pstmt.setString(2, password.trim());</span>
+<span class="nc" id="L302">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L304" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L305">                return new Customer(</span>
+<span class="nc" id="L306">                    rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L307">                    rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L308">                    rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L309">                    rs.getString(&quot;phone_number&quot;),</span>
+<span class="nc" id="L310">                    rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L311">                    rs.getString(&quot;password_hash&quot;)</span>
+                );
+            }
+<span class="nc bnc" id="L314" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L315">            System.out.println(&quot;Error authenticating customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L316">        }</span>
+<span class="nc" id="L317">        return null;</span>
+    }
+
+    public Object getCustomerByUsername(String username) {
+<span class="nc" id="L321">        String sql = &quot;SELECT * FROM customers WHERE username = ?&quot;;</span>
+        
+<span class="nc" id="L323">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="nc" id="L324">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L326">            pstmt.setString(1, username.trim());</span>
+<span class="nc" id="L327">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L330">                return new Customer(</span>
+<span class="nc" id="L331">                    rs.getString(&quot;customer_id&quot;),</span>
+<span class="nc" id="L332">                    rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L333">                    rs.getString(&quot;email&quot;),</span>
+<span class="nc" id="L334">                    rs.getString(&quot;phone_number&quot;),</span>
+<span class="nc" id="L335">                    rs.getString(&quot;username&quot;),</span>
+<span class="nc" id="L336">                    rs.getString(&quot;password_hash&quot;)</span>
+                );
+            }
+<span class="nc bnc" id="L339" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L340">            System.out.println(&quot;Error authenticating customer: &quot; + e.getMessage());</span>
+<span class="nc" id="L341">        }</span>
+<span class="nc" id="L342">        return null;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

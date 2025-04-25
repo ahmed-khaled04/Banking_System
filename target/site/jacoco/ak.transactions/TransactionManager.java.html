@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.transactions</a> &gt; <span class="el_source">TransactionManager.java</span></div><h1>TransactionManager.java</h1><pre class="source lang-java linenums">package ak.transactions;
+
+import ak.accounts.Account;
+import ak.accounts.AccountManager;
+import ak.database.DBconnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TransactionManager {
+    private Connection connection;
+    private AccountManager accountManager;
+
+<span class="fc" id="L15">    public TransactionManager(AccountManager accountManager) {</span>
+<span class="fc" id="L16">        this.accountManager = accountManager;</span>
+        try {
+<span class="fc" id="L18">            this.connection = DBconnection.getConnection();</span>
+            //initializeDatabase();
+<span class="nc" id="L20">        } catch (SQLException e) {</span>
+<span class="nc" id="L21">            System.err.println(&quot;Database connection error: &quot; + e.getMessage());</span>
+<span class="nc" id="L22">            throw new RuntimeException(&quot;Failed to initialize TransactionManager&quot;, e);</span>
+<span class="fc" id="L23">        }</span>
+<span class="fc" id="L24">    }</span>
+
+    private void initializeDatabase() throws SQLException {
+<span class="nc" id="L27">        String createTableSQL = &quot;CREATE TABLE IF NOT EXISTS transactions (&quot;</span>
+                + &quot;transaction_id VARCHAR(20) PRIMARY KEY, &quot;
+                + &quot;amount DECIMAL(15,2) NOT NULL, &quot;
+                + &quot;type VARCHAR(50) NOT NULL, &quot;
+                + &quot;from_account VARCHAR(20), &quot;
+                + &quot;to_account VARCHAR(20), &quot;
+                + &quot;timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)&quot;;
+<span class="nc" id="L34">        try (Statement stmt = connection.createStatement()) {</span>
+<span class="nc" id="L35">            stmt.execute(createTableSQL);</span>
+        }
+<span class="nc" id="L37">    }</span>
+
+    public Transaction createTransaction(double amount, String type, String fromAccount, String toAccount) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (amount &lt;= 0) {</span>
+<span class="fc" id="L41">            throw new IllegalArgumentException(&quot;Transaction amount must be positive&quot;);</span>
+        }
+<span class="pc bpc" id="L43" title="2 of 4 branches missed.">        if (type == null || type.trim().isEmpty()) {</span>
+<span class="nc" id="L44">            throw new IllegalArgumentException(&quot;Transaction type cannot be empty&quot;);</span>
+        }
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (fromAccount == null &amp;&amp; toAccount == null) {</span>
+<span class="nc" id="L47">            throw new IllegalArgumentException(&quot;At least one account (from or to) must be specified&quot;);</span>
+        }
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if(type.equalsIgnoreCase(&quot;transfer&quot;)){</span>
+<span class="fc bfc" id="L50" title="All 4 branches covered.">            if (fromAccount == null || toAccount == null) {</span>
+<span class="fc" id="L51">                throw new IllegalArgumentException(&quot;Both accounts must be specified for transfer transactions&quot;);</span>
+            }
+        }
+
+<span class="fc" id="L55">        String sql = &quot;INSERT INTO transactions (transaction_id, amount, type, from_account, to_account) VALUES (?, ?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L56">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L57">            Transaction newTransaction = new Transaction(amount, type, fromAccount, toAccount , &quot;&quot;);</span>
+
+<span class="fc" id="L59">            pstmt.setString(1, newTransaction.getTransactionId());</span>
+<span class="fc" id="L60">            pstmt.setDouble(2, amount);</span>
+<span class="fc" id="L61">            pstmt.setString(3, type);</span>
+<span class="fc" id="L62">            pstmt.setString(4, fromAccount);</span>
+<span class="fc" id="L63">            pstmt.setString(5, toAccount);</span>
+<span class="fc" id="L64">            pstmt.executeUpdate();</span>
+
+            // Update account balances
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">            if (toAccount != null) {</span>
+<span class="fc" id="L68">                Account acc = accountManager.getAccountByNumber(toAccount);</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">                if (acc != null) {</span>
+<span class="fc" id="L70">                    System.out.println(&quot;Depositing &quot; + amount + &quot; to account: &quot; + acc.getAccountNumber());</span>
+<span class="fc" id="L71">                    acc.deposit(amount);</span>
+<span class="fc" id="L72">                    accountManager.updateAccountBalance(acc);</span>
+                }
+            }
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">            if (fromAccount != null) {</span>
+<span class="fc" id="L76">                Account acc = accountManager.getAccountByNumber(fromAccount);</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">                if (acc != null) {</span>
+<span class="fc" id="L78">                    System.out.println(&quot;Withdrawing &quot; + amount + &quot; from account: &quot; + acc.getAccountNumber());</span>
+<span class="fc" id="L79">                    acc.withdraw(amount);</span>
+<span class="fc" id="L80">                    accountManager.updateAccountBalance(acc);</span>
+                }
+            }
+
+<span class="fc" id="L84">            System.out.println(&quot;Transaction recorded: &quot; + newTransaction.getTransactionId());</span>
+<span class="fc" id="L85">            return newTransaction;</span>
+<span class="nc" id="L86">        } catch (SQLException e) {</span>
+<span class="nc" id="L87">            System.err.println(&quot;Error creating transaction: &quot; + e.getMessage());</span>
+<span class="nc" id="L88">            throw new RuntimeException(&quot;Failed to create transaction&quot;, e);</span>
+        }
+    }
+
+    public Transaction getTransactionById(String transactionId) {
+<span class="nc" id="L93">        String sql = &quot;SELECT * FROM transactions WHERE transaction_id = ?&quot;;</span>
+<span class="nc" id="L94">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="nc" id="L95">            pstmt.setString(1, transactionId);</span>
+<span class="nc" id="L96">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L98">                return mapResultSetToTransaction(rs);</span>
+            }
+<span class="nc" id="L100">            return null;</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L102">            System.err.println(&quot;Error retrieving transaction: &quot; + e.getMessage());</span>
+<span class="nc" id="L103">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
+        }
+    }
+
+    public List&lt;Transaction&gt; getTransactionsByAccount(String accountId) {
+<span class="fc" id="L108">        String sql = &quot;SELECT * FROM transactions WHERE from_account = ? OR to_account = ?&quot;;</span>
+<span class="fc" id="L109">        List&lt;Transaction&gt; transactions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L110">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L111">            pstmt.setString(1, accountId);</span>
+<span class="fc" id="L112">            pstmt.setString(2, accountId);</span>
+<span class="fc" id="L113">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L115">                transactions.add(mapResultSetToTransaction(rs));</span>
+            }
+<span class="fc" id="L117">            return transactions;</span>
+<span class="nc" id="L118">        } catch (SQLException e) {</span>
+<span class="nc" id="L119">            System.err.println(&quot;Error retrieving transactions: &quot; + e.getMessage());</span>
+<span class="nc" id="L120">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
+        }
+    }
+
+    private Transaction mapResultSetToTransaction(ResultSet rs) throws SQLException {
+<span class="fc" id="L125">        return new Transaction(</span>
+<span class="fc" id="L126">                rs.getDouble(&quot;amount&quot;),</span>
+<span class="fc" id="L127">                rs.getString(&quot;type&quot;),</span>
+<span class="fc" id="L128">                rs.getString(&quot;from_account&quot;),</span>
+<span class="fc" id="L129">                rs.getString(&quot;to_account&quot;),</span>
+<span class="fc" id="L130">                rs.getString(&quot;created_at&quot;)</span>
+        );
+    }
+
+    public void close() {
+        try {
+<span class="nc bnc" id="L136" title="All 4 branches missed.">            if (connection != null &amp;&amp; !connection.isClosed()) {</span>
+<span class="nc" id="L137">                connection.close();</span>
+            }
+<span class="nc" id="L139">        } catch (SQLException e) {</span>
+<span class="nc" id="L140">            System.err.println(&quot;Error closing connection: &quot; + e.getMessage());</span>
+<span class="nc" id="L141">        }</span>
+<span class="nc" id="L142">    }</span>
+
+    public String getCreatedAt(String transactionID){
+<span class="nc" id="L145">        String sql = &quot;SELECT created_at FROM transactions WHERE transaction_id = ?&quot;;</span>
+<span class="nc" id="L146">        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {</span>
+<span class="nc" id="L147">            pstmt.setString(1, transactionID);</span>
+<span class="nc" id="L148">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L150">                return rs.getString(&quot;created_at&quot;);</span>
+            }
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L153">            System.err.println(&quot;Error retrieving transaction timestamp: &quot; + e.getMessage());</span>
+<span class="nc" id="L154">        }</span>
+<span class="nc" id="L155">        return null;</span>
+
+    } 
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

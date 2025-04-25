@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Transaction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.transactions</a> &gt; <span class="el_source">Transaction.java</span></div><h1>Transaction.java</h1><pre class="source lang-java linenums">package ak.transactions;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+public class Transaction {
+    private String transactionId;
+    private double amount;
+    private String type; // e.g., &quot;Deposit&quot;, &quot;Withdrawal&quot;, &quot;Transfer&quot;
+    private String fromAccount;
+    private String toAccount;
+    private String createdAt;
+
+<span class="fc" id="L15">    public Transaction(double amount, String type, String fromAccount, String toAccount , String createdAt) {</span>
+<span class="fc" id="L16">        this.transactionId = generateTransactionId();</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (amount &lt;= 0) {</span>
+<span class="fc" id="L18">            throw new IllegalArgumentException(&quot;Transaction amount must be positive&quot;);</span>
+        }
+<span class="fc bfc" id="L20" title="All 4 branches covered.">        if (type == null || type.trim().isEmpty()) {</span>
+<span class="fc" id="L21">            throw new IllegalArgumentException(&quot;Transaction type cannot be empty&quot;);</span>
+        }
+<span class="fc bfc" id="L23" title="All 4 branches covered.">        if (fromAccount == null &amp;&amp; toAccount == null) {</span>
+<span class="fc" id="L24">            throw new IllegalArgumentException(&quot;At least one account (from or to) must be specified&quot;);</span>
+        }
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if(type.equalsIgnoreCase(&quot;transfer&quot;)){</span>
+<span class="fc bfc" id="L27" title="All 4 branches covered.">            if (fromAccount == null || toAccount == null) {</span>
+<span class="fc" id="L28">                throw new IllegalArgumentException(&quot;Both accounts must be specified for transfer transactions&quot;);</span>
+            }
+        }
+<span class="pc bpc" id="L31" title="1 of 6 branches missed.">        if(!type.equalsIgnoreCase(&quot;transfer&quot;) &amp;&amp; !type.equalsIgnoreCase(&quot;withdraw&quot;)&amp;&amp; !type.equalsIgnoreCase(&quot;deposit&quot;)){</span>
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Transaction Type Incorrect&quot;);</span>
+        }
+        
+<span class="fc" id="L35">        this.amount = amount;</span>
+<span class="fc" id="L36">        this.type = type;</span>
+<span class="fc" id="L37">        this.fromAccount = fromAccount;</span>
+<span class="fc" id="L38">        this.toAccount = toAccount;</span>
+<span class="fc" id="L39">        this.createdAt = createdAt;</span>
+<span class="fc" id="L40">    }</span>
+
+    private String generateTransactionId() {
+<span class="fc" id="L43">        return &quot;TXN-&quot; + UUID.randomUUID().toString().substring(0, 8);</span>
+    }
+
+    public String generateTimestamp() {
+<span class="fc" id="L47">        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+<span class="fc" id="L48">        return dtf.format(LocalDateTime.now());</span>
+    }
+
+    public void printTransactionDetails() {
+<span class="nc" id="L52">        System.out.println(&quot;Transaction ID: &quot; + transactionId);</span>
+<span class="nc" id="L53">        System.out.println(&quot;Type: &quot; + type);</span>
+<span class="nc" id="L54">        System.out.println(&quot;Amount: $&quot; + amount);</span>
+<span class="nc" id="L55">        System.out.println(&quot;From: &quot; + fromAccount);</span>
+<span class="nc" id="L56">        System.out.println(&quot;To: &quot; + toAccount);</span>
+<span class="nc" id="L57">        System.out.println(&quot;Time: &quot; + createdAt);</span>
+<span class="nc" id="L58">    }</span>
+
+    // Getters
+    public String getTransactionId() {
+<span class="fc" id="L62">        return transactionId;</span>
+    }
+
+    public double getAmount() {
+<span class="fc" id="L66">        return amount;</span>
+    }
+
+    public String getType() {
+<span class="fc" id="L70">        return type;</span>
+    }
+
+    public String getFromAccount() {
+<span class="fc" id="L74">        return fromAccount;</span>
+    }
+
+    public String getToAccount() {
+<span class="fc" id="L78">        return toAccount;</span>
+    }
+
+    public String getTimestamp() {
+<span class="fc" id="L82">        return createdAt;</span>
+    }
+
+    public String getDate(){
+<span class="nc" id="L86">        return createdAt;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

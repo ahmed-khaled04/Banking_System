@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoanRequestManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.loans</a> &gt; <span class="el_source">LoanRequestManager.java</span></div><h1>LoanRequestManager.java</h1><pre class="source lang-java linenums">package ak.loans;
+
+import ak.database.DBconnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L13">public class LoanRequestManager {</span>
+
+    public boolean submitLoanRequest(String accountNumber, double loanAmount, String loanReason) {
+<span class="fc" id="L16">        String sql = &quot;INSERT INTO loan_requests (account_number, loan_amount, loan_reason, status) VALUES (?, ?, ?, 'Pending')&quot;;</span>
+<span class="fc" id="L17">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L18">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L19">            pstmt.setString(1, accountNumber);</span>
+<span class="fc" id="L20">            pstmt.setDouble(2, loanAmount);</span>
+<span class="fc" id="L21">            pstmt.setString(3, loanReason);</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">            return pstmt.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L23">        } catch (SQLException e) {</span>
+<span class="nc" id="L24">            e.printStackTrace();</span>
+<span class="nc" id="L25">            return false;</span>
+        }
+    }
+
+
+
+    public List&lt;LoanRequest&gt; getAllLoanRequests() {
+<span class="fc" id="L32">        List&lt;LoanRequest&gt; loanRequests = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        String sql = &quot;SELECT * FROM loan_requests&quot;;</span>
+<span class="fc" id="L34">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L35">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L36">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L38">                loanRequests.add(new LoanRequest(</span>
+<span class="fc" id="L39">                    rs.getString(&quot;id&quot;),</span>
+<span class="fc" id="L40">                    rs.getString(&quot;account_number&quot;),</span>
+<span class="fc" id="L41">                    rs.getDouble(&quot;loan_amount&quot;),</span>
+<span class="fc" id="L42">                    rs.getString(&quot;loan_reason&quot;),</span>
+<span class="fc" id="L43">                    rs.getString(&quot;status&quot;)</span>
+                ));
+            }
+<span class="nc" id="L46">        } catch (SQLException e) {</span>
+<span class="nc" id="L47">            e.printStackTrace();</span>
+<span class="fc" id="L48">        }</span>
+<span class="fc" id="L49">        return loanRequests;</span>
+    }
+
+    public boolean updateLoanRequestStatus(String requestId, String status) {
+<span class="fc" id="L53">        String sql = &quot;UPDATE loan_requests SET status = ? WHERE id = ?&quot;;</span>
+<span class="fc" id="L54">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L55">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L56">            pstmt.setString(1, status);</span>
+<span class="fc" id="L57">            pstmt.setInt(2, Integer.parseInt(requestId));</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">            return pstmt.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L59">        } catch (SQLException e) {</span>
+<span class="nc" id="L60">            e.printStackTrace();</span>
+<span class="nc" id="L61">            return false;</span>
+        }
+    }
+
+    public LoanRequest submitRequest(String accountNumber, double loanAmount, String loanReason) {
+<span class="fc" id="L66">        String sql = &quot;INSERT INTO loan_requests (account_number, loan_amount, loan_reason, status) VALUES (?, ?, ?, 'Pending')&quot;;</span>
+<span class="fc" id="L67">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L68">             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+<span class="fc" id="L69">            pstmt.setString(1, accountNumber);</span>
+<span class="fc" id="L70">            pstmt.setDouble(2, loanAmount);</span>
+<span class="fc" id="L71">            pstmt.setString(3, loanReason);</span>
+<span class="fc" id="L72">            int affectedRows = pstmt.executeUpdate();</span>
+    
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">            if (affectedRows &gt; 0) {</span>
+<span class="fc" id="L75">                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">                    if (generatedKeys.next()) {</span>
+<span class="fc" id="L77">                        return new LoanRequest(</span>
+<span class="fc" id="L78">                            generatedKeys.getString(1), // Assuming the ID is auto-generated</span>
+                            accountNumber,
+                            loanAmount,
+                            loanReason,
+                            &quot;Pending&quot;
+                        );
+                    }
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">                }</span>
+            }
+<span class="pc bpc" id="L87" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L88">            e.printStackTrace();</span>
+<span class="nc" id="L89">        }</span>
+<span class="nc" id="L90">        return null; // Return null if the loan request could not be created</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

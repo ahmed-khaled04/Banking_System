@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AddTransactionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.ui</a> &gt; <span class="el_source">AddTransactionController.java</span></div><h1>AddTransactionController.java</h1><pre class="source lang-java linenums">package ak.ui;
+
+import java.io.IOException;
+
+import ak.App;
+import ak.accounts.*;
+import ak.transactions.Transaction;
+import ak.transactions.TransactionManager;
+import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+public class AddTransactionController {
+
+    @FXML
+    private ComboBox&lt;String&gt; transactionTypeField;
+
+    @FXML
+    private TextField fromAccountField;
+
+    @FXML
+    private TextField toAccountField;
+
+    @FXML
+    private TextField amountField;
+
+    private TransactionManager transactionManager;
+    private AccountManager accountManager; // Assuming you have an AccountManager class
+
+<span class="nc" id="L32">    public AddTransactionController() {</span>
+<span class="nc" id="L33">        this.accountManager = new AccountManager(); // Ensure AccountManager is properly initialized</span>
+<span class="nc" id="L34">        this.transactionManager = new TransactionManager(accountManager); // Ensure TransactionManager is properly initialized</span>
+<span class="nc" id="L35">    }</span>
+
+    @FXML
+    public void initialize() {
+        // Populate the transaction type dropdown
+<span class="nc" id="L40">        transactionTypeField.getItems().addAll(&quot;Deposit&quot;, &quot;Withdrawal&quot;, &quot;Transfer&quot;);</span>
+<span class="nc" id="L41">        transactionTypeField.setValue(&quot;Deposit&quot;); // Set default value</span>
+<span class="nc" id="L42">    }</span>
+
+    @FXML
+    private void handleAddTransaction() {
+<span class="nc" id="L46">        String transactionType = transactionTypeField.getValue();</span>
+<span class="nc" id="L47">        String fromAccount = fromAccountField.getText();</span>
+<span class="nc" id="L48">        String toAccount = toAccountField.getText();</span>
+<span class="nc" id="L49">        String amountText = amountField.getText();</span>
+    
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        if (transactionType == null || amountText.isEmpty()) {</span>
+<span class="nc" id="L52">            showAlert(&quot;Error&quot;, &quot;Transaction type and amount are required.&quot;);</span>
+<span class="nc" id="L53">            return;</span>
+        }
+    
+        try {
+<span class="nc" id="L57">            double amount = Double.parseDouble(amountText);</span>
+    
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (amount &lt;= 0) {</span>
+<span class="nc" id="L60">                showAlert(&quot;Error&quot;, &quot;Transaction amount must be greater than zero.&quot;);</span>
+<span class="nc" id="L61">                return;</span>
+            }
+    
+            // Check account activation status and balance
+<span class="nc bnc" id="L65" title="All 4 branches missed.">            if (transactionType.equals(&quot;Deposit&quot;) || transactionType.equals(&quot;Transfer&quot;)) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                if (!toAccount.isEmpty()) {</span>
+<span class="nc" id="L67">                    Account destinationAccount = accountManager.getAccountByNumber(toAccount);</span>
+<span class="nc bnc" id="L68" title="All 4 branches missed.">                    if (destinationAccount == null || !destinationAccount.isActivated()) {</span>
+<span class="nc" id="L69">                        showAlert(&quot;Error&quot;, &quot;The destination account is not activated or does not exist. Transactions can only be made to activated accounts.&quot;);</span>
+<span class="nc" id="L70">                        return;</span>
+                    }
+                }
+            }
+    
+<span class="nc bnc" id="L75" title="All 4 branches missed.">            if (transactionType.equals(&quot;Withdrawal&quot;) || transactionType.equals(&quot;Transfer&quot;)) {</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (!fromAccount.isEmpty()) {</span>
+<span class="nc" id="L77">                    Account sourceAccount = accountManager.getAccountByNumber(fromAccount);</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">                    if (sourceAccount == null || !sourceAccount.isActivated()) {</span>
+<span class="nc" id="L79">                        showAlert(&quot;Error&quot;, &quot;The source account is not activated or does not exist. Transactions can only be made from activated accounts.&quot;);</span>
+<span class="nc" id="L80">                        return;</span>
+                    }
+    
+                    // Check if the source account has sufficient balance
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                    if (amount &gt; sourceAccount.getBalance()) {</span>
+<span class="nc" id="L85">                        showAlert(&quot;Error&quot;, &quot;Insufficient balance in the source account. Transaction cannot be completed.&quot;);</span>
+<span class="nc" id="L86">                        return;</span>
+                    }
+                }
+            }
+    
+<span class="nc" id="L91">            Transaction success = null; // Initialize success variable</span>
+    
+<span class="nc bnc" id="L93" title="All 4 branches missed.">            switch (transactionType) {</span>
+                case &quot;Deposit&quot;:
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                    if (toAccount.isEmpty()) {</span>
+<span class="nc" id="L96">                        showAlert(&quot;Error&quot;, &quot;To Account is required for a deposit.&quot;);</span>
+<span class="nc" id="L97">                        return;</span>
+                    }
+<span class="nc" id="L99">                    success = transactionManager.createTransaction(amount, &quot;Deposit&quot;, null, toAccount);</span>
+<span class="nc" id="L100">                    break;</span>
+    
+                case &quot;Withdrawal&quot;:
+<span class="nc bnc" id="L103" title="All 2 branches missed.">                    if (fromAccount.isEmpty()) {</span>
+<span class="nc" id="L104">                        showAlert(&quot;Error&quot;, &quot;From Account is required for a withdrawal.&quot;);</span>
+<span class="nc" id="L105">                        return;</span>
+                    }
+<span class="nc" id="L107">                    success = transactionManager.createTransaction(amount, &quot;Withdrawal&quot;, fromAccount, null);</span>
+<span class="nc" id="L108">                    break;</span>
+    
+                case &quot;Transfer&quot;:
+<span class="nc bnc" id="L111" title="All 4 branches missed.">                    if (fromAccount.isEmpty() || toAccount.isEmpty()) {</span>
+<span class="nc" id="L112">                        showAlert(&quot;Error&quot;, &quot;Both From Account and To Account are required for a transfer.&quot;);</span>
+<span class="nc" id="L113">                        return;</span>
+                    }
+<span class="nc" id="L115">                    success = transactionManager.createTransaction(amount, &quot;Transfer&quot;, fromAccount, toAccount);</span>
+<span class="nc" id="L116">                    break;</span>
+    
+                default:
+<span class="nc" id="L119">                    showAlert(&quot;Error&quot;, &quot;Invalid transaction type.&quot;);</span>
+<span class="nc" id="L120">                    return;</span>
+            }
+    
+<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (success != null) {</span>
+<span class="nc" id="L124">                showAlert(&quot;Success&quot;, &quot;Transaction added successfully!&quot;);</span>
+<span class="nc" id="L125">                clearFields();</span>
+            } else {
+<span class="nc" id="L127">                showAlert(&quot;Error&quot;, &quot;Failed to add transaction. Please check the account details.&quot;);</span>
+            }
+<span class="nc" id="L129">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L130">            showAlert(&quot;Error&quot;, &quot;Invalid amount. Please enter a valid number.&quot;);</span>
+<span class="nc" id="L131">        }</span>
+<span class="nc" id="L132">    }</span>
+    
+    @FXML
+    private void handleBack() {
+        try {
+<span class="nc" id="L137">            App.setRoot(&quot;admin&quot;); // Navigate back to the admin dashboard</span>
+<span class="nc" id="L138">        } catch (IOException e) {</span>
+<span class="nc" id="L139">            e.printStackTrace();</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">    }</span>
+
+    private void showAlert(String title, String message) {
+<span class="nc" id="L144">        Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L145">        alert.setTitle(title);</span>
+<span class="nc" id="L146">        alert.setHeaderText(null);</span>
+<span class="nc" id="L147">        alert.setContentText(message);</span>
+<span class="nc" id="L148">        alert.showAndWait();</span>
+<span class="nc" id="L149">    }</span>
+
+    private void clearFields() {
+<span class="nc" id="L152">        fromAccountField.clear();</span>
+<span class="nc" id="L153">        toAccountField.clear();</span>
+<span class="nc" id="L154">        amountField.clear();</span>
+<span class="nc" id="L155">        transactionTypeField.setValue(&quot;Deposit&quot;);</span>
+<span class="nc" id="L156">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

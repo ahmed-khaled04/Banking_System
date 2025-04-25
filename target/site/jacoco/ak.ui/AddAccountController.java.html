@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AddAccountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.ui</a> &gt; <span class="el_source">AddAccountController.java</span></div><h1>AddAccountController.java</h1><pre class="source lang-java linenums">package ak.ui;
+
+import java.io.IOException;
+
+import ak.App;
+import ak.accounts.AccountManager;
+import ak.customer.CustomerManager;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+public class AddAccountController {
+
+    @FXML
+    private TextField customerIdField;
+
+    @FXML
+    private TextField accountTypeField;
+
+    @FXML
+    private TextField initialDepositField;
+
+    @FXML
+    private TextField holderNameField;
+
+    @FXML
+    private TextField overdraftLimitField; // For Checking Account (optional)
+
+    @FXML
+    private TextField interestRateField; // For Savings Account (optional)
+
+    private AccountManager accountManager;
+    private CustomerManager customerManager;
+
+<span class="nc" id="L36">    public AddAccountController() {</span>
+<span class="nc" id="L37">        this.accountManager = new AccountManager();</span>
+<span class="nc" id="L38">        this.customerManager = new CustomerManager();</span>
+<span class="nc" id="L39">    }</span>
+
+    @FXML
+    private void handleAddAccount() {
+<span class="nc" id="L43">        String customerId = customerIdField.getText();</span>
+<span class="nc" id="L44">        String accountType = accountTypeField.getText().toLowerCase();</span>
+<span class="nc" id="L45">        String initialDepositText = initialDepositField.getText();</span>
+<span class="nc" id="L46">        String holderName = holderNameField.getText(); </span>
+
+<span class="nc bnc" id="L48" title="All 8 branches missed.">        if (customerId.isEmpty() || accountType.isEmpty() || initialDepositText.isEmpty()|| holderName.isEmpty()) {</span>
+<span class="nc" id="L49">            showAlert(&quot;Error&quot;, &quot;All fields are required.&quot;);</span>
+<span class="nc" id="L50">            return;</span>
+        }
+
+        
+
+        try {
+
+<span class="nc bnc" id="L57" title="All 2 branches missed.">            if (customerManager.getCustomerById(customerId) == null) {</span>
+<span class="nc" id="L58">                showAlert(&quot;Error&quot;, &quot;Customer ID does not exist. Please enter a valid customer ID.&quot;);</span>
+<span class="nc" id="L59">                return;</span>
+            }
+
+
+<span class="nc" id="L63">            double initialDeposit = Double.parseDouble(initialDepositText);</span>
+
+<span class="nc bnc" id="L65" title="All 2 branches missed.">            if (initialDeposit &lt; 0) {</span>
+<span class="nc" id="L66">                showAlert(&quot;Error&quot;, &quot;Initial deposit cannot be negative.&quot;);</span>
+<span class="nc" id="L67">                return;</span>
+            }
+
+
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            if (accountType.equals(&quot;savings&quot;)) {</span>
+<span class="nc" id="L73">                String interestRateText = interestRateField.getText();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                if (interestRateText.isEmpty()) {</span>
+<span class="nc" id="L75">                    showAlert(&quot;Error&quot;, &quot;Interest rate is required for a Savings Account.&quot;);</span>
+<span class="nc" id="L76">                    return;</span>
+                }
+<span class="nc" id="L78">                double interestRate = Double.parseDouble(interestRateText);</span>
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                if (interestRate &lt; 0) {</span>
+<span class="nc" id="L81">                    showAlert(&quot;Error&quot;, &quot;Interest rate cannot be negative.&quot;);</span>
+<span class="nc" id="L82">                    return;</span>
+                }
+
+
+<span class="nc" id="L86">                accountManager.createSavingsAccount(customerId, holderName ,initialDeposit, interestRate);</span>
+<span class="nc" id="L87">                showAlert(&quot;Success&quot;, &quot;Savings Account created successfully!&quot;);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            } else if (accountType.equals(&quot;checking&quot;)) {</span>
+<span class="nc" id="L89">                String overdraftLimitText = overdraftLimitField.getText();</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                if (overdraftLimitText.isEmpty()) {</span>
+<span class="nc" id="L91">                    showAlert(&quot;Error&quot;, &quot;Overdraft limit is required for a Checking Account.&quot;);</span>
+<span class="nc" id="L92">                    return;</span>
+                }
+<span class="nc" id="L94">                double overdraftLimit = Double.parseDouble(overdraftLimitText);</span>
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                if (overdraftLimit &lt; 0) {</span>
+<span class="nc" id="L97">                    showAlert(&quot;Error&quot;, &quot;Overdraft limit cannot be negative.&quot;);</span>
+<span class="nc" id="L98">                    return;</span>
+                }
+
+<span class="nc" id="L101">                accountManager.createCheckingAccount(customerId, holderName ,initialDeposit, overdraftLimit);</span>
+<span class="nc" id="L102">                showAlert(&quot;Success&quot;, &quot;Checking Account created successfully!&quot;);</span>
+<span class="nc" id="L103">            } else {</span>
+<span class="nc" id="L104">                showAlert(&quot;Error&quot;, &quot;Invalid account type. Please enter 'Savings' or 'Checking'.&quot;);</span>
+            }
+
+<span class="nc" id="L107">            clearFields();</span>
+<span class="nc" id="L108">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L109">            showAlert(&quot;Error&quot;, &quot;Invalid input. Please enter valid numbers for deposit, interest rate, or overdraft limit.&quot;);</span>
+<span class="nc" id="L110">        }</span>
+<span class="nc" id="L111">    }</span>
+
+    @FXML
+    private void handleBack() {
+        try {
+<span class="nc" id="L116">            App.setRoot(&quot;admin&quot;);</span>
+<span class="nc" id="L117">        } catch (IOException e) {</span>
+<span class="nc" id="L118">            e.printStackTrace();</span>
+<span class="nc" id="L119">        }</span>
+<span class="nc" id="L120">    }</span>
+
+    private void showAlert(String title, String message) {
+<span class="nc" id="L123">        Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L124">        alert.setTitle(title);</span>
+<span class="nc" id="L125">        alert.setHeaderText(null);</span>
+<span class="nc" id="L126">        alert.setContentText(message);</span>
+<span class="nc" id="L127">        alert.showAndWait();</span>
+<span class="nc" id="L128">    }</span>
+
+    private void clearFields() {
+<span class="nc" id="L131">        customerIdField.clear();</span>
+<span class="nc" id="L132">        accountTypeField.clear();</span>
+<span class="nc" id="L133">        initialDepositField.clear();</span>
+<span class="nc" id="L134">        overdraftLimitField.clear();</span>
+<span class="nc" id="L135">        interestRateField.clear();</span>
+<span class="nc" id="L136">        holderNameField.clear();</span>
+<span class="nc" id="L137">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

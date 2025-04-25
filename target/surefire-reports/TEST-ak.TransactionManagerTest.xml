@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ak.TransactionManagerTest" time="1.303" tests="8" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ak.TransactionManagerTest" time="2.169" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
-    <property name="sun.java.command" value="C:\Users\Rabbit\AppData\Local\Temp\surefire11691685144595238579\surefirebooter-20250425164922877_3.jar C:\Users\Rabbit\AppData\Local\Temp\surefire11691685144595238579 2025-04-25T16-49-22_790-jvmRun1 surefire-20250425164922877_1tmp surefire_0-20250425164922877_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982\surefirebooter-20250426003614876_3.jar C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982 2025-04-26T00-36-14_687-jvmRun1 surefire-20250426003614876_1tmp surefire_0-20250426003614876_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\target\test-classes;D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\target\classes;C:\Users\Rabbit\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\Rabbit\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-suite-api\1.9.3\junit-platform-suite-api-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.3\junit-jupiter-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-controls\13\javafx-controls-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-controls\13\javafx-controls-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-graphics\13\javafx-graphics-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-graphics\13\javafx-graphics-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-base\13\javafx-base-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-base\13\javafx-base-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-fxml\13\javafx-fxml-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-fxml\13\javafx-fxml-13-win.jar;C:\Users\Rabbit\.m2\repository\org\postgresql\postgresql\42.7.2\postgresql-42.7.2.jar;C:\Users\Rabbit\.m2\repository\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Rabbit\AppData\Local\Temp\surefire11691685144595238579\surefirebooter-20250425164922877_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982\surefirebooter-20250426003614876_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.2+13-LTS-58"/>
@@ -58,74 +58,74 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testTransferWithInsufficientFunds" classname="ak.TransactionManagerTest" time="0.156">
+  <testcase name="testTransferWithInsufficientFunds" classname="ak.TransactionManagerTest" time="0.31">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-3d017dc8
+Customer added successfully with ID: CUST-01739fe7
 Account created successfully for John Doe
 Account created successfully for Jane Doe
-Depositing 1500.0 to account: ACC-086711
-Deposited $1500.0 to ACC-086711
-Withdrawing 1500.0 from account: ACC-391574
+Depositing 1500.0 to account: ACC-479712
+Deposited $1500.0 to ACC-479712
+Withdrawing 1500.0 from account: ACC-473318
 ]]></system-out>
   </testcase>
-  <testcase name="testTransferZeroAmount" classname="ak.TransactionManagerTest" time="0.142">
+  <testcase name="testTransferZeroAmount" classname="ak.TransactionManagerTest" time="0.24">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-87dd21a9
+Customer added successfully with ID: CUST-e1aade47
 Account created successfully for John Doe
 Account created successfully for Jane Doe
 ]]></system-out>
   </testcase>
-  <testcase name="testHistoryReturnsEmptyListForAccountWithNoTransactions" classname="ak.TransactionManagerTest" time="0.141">
+  <testcase name="testHistoryReturnsEmptyListForAccountWithNoTransactions" classname="ak.TransactionManagerTest" time="0.261">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-a71fcd48
+Customer added successfully with ID: CUST-e9dd4aa7
 Account created successfully for John Doe
 Account created successfully for Jane Doe
 Account created successfully for New Account
 ]]></system-out>
   </testcase>
-  <testcase name="testNullDestinationAccount" classname="ak.TransactionManagerTest" time="0.145">
+  <testcase name="testNullDestinationAccount" classname="ak.TransactionManagerTest" time="0.259">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-54b2ed7c
+Customer added successfully with ID: CUST-c7eaecc0
 Account created successfully for John Doe
 Account created successfully for Jane Doe
 ]]></system-out>
   </testcase>
-  <testcase name="testValidTransactionCreation" classname="ak.TransactionManagerTest" time="0.155">
+  <testcase name="testValidTransactionCreation" classname="ak.TransactionManagerTest" time="0.281">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-b3e5c659
+Customer added successfully with ID: CUST-ac909c1e
 Account created successfully for John Doe
 Account created successfully for Jane Doe
-Depositing 200.0 to account: ACC-340936
-Deposited $200.0 to ACC-340936
-Withdrawing 200.0 from account: ACC-446310
-Transaction recorded: TXN-14137cf0
+Depositing 200.0 to account: ACC-674776
+Deposited $200.0 to ACC-674776
+Withdrawing 200.0 from account: ACC-411795
+Transaction recorded: TXN-ee4ef5a2
 ]]></system-out>
   </testcase>
-  <testcase name="testTransactionHistoryMultiple" classname="ak.TransactionManagerTest" time="0.145">
+  <testcase name="testTransactionHistoryMultiple" classname="ak.TransactionManagerTest" time="0.282">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-e7d7da69
+Customer added successfully with ID: CUST-142326ee
 Account created successfully for John Doe
 Account created successfully for Jane Doe
-Depositing 100.0 to account: ACC-892993
-Deposited $100.0 to ACC-892993
-Withdrawing 100.0 from account: ACC-356701
-Transaction recorded: TXN-23c2b413
-Depositing 50.0 to account: ACC-892993
-Deposited $50.0 to ACC-892993
-Withdrawing 50.0 from account: ACC-356701
-Transaction recorded: TXN-4dbe5785
+Depositing 100.0 to account: ACC-415045
+Deposited $100.0 to ACC-415045
+Withdrawing 100.0 from account: ACC-083887
+Transaction recorded: TXN-1694ad45
+Depositing 50.0 to account: ACC-415045
+Deposited $50.0 to ACC-415045
+Withdrawing 50.0 from account: ACC-083887
+Transaction recorded: TXN-5b3f9780
 ]]></system-out>
   </testcase>
-  <testcase name="testTransferNegativeAmount" classname="ak.TransactionManagerTest" time="0.147">
+  <testcase name="testTransferNegativeAmount" classname="ak.TransactionManagerTest" time="0.26">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-277af0d0
+Customer added successfully with ID: CUST-39c8d897
 Account created successfully for John Doe
 Account created successfully for Jane Doe
 ]]></system-out>
   </testcase>
-  <testcase name="testNullSourceAccount" classname="ak.TransactionManagerTest" time="0.267">
+  <testcase name="testNullSourceAccount" classname="ak.TransactionManagerTest" time="0.271">
     <system-out><![CDATA[All data in the database has been erased.
-Customer added successfully with ID: CUST-36bd53e5
+Customer added successfully with ID: CUST-f64760f6
 Account created successfully for John Doe
 Account created successfully for Jane Doe
 ]]></system-out>

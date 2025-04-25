@@ -37,9 +37,13 @@ public class Loan {
         if (interestRate <= 0) {
             throw new IllegalArgumentException("Interest rate must be positive");
         }
+        if (interestRate >= 100) {
+            throw new IllegalArgumentException("Interest rate must be positive");
+        }
         if (durationInMonths <= 0) {
             throw new IllegalArgumentException("Loan duration must be positive");
         }
+        
 
         this.loanId = loanId;
         this.customerId = customerId;

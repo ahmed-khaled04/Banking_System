@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.ui</a> &gt; <span class="el_source">AccountController.java</span></div><h1>AccountController.java</h1><pre class="source lang-java linenums">package ak.ui;
+
+import ak.App;
+import ak.accounts.Account;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+
+import java.io.IOException;
+
+<span class="nc" id="L11">public class AccountController {</span>
+    private Account currentAccount; 
+    private String customerId; 
+
+    @FXML
+    private Label accountNumberLabel;
+
+    @FXML
+    private Label accountTypeLabel;
+
+    @FXML
+    private Label balanceLabel;
+
+    @FXML
+    private Label activationStatusLabel;
+
+    
+    @FXML
+    private Button transferButton;
+
+
+    @FXML
+    private Button loanButton;
+
+    @FXML
+    private Button transactionHistoryButton;
+
+
+
+    public void loadAccountDetails(Account account) {
+
+<span class="nc" id="L42">        this.currentAccount = account; // Set the current account</span>
+<span class="nc" id="L43">        this.customerId = account.getCustomerId(); // Set the customer ID</span>
+<span class="nc" id="L44">        accountNumberLabel.setText(&quot;Account Number: &quot; + account.getAccountNumber());</span>
+<span class="nc" id="L45">        accountTypeLabel.setText(&quot;Account Type: &quot; + account.getAccountType());</span>
+<span class="nc" id="L46">        balanceLabel.setText(&quot;Balance: $&quot; + account.getBalance());</span>
+
+
+        // Update activation status
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (account.isActivated()) {</span>
+<span class="nc" id="L51">            activationStatusLabel.setText(&quot;Status: Activated&quot;);</span>
+<span class="nc" id="L52">            activationStatusLabel.setStyle(&quot;-fx-text-fill: green;&quot;);</span>
+<span class="nc" id="L53">            transferButton.setDisable(false);</span>
+<span class="nc" id="L54">            loanButton.setDisable(false);</span>
+        } else {
+<span class="nc" id="L56">            activationStatusLabel.setText(&quot;Status: Not Activated&quot;);</span>
+<span class="nc" id="L57">            activationStatusLabel.setStyle(&quot;-fx-text-fill: red;&quot;);</span>
+<span class="nc" id="L58">            transferButton.setDisable(true);</span>
+<span class="nc" id="L59">            loanButton.setDisable(true);</span>
+        }
+
+
+        
+<span class="nc" id="L64">    }</span>
+
+    private void showAlert(String title, String message) {
+<span class="nc" id="L67">        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);</span>
+<span class="nc" id="L68">        alert.setTitle(title);</span>
+<span class="nc" id="L69">        alert.setHeaderText(null);</span>
+<span class="nc" id="L70">        alert.setContentText(message);</span>
+<span class="nc" id="L71">        alert.showAndWait();</span>
+<span class="nc" id="L72">    }</span>
+
+    @FXML
+    private void handleViewTransactionHistory() {
+        try {
+<span class="nc" id="L77">            App.setRoot(&quot;transactionHistory&quot;); // Navigate to the transaction history page</span>
+<span class="nc" id="L78">            TransactionHistoryController controller = App.getController();</span>
+<span class="nc" id="L79">            controller.loadTransactionsForAccount(currentAccount.getAccountNumber());</span>
+<span class="nc" id="L80">        } catch (IOException e) {</span>
+<span class="nc" id="L81">            e.printStackTrace();</span>
+<span class="nc" id="L82">            showAlert(&quot;Error&quot;, &quot;Failed to load transaction history.&quot;);</span>
+<span class="nc" id="L83">        }</span>
+<span class="nc" id="L84">    }</span>
+
+    @FXML
+    private void handleBackToDashboard() {
+        try {
+<span class="nc" id="L89">            App.setRoot(&quot;dashboard&quot;); // Navigate back to the dashboard</span>
+            // Pass the customer ID to the dashboard controller
+<span class="nc" id="L91">            DashboardController controller = App.getController();</span>
+<span class="nc" id="L92">            controller.loadCustomerAccounts(customerId);</span>
+<span class="nc" id="L93">        } catch (IOException e) {</span>
+<span class="nc" id="L94">            e.printStackTrace();</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc" id="L96">    }</span>
+
+    @FXML
+    private void handleGoToTransfer() {
+        try {
+<span class="nc" id="L101">            App.setRoot(&quot;transfer&quot;);</span>
+<span class="nc" id="L102">            TransferController controller = App.getController();</span>
+<span class="nc" id="L103">            controller.setCurrentAccountNumber(currentAccount.getAccountNumber());</span>
+<span class="nc" id="L104">        } catch (IOException e) {</span>
+<span class="nc" id="L105">            e.printStackTrace();</span>
+<span class="nc" id="L106">        }</span>
+<span class="nc" id="L107">    }</span>
+
+
+    @FXML
+    private void handleGoToLoanRequest() {
+        try {
+<span class="nc" id="L113">            App.setRoot(&quot;loanRequest&quot;);</span>
+<span class="nc" id="L114">            LoanRequestController controller = App.getController();</span>
+<span class="nc" id="L115">            controller.setAccountNumber(currentAccount.getAccountNumber());</span>
+<span class="nc" id="L116">        } catch (IOException e) {</span>
+<span class="nc" id="L117">            e.printStackTrace();</span>
+<span class="nc" id="L118">        }</span>
+<span class="nc" id="L119">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

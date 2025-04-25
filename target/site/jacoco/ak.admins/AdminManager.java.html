@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.admins</a> &gt; <span class="el_source">AdminManager.java</span></div><h1>AdminManager.java</h1><pre class="source lang-java linenums">package ak.admins;
+
+import ak.App;
+import ak.database.DBconnection;
+import javafx.fxml.FXML;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+<span class="fc" id="L13">public class AdminManager {</span>
+
+    // Authenticate an admin by username and password
+    public Admin authenticateAdmin(String username, String passwordHash) {
+<span class="fc" id="L17">        String sql = &quot;SELECT * FROM admins WHERE username = ? AND password_hash = ?&quot;;</span>
+<span class="fc" id="L18">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L19">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L20">            pstmt.setString(1, username);</span>
+<span class="fc" id="L21">            pstmt.setString(2, passwordHash);</span>
+<span class="fc" id="L22">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L24">                return new Admin(</span>
+<span class="fc" id="L25">                    rs.getString(&quot;admin_id&quot;),</span>
+<span class="fc" id="L26">                    rs.getString(&quot;name&quot;),</span>
+<span class="fc" id="L27">                    rs.getString(&quot;username&quot;),</span>
+<span class="fc" id="L28">                    rs.getString(&quot;password_hash&quot;)</span>
+                );
+            }
+<span class="pc bpc" id="L31" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L32">            e.printStackTrace();</span>
+<span class="nc" id="L33">        }</span>
+<span class="nc" id="L34">        return null;</span>
+    }
+
+    // Add a new admin
+    public boolean addAdmin(String name, String username, String passwordHash) {
+<span class="fc" id="L39">        String sql = &quot;INSERT INTO admins (admin_id, name, username, password_hash) VALUES (?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L40">        String adminId = &quot;ADMIN-&quot; + java.util.UUID.randomUUID().toString().substring(0, 8);</span>
+<span class="fc" id="L41">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L42">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L43">            pstmt.setString(1, adminId);</span>
+<span class="fc" id="L44">            pstmt.setString(2, name);</span>
+<span class="fc" id="L45">            pstmt.setString(3, username);</span>
+<span class="fc" id="L46">            pstmt.setString(4, passwordHash);</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">            return pstmt.executeUpdate() &gt; 0;</span>
+<span class="nc" id="L48">        } catch (SQLException e) {</span>
+<span class="nc" id="L49">            e.printStackTrace();</span>
+        }
+<span class="nc" id="L51">        return false;</span>
+    }
+
+    // Retrieve an admin by username
+    public Admin getAdminByUsername(String username) {
+<span class="fc" id="L56">        String sql = &quot;SELECT * FROM admins WHERE username = ?&quot;;</span>
+<span class="fc" id="L57">        try (Connection conn = DBconnection.getConnection();</span>
+<span class="fc" id="L58">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L59">            pstmt.setString(1, username);</span>
+<span class="fc" id="L60">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L62">                return new Admin(</span>
+<span class="fc" id="L63">                    rs.getString(&quot;admin_id&quot;),</span>
+<span class="fc" id="L64">                    rs.getString(&quot;name&quot;),</span>
+<span class="fc" id="L65">                    rs.getString(&quot;username&quot;),</span>
+<span class="fc" id="L66">                    rs.getString(&quot;password_hash&quot;)</span>
+                );
+            }
+<span class="pc bpc" id="L69" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L70">            e.printStackTrace();</span>
+<span class="nc" id="L71">        }</span>
+<span class="nc" id="L72">        return null;</span>
+    }
+
+
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

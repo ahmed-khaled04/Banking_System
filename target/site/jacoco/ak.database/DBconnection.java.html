@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DBconnection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">banking_gui</a> &gt; <a href="index.source.html" class="el_package">ak.database</a> &gt; <span class="el_source">DBconnection.java</span></div><h1>DBconnection.java</h1><pre class="source lang-java linenums">package ak.database;
+
+import java.sql.*;
+
+<span class="nc" id="L5">public class DBconnection {</span>
+    private static final String URL = &quot;jdbc:postgresql://localhost:5432/banking_system&quot;;
+    private static final String USER = &quot;postgres&quot;; // Your PostgreSQL username
+    private static final String PASSWORD = &quot;332004&quot;; // Your PostgreSQL password
+
+    public static Connection getConnection() throws SQLException {
+<span class="fc" id="L11">        return DriverManager.getConnection(URL, USER, PASSWORD);</span>
+    }
+
+    public static void clearDatabase() {
+<span class="fc" id="L15">        String[] tables = {&quot;transactions&quot;, &quot;accounts&quot;, &quot;customers&quot;, &quot;loans&quot; , &quot;admins&quot; , &quot;loan_requests&quot;}; // Add all table names here</span>
+<span class="fc" id="L16">        try (Connection connection = getConnection();</span>
+<span class="fc" id="L17">             Statement stmt = connection.createStatement()) {</span>
+            // Disable foreign key checks
+<span class="fc" id="L19">            stmt.execute(&quot;SET session_replication_role = 'replica';&quot;);</span>
+
+            // Truncate all tables
+<span class="fc bfc" id="L22" title="All 2 branches covered.">            for (String table : tables) {</span>
+<span class="fc" id="L23">                stmt.execute(&quot;TRUNCATE TABLE &quot; + table + &quot; CASCADE;&quot;);</span>
+            }
+
+            // Re-enable foreign key checks
+<span class="fc" id="L27">            stmt.execute(&quot;SET session_replication_role = 'origin';&quot;);</span>
+
+<span class="fc" id="L29">            System.out.println(&quot;All data in the database has been erased.&quot;);</span>
+<span class="nc" id="L30">        } catch (SQLException e) {</span>
+<span class="nc" id="L31">            System.err.println(&quot;Error clearing database: &quot; + e.getMessage());</span>
+<span class="fc" id="L32">        }</span>
+<span class="fc" id="L33">    }</span>
+
+    public static void closeConnection(Connection connection) {
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (connection != null) {</span>
+            try {
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">                if (!connection.isClosed()) {</span>
+<span class="fc" id="L39">                    connection.close();</span>
+<span class="fc" id="L40">                    System.out.println(&quot;Database connection closed successfully.&quot;);</span>
+                }
+<span class="nc" id="L42">            } catch (SQLException e) {</span>
+<span class="nc" id="L43">                System.err.println(&quot;Error closing database connection: &quot; + e.getMessage());</span>
+<span class="fc" id="L44">            }</span>
+        }
+<span class="fc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
