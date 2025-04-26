@@ -55,9 +55,9 @@ public class LoanManager {
 
 <span class="fc" id="L56">            System.out.println(&quot;Loan created successfully: &quot; + newLoan.getLoanId());</span>
 <span class="fc" id="L57">            return newLoan;</span>
-<span class="nc" id="L58">        } catch (SQLException e) {</span>
-<span class="nc" id="L59">            System.err.println(&quot;Error creating loan: &quot; + e.getMessage());</span>
-<span class="nc" id="L60">            throw new RuntimeException(&quot;Failed to create loan&quot;, e);</span>
+<span class="fc" id="L58">        } catch (SQLException e) {</span>
+<span class="fc" id="L59">            System.err.println(&quot;Error creating loan: &quot; + e.getMessage());</span>
+<span class="fc" id="L60">            throw new RuntimeException(&quot;Failed to create loan&quot;, e);</span>
         }
     }
 
@@ -79,8 +79,8 @@ public class LoanManager {
             }
 <span class="fc" id="L80">            return null;</span>
 <span class="pc bpc" id="L81" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
-<span class="nc" id="L82">            System.err.println(&quot;Error retrieving loan: &quot; + e.getMessage());</span>
-<span class="nc" id="L83">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
+<span class="fc" id="L82">            System.err.println(&quot;Error retrieving loan: &quot; + e.getMessage());</span>
+<span class="fc" id="L83">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
         }
     }
 
@@ -96,9 +96,9 @@ public class LoanManager {
 <span class="fc" id="L96">                loans.add(mapResultSetToLoan(rs));</span>
             }
 <span class="fc" id="L98">            return loans;</span>
-<span class="nc" id="L99">        } catch (SQLException e) {</span>
-<span class="nc" id="L100">            System.err.println(&quot;Error retrieving customer loans: &quot; + e.getMessage());</span>
-<span class="nc" id="L101">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
+<span class="fc" id="L99">        } catch (SQLException e) {</span>
+<span class="fc" id="L100">            System.err.println(&quot;Error retrieving customer loans: &quot; + e.getMessage());</span>
+<span class="fc" id="L101">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
         }
     }
 
@@ -113,9 +113,9 @@ public class LoanManager {
 <span class="fc" id="L113">                loans.add(mapResultSetToLoan(rs));</span>
             }
 <span class="fc" id="L115">            return loans;</span>
-<span class="nc" id="L116">        } catch (SQLException e) {</span>
-<span class="nc" id="L117">            System.err.println(&quot;Error retrieving all loans: &quot; + e.getMessage());</span>
-<span class="nc" id="L118">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
+<span class="fc" id="L116">        } catch (SQLException e) {</span>
+<span class="fc" id="L117">            System.err.println(&quot;Error retrieving all loans: &quot; + e.getMessage());</span>
+<span class="fc" id="L118">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
         }
     }
 
@@ -136,9 +136,9 @@ public class LoanManager {
 <span class="fc" id="L136">            pstmt.setString(1, loanId);</span>
 <span class="fc" id="L137">            int affectedRows = pstmt.executeUpdate();</span>
 <span class="pc bpc" id="L138" title="1 of 2 branches missed.">            return affectedRows &gt; 0;</span>
-<span class="nc" id="L139">        } catch (SQLException e) {</span>
-<span class="nc" id="L140">            System.err.println(&quot;Error removing loan: &quot; + e.getMessage());</span>
-<span class="nc" id="L141">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
+<span class="fc" id="L139">        } catch (SQLException e) {</span>
+<span class="fc" id="L140">            System.err.println(&quot;Error removing loan: &quot; + e.getMessage());</span>
+<span class="fc" id="L141">            throw new RuntimeException(&quot;Database error&quot;, e);</span>
         }
     }
 
@@ -156,28 +156,28 @@ public class LoanManager {
     }
 
     public void printCustomerLoans(String customerId) {
-<span class="nc" id="L159">        List&lt;Loan&gt; loans = getLoansByCustomer(customerId);</span>
-<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (loans.isEmpty()) {</span>
-<span class="nc" id="L161">            System.out.println(&quot;No loans found for customer: &quot; + customerId);</span>
-<span class="nc" id="L162">            return;</span>
+<span class="fc" id="L159">        List&lt;Loan&gt; loans = getLoansByCustomer(customerId);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (loans.isEmpty()) {</span>
+<span class="fc" id="L161">            System.out.println(&quot;No loans found for customer: &quot; + customerId);</span>
+<span class="fc" id="L162">            return;</span>
         }
     
-<span class="nc" id="L165">        System.out.println(&quot;\nLoans for customer &quot; + customerId + &quot;:&quot;);</span>
-<span class="nc" id="L166">        System.out.println(&quot;--------------------------------&quot;);</span>
-<span class="nc" id="L167">        loans.forEach(Loan::printLoanDetails);</span>
-<span class="nc" id="L168">        System.out.println(&quot;--------------------------------&quot;);</span>
-<span class="nc" id="L169">        System.out.printf(&quot;Total Monthly Payments: $%.2f%n&quot;, calculateCustomerMonthlyPayment(customerId));</span>
-<span class="nc" id="L170">        System.out.printf(&quot;Total Remaining Repayment: $%.2f%n&quot;, calculateCustomerTotalRemaining(customerId));</span>
-<span class="nc" id="L171">    }</span>
+<span class="fc" id="L165">        System.out.println(&quot;\nLoans for customer &quot; + customerId + &quot;:&quot;);</span>
+<span class="fc" id="L166">        System.out.println(&quot;--------------------------------&quot;);</span>
+<span class="fc" id="L167">        loans.forEach(Loan::printLoanDetails);</span>
+<span class="fc" id="L168">        System.out.println(&quot;--------------------------------&quot;);</span>
+<span class="fc" id="L169">        System.out.printf(&quot;Total Monthly Payments: $%.2f%n&quot;, calculateCustomerMonthlyPayment(customerId));</span>
+<span class="fc" id="L170">        System.out.printf(&quot;Total Remaining Repayment: $%.2f%n&quot;, calculateCustomerTotalRemaining(customerId));</span>
+<span class="fc" id="L171">    }</span>
 
     public void close() {
         try {
-<span class="nc bnc" id="L175" title="All 4 branches missed.">            if (connection != null &amp;&amp; !connection.isClosed()) {</span>
-<span class="nc" id="L176">                connection.close();</span>
+<span class="pc bpc" id="L175" title="2 of 4 branches missed.">            if (connection != null &amp;&amp; !connection.isClosed()) {</span>
+<span class="fc" id="L176">                connection.close();</span>
             }
 <span class="nc" id="L178">        } catch (SQLException e) {</span>
 <span class="nc" id="L179">            System.err.println(&quot;Error closing connection: &quot; + e.getMessage());</span>
-<span class="nc" id="L180">        }</span>
-<span class="nc" id="L181">    }</span>
+<span class="fc" id="L180">        }</span>
+<span class="fc" id="L181">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

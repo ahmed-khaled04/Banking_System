@@ -19,18 +19,7 @@ public class AccountManager {
         }
     }
 
-    private void initializeDatabase() throws SQLException {
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS accounts ("
-                + "account_number VARCHAR(20) PRIMARY KEY, "
-                + "account_holder_name VARCHAR(100) NOT NULL, "
-                + "balance DECIMAL(15,2) NOT NULL, "
-                + "account_type VARCHAR(20) NOT NULL, "
-                + "interest_rate DECIMAL(5,2), " 
-                + "overdraft_limit DECIMAL(15,2))"; 
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createTableSQL);
-        }
-    }
+
 
     public Account createSavingsAccount(String customerId, String holderName, double initialDeposit, double interestRate) {
         Account account = new SavingsAccount(customerId, holderName, initialDeposit, interestRate , true);
@@ -63,7 +52,7 @@ public class AccountManager {
             return true;
         } catch (SQLException e) {
             System.err.println("Error creating account: " + e.getMessage());
-            return false;
+            throw new RuntimeException("Failed to create account", e);
         }
     }
 
@@ -81,7 +70,7 @@ public class AccountManager {
             }
         } catch (SQLException e) {
             System.err.println("Error deleting account: " + e.getMessage());
-            return false;
+            throw new RuntimeException("Failed to delete account", e);
         }
     }
 
@@ -176,6 +165,7 @@ public class AccountManager {
             System.out.println("Interest applied to all savings accounts.");
         } catch (SQLException e) {
             System.err.println("Error applying interest: " + e.getMessage());
+            throw new RuntimeException("Failed to apply interest", e);
         }
     }
     public void displayAllAccounts() {
@@ -191,6 +181,7 @@ public class AccountManager {
             }
         } catch (SQLException e) {
             System.err.println("Error displaying accounts: " + e.getMessage());
+            throw new RuntimeException("Failed to display accounts", e);
         }
     }
 
@@ -227,6 +218,7 @@ public Account getAccountByNumber(String accountNumber) {
         }
     } catch (SQLException e) {
         System.err.println("Error retrieving account: " + e.getMessage());
+        throw new RuntimeException("Failed to retrieve account", e);
     }
     return null;
 }
@@ -238,6 +230,10 @@ public Account getAccountByNumber(String accountNumber) {
             pstmt.setString(2, account.getAccountNumber());
             pstmt.executeUpdate();
         }
+        catch (SQLException e) {
+            System.err.println("Error updating account balance: " + e.getMessage());
+            throw new RuntimeException("Failed to update account balance", e);
+        }
     }
 
     public void close() {
@@ -247,6 +243,7 @@ public Account getAccountByNumber(String accountNumber) {
             }
         } catch (SQLException e) {
             System.err.println("Error closing connection: " + e.getMessage());
+            
         }
     }
 
@@ -329,7 +326,7 @@ public Account getAccountByNumber(String accountNumber) {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            throw new RuntimeException("Failed to update account activation status", e);
         }
     }
 
@@ -349,6 +346,7 @@ public Account getAccountByNumber(String accountNumber) {
         }
         return false; // Return false if an error occurs or the account does not belong to the customer
     }
+
 
 
 

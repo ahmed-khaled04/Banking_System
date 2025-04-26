@@ -43,7 +43,9 @@ public class Loan {
         if (durationInMonths <= 0) {
             throw new IllegalArgumentException("Loan duration must be positive");
         }
-        
+        if(durationInMonths > 360) {
+            throw new IllegalArgumentException("Loan duration cannot exceed 30 years (360 months)");
+        }
 
         this.loanId = loanId;
         this.customerId = customerId;

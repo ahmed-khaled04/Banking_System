@@ -317,7 +317,7 @@ public class CustomerManager {
         return null;
     }
 
-    public Object getCustomerByUsername(String username) {
+    public Customer getCustomerByUsername(String username) {
         String sql = "SELECT * FROM customers WHERE username = ?";
         
         try (Connection conn = DBconnection.getConnection();

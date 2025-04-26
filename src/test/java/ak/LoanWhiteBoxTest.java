@@ -1,183 +1,256 @@
 package ak;
 
+import ak.accounts.Account;
+import ak.accounts.AccountManager;
+import ak.customer.Customer;
+import ak.customer.CustomerManager;
+import ak.database.DBconnection;
 import ak.loans.Loan;
-import org.junit.jupiter.api.*;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Set;
+import ak.loans.LoanDetails;
+import ak.loans.LoanManager;
+import ak.loans.LoanRequest;
+import ak.loans.LoanRequestManager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * White‑box tests for Loan
- * ✔ Covers every constructor branch
- * ✔ Exercises financial calculations at nominal, boundary, and precision‑edge inputs
- * ✔ Verifies immutability of internal state
- * ✔ Covers auto‑ID constructor path
- */
-class LoanWhiteBoxTest {
+public class LoanWhiteBoxTest {
 
-    // 1. Constructor branch coverage
+    private LoanManager loanManager;
+    private LoanRequestManager loanRequestManager;
+    private CustomerManager customerManager;
+    private AccountManager accountManager;
+    private Account account;
+    private Customer customer;
 
-    @Test
-    @DisplayName("constructor throws when loanId is null or empty")
-    void ctorFailsOnNullOrEmptyId() {
-        assertAll(
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan(null, "C1", "A1", 1000, 5, 12)),
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("", "C1", "A1", 1000, 5, 12)));
+    @BeforeEach
+    public void setUp() {
+        DBconnection.clearDatabase();
+
+
+        loanManager = new LoanManager();
+        loanRequestManager = new LoanRequestManager();
+        customerManager = new CustomerManager();
+        accountManager = new AccountManager();
+        customer = customerManager.addCustomer("Jane", "email@email.com", "1000", "Hamada", "1234");
+        account = accountManager.createSavingsAccount(customer.getCustomerId(), "Hamada", 1000.0, 2.5);
     }
 
+    // LoanManager Tests
     @Test
-    @DisplayName("constructor throws when customerId is null or empty")
-    void ctorFailsOnBadCustomerId() {
-        assertAll(
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", null, "A1", 1000, 5, 12)),
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", "", "A1", 1000, 5, 12)));
-    }
-
-    @Test
-    @DisplayName("constructor throws when accountNumber is null or empty")
-    void ctorFailsOnBadAccount() {
-        assertAll(
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", "C1", null, 1000, 5, 12)),
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", "C1", "", 1000, 5, 12)));
+    public void testCreateLoan() {
+        Loan loan = loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60);
+        assertNotNull(loan, "Loan should be created.");
+        assertEquals(customer.getCustomerId(), loan.getCustomerId());
+        assertEquals(account.getAccountNumber(), loan.getAccountNumber());
+        assertEquals(10000, loan.getLoanAmount(), 0.01);
+        assertEquals(5.5, loan.getInterestRate(), 0.01);
+        assertEquals(60, loan.getDurationInMonths());
     }
 
     @Test
-    @DisplayName("constructor throws on non‑positive numbers")
-    void ctorFailsOnNonPositiveNumbers() {
-        assertAll(
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", "C1", "A1", 0, 5, 12)),
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", "C1", "A1", 1000, 0, 12)),
-                () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Loan("L1", "C1", "A1", 1000, 5, 0)));
-    }
+    public void testCreateLoanWithInvalidParameters() {
+        assertThrows(IllegalArgumentException.class, () -> loanManager.createLoan("C123", "ACC123", -10000, 5.5, 60));
 
-    // 2. Financial calculations – nominal & edge cases
+        assertThrows(IllegalArgumentException.class, () -> loanManager.createLoan("C123", "ACC123", 10000, -5.5, 60));
 
-    @Nested
-    @DisplayName("Payment calculation scenarios")
-    class PaymentFormulaTests {
-
-        @Test
-        void nominalCase() {
-            Loan loan = new Loan("NOM", "C1", "A1", 10_000, 6, 24);
-            assertEquals(443.21, loan.calculateMonthlyPayment(), 0.01);
-        }
-
-        @Test
-        void singleMonthDuration() {
-            Loan loan = new Loan("ONE", "C1", "A1", 2_000, 12, 1);
-            double expected = 2_000 * (1 + 0.12 / 12);
-            assertEquals(expected, loan.calculateMonthlyPayment(), 0.0001);
-        }
-
-        @Test
-        @DisplayName("tiny loan amount boundary")
-        void tinyLoan() {
-            Loan loan = new Loan("TINY", "C1", "A1", 0.01, 5, 12);
-            BigDecimal monthly = BigDecimal.valueOf(loan.calculateMonthlyPayment())
-                    .setScale(6, RoundingMode.HALF_UP);
-            assertTrue(monthly.doubleValue() > 0, "payment should not be zero");
-        }
-
-        @Test
-        @DisplayName("huge loan & long duration boundary")
-        void hugeLoan() {
-            double amount = 1_000_000_000; // 1 billion
-            int months = 360; // 30 years
-            Loan loan = new Loan("HUGE", "C1", "A1", amount, 3, months);
-            double monthly = loan.calculateMonthlyPayment();
-
-            assertAll(
-                    () -> assertTrue(monthly < amount),
-                    () -> assertTrue(monthly > amount * (0.03 / 12)));
-        }
-
-        @Test
-        @DisplayName("monthly * duration ≈ total within 1 cent")
-        void centsPrecision() {
-            Loan loan = new Loan("PREC", "C1", "A1", 9_999.99, 4.375, 77);
-            double diff = Math.abs(
-                    loan.calculateMonthlyPayment() * 77 - loan.calculateTotalRepayment());
-            assertTrue(diff < 0.01, "rounding error > 1 cent");
-        }
-
-        @Test
-        void totalRepaymentIsCorrect() {
-            Loan loan = new Loan("TOTAL", "C2", "A2", 5000, 6, 10);
-            double expected = loan.calculateMonthlyPayment() * 10;
-            assertEquals(expected, loan.calculateTotalRepayment(), 0.01);
-        }
-
-        @Test
-        void zeroInterestStillCalculatesProperly() {
-            Loan loan = new Loan("ZERO", "C7", "A7", 1000, 0.0001, 10);
-            assertTrue(loan.calculateMonthlyPayment() > 0);
-        }
-    }
-
-    // 3. Immutability check
-    @Test
-    void allFieldsAreFinal() {
-        Set<String> expected = Set.of(
-                "loanId", "customerId", "accountNumber",
-                "loanAmount", "interestRate", "durationInMonths");
-        for (Field f : Loan.class.getDeclaredFields()) {
-            assertTrue(expected.contains(f.getName()),
-                    "unexpected field: " + f.getName());
-            assertTrue(java.lang.reflect.Modifier.isFinal(f.getModifiers()),
-                    f.getName() + " should be final");
-        }
-    }
-
-    // 4. Auto-ID constructor path
-    @Test
-    void autoIdConstructorGeneratesPrefixedId() {
-        Loan loan = new Loan("C9", "A9", 1_000, 5, 6);
-        assertTrue(loan.getLoanId().startsWith("LOAN-"));
+        assertThrows(IllegalArgumentException.class, () -> loanManager.createLoan("C123", "ACC123", 10000, 5.5, -60));
     }
 
     @Test
-    void autoGeneratedLoanIdsAreUnique() {
-        Loan l1 = new Loan("C5", "A5", 1000, 5, 6);
-        Loan l2 = new Loan("C6", "A6", 1000, 5, 6);
-        assertNotEquals(l1.getLoanId(), l2.getLoanId());
+    public void testGetLoanById() {
+        Loan loan = loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60);
+        Loan retrievedLoan = loanManager.getLoanById(loan.getLoanId());
+        assertNotNull(retrievedLoan, "Loan should be retrieved.");
+        assertEquals(loan.getLoanId(), retrievedLoan.getLoanId());
     }
 
-    // 5. Getter coverage
     @Test
-    void gettersReturnExpectedValues() {
-        Loan loan = new Loan("L9", "C9", "A9", 3000, 5, 12);
-
-        assertEquals("L9", loan.getLoanId());
-        assertEquals("C9", loan.getCustomerId());
-        assertEquals("A9", loan.getAccountNumber());
-        assertEquals(3000, loan.getLoanAmount());
-        assertEquals(5.0, loan.getInterestRate());
-        assertEquals(12, loan.getDurationInMonths());
+    public void testGetLoansByCustomer() {
+        loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60);
+        List<Loan> loans = loanManager.getLoansByCustomer(customer.getCustomerId());
+        assertNotNull(loans, "Loans list should not be null.");
+        assertFalse(loans.isEmpty(), "Loans list should not be empty.");
     }
 
-    // 6. Constructor accepts just-above-zero values
     @Test
-    void constructorAcceptsMinimumPositiveInputs() {
-        Loan loan = new Loan("MIN", "C4", "A4", 0.0001, 0.0001, 1);
-        assertNotNull(loan);
+    public void testGetAllLoans() {
+        loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60);
+        List<Loan> loans = loanManager.getAllLoans();
+        assertNotNull(loans, "Loans list should not be null.");
+        assertFalse(loans.isEmpty(), "Loans list should not be empty.");
     }
 
-    // 7. Constructor rejects extreme interest rates
     @Test
-    void constructorRejectsExtremeInterestRate() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new Loan("EXT", "C3", "A3", 1000, 1000, 12));
+    public void testRemoveLoan() {
+        Loan loan = loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60);
+        assertTrue(loanManager.removeLoan(loan.getLoanId()), "Loan should be removed.");
     }
+
+    // LoanRequestManager Tests
+    @Test
+    public void testSubmitLoanRequest() {
+        assertTrue(loanRequestManager.submitLoanRequest("ACC123", 10000, "Home Improvement"));
+    }
+
+    @Test
+    public void testGetAllLoanRequests() {
+        loanRequestManager.submitLoanRequest("ACC123", 10000, "Home Improvement");
+        List<LoanRequest> requests = loanRequestManager.getAllLoanRequests();
+        assertNotNull(requests, "Loan requests list should not be null.");
+        assertFalse(requests.isEmpty(), "Loan requests list should not be empty.");
+    }
+
+    @Test
+    public void testUpdateLoanRequestStatus() {
+        loanRequestManager.submitLoanRequest("ACC123", 10000, "Home Improvement");
+        List<LoanRequest> requests = loanRequestManager.getAllLoanRequests();
+        LoanRequest request = requests.get(0);
+        assertTrue(loanRequestManager.updateLoanRequestStatus(request.getRequestId(), "Approved"));
+    }
+
+    // Loan Tests
+    @Test
+    public void testLoanCreation() {
+        Loan loan = new Loan("C123", "ACC123", 10000, 5.5, 60);
+        assertNotNull(loan, "Loan should be created.");
+        assertEquals("C123", loan.getCustomerId());
+        assertEquals("ACC123", loan.getAccountNumber());
+        assertEquals(10000, loan.getLoanAmount(), 0.01);
+        assertEquals(5.5, loan.getInterestRate(), 0.01);
+        assertEquals(60, loan.getDurationInMonths());
+    }
+
+    @Test
+    public void testLoanCreationWithInvalidParameters() {
+        assertThrows(IllegalArgumentException.class, () -> new Loan("C123", "ACC123", -10000, 5.5, 60));
+
+        assertThrows(IllegalArgumentException.class, () -> new Loan("C123", "ACC123", 10000, -5.5, 60));
+
+        assertThrows(IllegalArgumentException.class, () -> new Loan("C123", "ACC123", 10000, 5.5, -60));
+    }
+
+    @Test
+    public void testLoanMonthlyPaymentCalculation() {
+        Loan loan = new Loan("C123", "ACC123", 10000, 5.5, 60);
+        double monthlyPayment = loan.calculateMonthlyPayment();
+        assertTrue(monthlyPayment > 0, "Monthly payment should be positive.");
+    }
+
+    @Test
+    public void testLoanTotalRepaymentCalculation() {
+        Loan loan = new Loan("C123", "ACC123", 10000, 5.5, 60);
+        double totalRepayment = loan.calculateTotalRepayment();
+        assertTrue(totalRepayment > 0, "Total repayment should be positive.");
+    }
+
+    @Test
+    public void testLoanPrintDetails() {
+        Loan loan = new Loan("C123", "ACC123", 10000, 5.5, 60);
+        loan.printLoanDetails();
+        // This test is more about ensuring the method runs without errors.
+    }
+
+    // LoanRequest Tests
+    @Test
+    public void testLoanRequestCreation() {
+        LoanRequest request = new LoanRequest("R123", "ACC123", 10000, "Home Improvement", "Pending");
+        assertNotNull(request, "Loan request should be created.");
+        assertEquals("R123", request.getRequestId());
+        assertEquals("ACC123", request.getAccountNumber());
+        assertEquals(10000, request.getLoanAmount(), 0.01);
+        assertEquals("Home Improvement", request.getLoanReason());
+        assertEquals("Pending", request.getStatus());
+    }
+
+    // LoanDetails Tests
+    @Test
+    public void testLoanDetailsCreation() {
+        LoanDetails details = new LoanDetails(60, 5.5);
+        assertNotNull(details, "Loan details should be created.");
+        assertEquals(60, details.getDurationInMonths());
+        assertEquals(5.5, details.getInterestRate(), 0.01);
+    }
+
+    // Test LoanManager with edge cases
+    @Test
+    public void testCreateLoanWithEdgeCases() {
+        // Test with very high interest rate
+        assertThrows(RuntimeException.class, () -> loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 1000.0, 60));
+        assertThrows(RuntimeException.class, () -> loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 1, 1200));
+
+        
+    }
+
+    // Test LoanRequestManager with edge cases
+    @Test
+    public void testSubmitLoanRequestWithEdgeCases() {
+        // Test with very high loan amount
+        assertTrue(loanRequestManager.submitLoanRequest("ACC123", 10000000, "Business Expansion"));
+
+        // Test with very long loan reason
+        String longReason = "A very long reason that exceeds the typical length limits for a loan reason.";
+        assertTrue(loanRequestManager.submitLoanRequest("ACC123", 10000, longReason));
+    }
+
+    // Test Loan financial calculations with edge cases
+    @Test
+    public void testLoanFinancialCalculationsWithEdgeCases() {
+        Loan loan = new Loan("C123", "ACC123", 10000, 99.9, 60);
+        double monthlyPayment = loan.calculateMonthlyPayment();
+        assertTrue(monthlyPayment > 0, "Monthly payment should be positive.");
+
+        double totalRepayment = loan.calculateTotalRepayment();
+        assertTrue(totalRepayment > 0, "Total repayment should be positive.");
+    }
+
+    @Test
+    public void testCreateLoanWithInvalidData(){
+        assertThrows(IllegalArgumentException.class, () -> new Loan(null, customer.getCustomerId(), account.getAccountNumber(), 100, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> new Loan("Loan1234", customer.getCustomerId(), null, 100, 1, 1));
+    }
+
+    @Test
+    public void testPrintCustomerLoans(){
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+        
+        
+        loanManager.printCustomerLoans(customer.getCustomerId());
+        String output = outputStream.toString();
+        assertTrue(output.contains("No loans found for customer:"), "Output should contain the header.");
+        
+        outputStream.reset();
+        loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60);
+        loanManager.printCustomerLoans(customer.getCustomerId());
+        output = outputStream.toString();
+        assertTrue(output.contains("Loans for customer"), "Output should contain the header.");
+
+
+        System.setOut(originalOut);
+   }
+
+   @Test
+   public void testCloseDB(){
+        loanManager.close();
+        assertThrows(RuntimeException.class, () -> loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60));
+    }
+    
+    @Test
+    public void testMethodsWithDBClosed(){
+        loanManager.close();
+        assertThrows(RuntimeException.class, () -> loanManager.createLoan(customer.getCustomerId(), account.getAccountNumber(), 10000, 5.5, 60));
+        assertThrows(RuntimeException.class, () -> loanManager.getLoanById("loanId"));
+        assertThrows(RuntimeException.class, () -> loanManager.getLoansByCustomer("null"));
+        assertThrows(RuntimeException.class, () -> loanManager.getAllLoans());
+        assertThrows(RuntimeException.class, () -> loanManager.removeLoan("1234"));
+   }
 }

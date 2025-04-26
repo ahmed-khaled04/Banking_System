@@ -4,7 +4,6 @@ ak\LoanDetailsTest.class
 ak\LoanWhiteBoxTest.class
 ak\TransactionTest.class
 ak\InterestCalculatorTest.class
-ak\LoanWhiteBoxTest$PaymentFormulaTests.class
 ak\TransactionWhiteBoxTest.class
 ak\AuthServiceTest.class
 ak\AllTestsSuite.class

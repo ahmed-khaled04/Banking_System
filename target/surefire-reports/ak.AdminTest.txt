@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ak.AdminTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.061 s -- in ak.AdminTest
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.815 s -- in ak.AdminTest

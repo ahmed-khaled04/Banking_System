@@ -13,6 +13,9 @@ public class TransactionManager {
     private AccountManager accountManager;
 
     public TransactionManager(AccountManager accountManager) {
+        if(accountManager == null) {
+            throw new IllegalArgumentException("AccountManager cannot be null");
+        }
         this.accountManager = accountManager;
         try {
             this.connection = DBconnection.getConnection();
@@ -23,18 +26,7 @@ public class TransactionManager {
         }
     }
 
-    private void initializeDatabase() throws SQLException {
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS transactions ("
-                + "transaction_id VARCHAR(20) PRIMARY KEY, "
-                + "amount DECIMAL(15,2) NOT NULL, "
-                + "type VARCHAR(50) NOT NULL, "
-                + "from_account VARCHAR(20), "
-                + "to_account VARCHAR(20), "
-                + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createTableSQL);
-        }
-    }
+    
 
     public Transaction createTransaction(double amount, String type, String fromAccount, String toAccount) {
         if (amount <= 0) {
@@ -136,8 +128,13 @@ public class TransactionManager {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
+            else if (connection == null || connection.isClosed()) {
+                throw new RuntimeException("Database connection is already closed.");
+            }
+            
         } catch (SQLException e) {
             System.err.println("Error closing connection: " + e.getMessage());
+            throw new RuntimeException("Failed to close connection", e);
         }
     }
 
@@ -151,6 +148,7 @@ public class TransactionManager {
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving transaction timestamp: " + e.getMessage());
+            throw new RuntimeException("Database error", e);
         }
         return null;
 

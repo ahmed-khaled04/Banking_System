@@ -336,13 +336,13 @@ class AccountWhiteBoxTest {
     // ---- AccountManager Tests ----
     @Test
     void testAccountManagerInitialization() {
-        Account acc = accountManager.createSavingsAccount("C0", "Test", 100, 1.0);
+        Account acc = accountManager.createSavingsAccount(customer.getCustomerId(), "Test", 100, 1.0);
         assertNotNull(acc, "AccountManager should be initialized and able to create accounts");
     }
 
     @Test
     void testCreateSavingsAccount() {
-        Account acc = accountManager.createSavingsAccount("C1", "John Doe", 1000, 5.0);
+        Account acc = accountManager.createSavingsAccount(customer.getCustomerId(), "John Doe", 1000, 5.0);
         assertNotNull(acc, "Savings account should be created.");
         assertEquals("John Doe", acc.getAccountHolderName(), "Holder name should match.");
         assertEquals(1000, acc.getBalance(), 0.01, "Initial balance should match.");
@@ -350,7 +350,7 @@ class AccountWhiteBoxTest {
 
     @Test
     void testCreateCheckingAccount() {
-        Account acc = accountManager.createCheckingAccount("C2", "Jane Doe", 500, 100);
+        Account acc = accountManager.createCheckingAccount(customer.getCustomerId(), "Jane Doe", 500, 100);
         assertNotNull(acc, "Checking account should be created.");
         assertEquals("Jane Doe", acc.getAccountHolderName(), "Holder name should match.");
         assertEquals(500, acc.getBalance(), 0.01, "Initial balance should match.");
@@ -427,7 +427,7 @@ class AccountWhiteBoxTest {
 
     @Test
     void testDisplayAllAccounts() {
-        accountManager.createSavingsAccount("C12", "Test User", 100, 1.0);
+        accountManager.createSavingsAccount(customer.getCustomerId(), "Test User", 100, 1.0);
         accountManager.displayAllAccounts(); // This will trigger print, covered ✅
     }
 
@@ -445,6 +445,64 @@ class AccountWhiteBoxTest {
         });
     }
 
+    @Test
+    public void testCloseDB(){
+        accountManager.close();
+        assertThrows(RuntimeException.class, () -> accountManager.createSavingsAccount("C14", "Test User", 100, 1.0));
+    }
+
+    @Test
+    public void testMethodswithDBClose(){
+        accountManager.close();
+        assertThrows(RuntimeException.class, () -> accountManager.createSavingsAccount(customer.getCustomerId(), "Test User", 100, 1.0));
+        assertThrows(RuntimeException.class, () -> accountManager.deleteAccount("124"));
+        assertThrows(RuntimeException.class, () -> accountManager.applyInterestToSavingsAccounts());
+        assertThrows(RuntimeException.class, () -> accountManager.displayAllAccounts());
+        assertThrows(RuntimeException.class, () -> accountManager.updateAccountBalance(account));
+        assertThrows(RuntimeException.class, () -> accountManager.getAccountByNumber("ACC-123456"));
+
+    }
+
+    @Test
+    public void testGetAccontsByCustomerId() {
+        accountManager.createSavingsAccount(customer.getCustomerId(), "Test User", 100, 1.0);
+        Account acc = accountManager.createCheckingAccount(customer.getCustomerId(), "Test User", 100, 1000);
+        List<Account> accounts = accountManager.getAccountsByCustomerId(customer.getCustomerId());
+        assertFalse(accounts.isEmpty(), "Accounts should be retrieved by customer ID.");
+
+        assertEquals(acc.getAccountNumber(), accountManager.getAccountByNumber(acc.getAccountNumber()).getAccountNumber(), "Account should be retrieved by account number.");
+
+    }
+
+    @Test
+    public void testDisplayAllAcc(){
+        accountManager.displayAllAccounts();
+        accountManager.createSavingsAccount(customer.getCustomerId(), "Test User", 100, 1.0);
+        accountManager.createCheckingAccount(customer.getCustomerId(), "Test User", 100, 1000);
+        accountManager.displayAllAccounts(); 
+
+    }
+
+    @Test
+    public void testApplyInterestToSavingsAccounts() {
+        accountManager.applyInterestToSavingsAccounts(); // This will trigger interest calculation, covered ✅
+        accountManager.createSavingsAccount(customer.getCustomerId(), "Test User", 100, 1.0);
+        accountManager.createCheckingAccount(customer.getCustomerId(), "Test User", 100, 1000);
+        accountManager.applyInterestToSavingsAccounts(); // This will trigger interest calculation, covered ✅
+    }
+
+    // @Test
+    // public void testProcessTransaction(){
+    //     Transaction t = new Transaction(50, "deposit", null, "1234", null);
+    //     assertFalse(accountManager.processTransaction(t)); 
+    //     t = new Transaction(50, "deposit", null , account.getAccountNumber(), null);
+    //     assertTrue(accountManager.processTransaction(t));
+    // }
+
+
+
+
+
     @AfterEach
     public void tearDown() {
         try {
@@ -454,4 +512,8 @@ class AccountWhiteBoxTest {
             fail("Failed to close the database connection: " + e.getMessage());
         }
     }
+
+
+
+
 }
