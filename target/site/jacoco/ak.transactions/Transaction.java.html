@@ -28,7 +28,7 @@ public class Transaction {
 <span class="fc" id="L28">                throw new IllegalArgumentException(&quot;Both accounts must be specified for transfer transactions&quot;);</span>
             }
         }
-<span class="pc bpc" id="L31" title="1 of 6 branches missed.">        if(!type.equalsIgnoreCase(&quot;transfer&quot;) &amp;&amp; !type.equalsIgnoreCase(&quot;withdraw&quot;)&amp;&amp; !type.equalsIgnoreCase(&quot;deposit&quot;)){</span>
+<span class="fc bfc" id="L31" title="All 6 branches covered.">        if(!type.equalsIgnoreCase(&quot;transfer&quot;) &amp;&amp; !type.equalsIgnoreCase(&quot;withdraw&quot;)&amp;&amp; !type.equalsIgnoreCase(&quot;deposit&quot;)){</span>
 <span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Transaction Type Incorrect&quot;);</span>
         }
         

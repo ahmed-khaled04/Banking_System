@@ -46,7 +46,7 @@ public class TransactionManager {
 <span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (fromAccount == null &amp;&amp; toAccount == null) {</span>
 <span class="nc" id="L47">            throw new IllegalArgumentException(&quot;At least one account (from or to) must be specified&quot;);</span>
         }
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if(type.equalsIgnoreCase(&quot;transfer&quot;)){</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(type.equalsIgnoreCase(&quot;transfer&quot;)){</span>
 <span class="fc bfc" id="L50" title="All 4 branches covered.">            if (fromAccount == null || toAccount == null) {</span>
 <span class="fc" id="L51">                throw new IllegalArgumentException(&quot;Both accounts must be specified for transfer transactions&quot;);</span>
             }
@@ -64,7 +64,7 @@ public class TransactionManager {
 <span class="fc" id="L64">            pstmt.executeUpdate();</span>
 
             // Update account balances
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">            if (toAccount != null) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            if (toAccount != null) {</span>
 <span class="fc" id="L68">                Account acc = accountManager.getAccountByNumber(toAccount);</span>
 <span class="pc bpc" id="L69" title="1 of 2 branches missed.">                if (acc != null) {</span>
 <span class="fc" id="L70">                    System.out.println(&quot;Depositing &quot; + amount + &quot; to account: &quot; + acc.getAccountNumber());</span>
@@ -72,7 +72,7 @@ public class TransactionManager {
 <span class="fc" id="L72">                    accountManager.updateAccountBalance(acc);</span>
                 }
             }
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">            if (fromAccount != null) {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            if (fromAccount != null) {</span>
 <span class="fc" id="L76">                Account acc = accountManager.getAccountByNumber(fromAccount);</span>
 <span class="pc bpc" id="L77" title="1 of 2 branches missed.">                if (acc != null) {</span>
 <span class="fc" id="L78">                    System.out.println(&quot;Withdrawing &quot; + amount + &quot; from account: &quot; + acc.getAccountNumber());</span>

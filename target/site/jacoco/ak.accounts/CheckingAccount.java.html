@@ -5,8 +5,8 @@ public class CheckingAccount extends Account {
 
     public CheckingAccount(String customerId, String accountHolderName, double initialBalance, double overdraftLimit , boolean activated) {
 <span class="fc" id="L7">        super(customerId, accountHolderName, initialBalance , activated);</span>
-<span class="pc bpc" id="L8" title="1 of 2 branches missed.">        if(overdraftLimit &lt; 0) {</span>
-<span class="nc" id="L9">            throw new IllegalArgumentException(&quot;Overdraft limit cannot be negative.&quot;);</span>
+<span class="fc bfc" id="L8" title="All 2 branches covered.">        if(overdraftLimit &lt; 0) {</span>
+<span class="fc" id="L9">            throw new IllegalArgumentException(&quot;Overdraft limit cannot be negative.&quot;);</span>
         }
 <span class="fc bfc" id="L11" title="All 2 branches covered.">        if(initialBalance &lt; 0) {</span>
 <span class="fc" id="L12">            throw new IllegalArgumentException(&quot;Initial balance cannot be negative.&quot;);</span>
@@ -27,8 +27,8 @@ public class CheckingAccount extends Account {
 
     @Override
     public void withdraw(double amount) {
-<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if(!activated){</span>
-<span class="nc" id="L31">            throw new IllegalStateException(&quot;Account Is Inactive&quot;);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if(!activated){</span>
+<span class="fc" id="L31">            throw new IllegalStateException(&quot;Account Is Inactive&quot;);</span>
         }
 <span class="fc bfc" id="L33" title="All 2 branches covered.">        if(amount &lt;= 0) {</span>
 <span class="fc" id="L34">            throw new IllegalArgumentException(&quot;Withdrawal amount must be positive.&quot;);</span>

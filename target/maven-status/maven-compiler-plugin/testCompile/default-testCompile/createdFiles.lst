@@ -12,6 +12,7 @@ ak\LoanRequestManagerTest.class
 ak\LoanRequestTest.class
 ak\AdminManagerTest.class
 ak\AdminTest.class
+ak\AccountManagerTest.class
 ak\AccountWhiteBoxTest.class
 ak\LoanManagerTest.class
 ak\AppTest.class

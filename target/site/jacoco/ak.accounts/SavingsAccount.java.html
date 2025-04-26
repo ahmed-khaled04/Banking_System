@@ -16,8 +16,8 @@ public class SavingsAccount extends Account {
 
     public SavingsAccount(String customerId, String accountHolderName, double initialBalance, double interestRate , boolean activated) {
 <span class="fc" id="L18">        super(customerId, accountHolderName, initialBalance , activated);</span>
-<span class="pc bpc" id="L19" title="1 of 2 branches missed.">        if(interestRate &lt; 0) {</span>
-<span class="nc" id="L20">            throw new IllegalArgumentException(&quot;Interest rate cannot be negative.&quot;);</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if(interestRate &lt; 0) {</span>
+<span class="fc" id="L20">            throw new IllegalArgumentException(&quot;Interest rate cannot be negative.&quot;);</span>
         }
 <span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if(initialBalance &lt; 0) {</span>
 <span class="nc" id="L23">            throw new IllegalArgumentException(&quot;Initial balance cannot be negative.&quot;);</span>

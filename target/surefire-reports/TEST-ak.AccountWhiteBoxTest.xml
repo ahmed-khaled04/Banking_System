@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ak.AccountWhiteBoxTest" time="0.117" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ak.AccountWhiteBoxTest" time="13.815" tests="56" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
-    <property name="sun.java.command" value="C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982\surefirebooter-20250426003614876_3.jar C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982 2025-04-26T00-36-14_687-jvmRun1 surefire-20250426003614876_1tmp surefire_0-20250426003614876_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Rabbit\AppData\Local\Temp\surefire1101146624326869263\surefirebooter-20250426030332529_3.jar C:\Users\Rabbit\AppData\Local\Temp\surefire1101146624326869263 2025-04-26T03-03-32_426-jvmRun1 surefire-20250426030332529_1tmp surefire_0-20250426030332529_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\target\test-classes;D:\ASU\Junior\SPRING25\Testing\Project\bankingGUI\banking_gui\target\classes;C:\Users\Rabbit\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\Rabbit\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-suite-api\1.9.3\junit-platform-suite-api-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.3\junit-jupiter-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\Rabbit\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-controls\13\javafx-controls-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-controls\13\javafx-controls-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-graphics\13\javafx-graphics-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-graphics\13\javafx-graphics-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-base\13\javafx-base-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-base\13\javafx-base-13-win.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-fxml\13\javafx-fxml-13.jar;C:\Users\Rabbit\.m2\repository\org\openjfx\javafx-fxml\13\javafx-fxml-13-win.jar;C:\Users\Rabbit\.m2\repository\org\postgresql\postgresql\42.7.2\postgresql-42.7.2.jar;C:\Users\Rabbit\.m2\repository\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Rabbit\AppData\Local\Temp\surefire6646861682601952982\surefirebooter-20250426003614876_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Rabbit\AppData\Local\Temp\surefire1101146624326869263\surefirebooter-20250426030332529_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.2+13-LTS-58"/>
@@ -58,22 +58,375 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="overdraftExactLimitAllowed" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="withdrawFromInactiveAccountThrows" classname="ak.AccountWhiteBoxTest" time="0.003"/>
-  <testcase name="addInterest_tinyBalanceRoundsUp" classname="ak.AccountWhiteBoxTest" time="0.001">
-    <system-out><![CDATA[Deposited $0.001 to ACC-678422
+  <testcase name="testWithdrawValidAmount" classname="ak.AccountWhiteBoxTest" time="0.186">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-6a7491d4
+Database connection closed successfully.
 ]]></system-out>
   </testcase>
-  <testcase name="toggleActivationTwiceRestoresOriginalState" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="constructorWithExplicitNumber" classname="ak.AccountWhiteBoxTest" time="0.002"/>
-  <testcase name="constructorAutoGeneratesNumber" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="processTransaction_noMatchingAccount_noChange" classname="ak.AccountWhiteBoxTest" time="0.087"/>
-  <testcase name="overdraftSlightlyOverLimitRejected" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="addInterestWhenDeactivatedThrows" classname="ak.AccountWhiteBoxTest" time="0.0"/>
-  <testcase name="processTransaction_invalidBothNull" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="setActivatedTogglesFlag" classname="ak.AccountWhiteBoxTest" time="0.0"/>
-  <testcase name="depositToInactiveAccountThrows" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="savingsWithdrawLeavesZeroBalance" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="depositRejectsZeroOrNegative" classname="ak.AccountWhiteBoxTest" time="0.001"/>
-  <testcase name="savingsWithdraw_exactBalance" classname="ak.AccountWhiteBoxTest" time="0.0"/>
+  <testcase name="overdraftExactLimitAllowed" classname="ak.AccountWhiteBoxTest" time="0.164">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-36cf4527
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCheckingAccountWithdrawExceedingOverdraftLimit" classname="ak.AccountWhiteBoxTest" time="0.315">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-a16b5e41
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="withdrawFromInactiveAccountThrows" classname="ak.AccountWhiteBoxTest" time="0.19">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-515fcd76
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="addInterest_tinyBalanceRoundsUp" classname="ak.AccountWhiteBoxTest" time="0.291">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-4414f1c0
+Deposited $0.001 to ACC-849428
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testAccountCreation" classname="ak.AccountWhiteBoxTest" time="0.176">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-72bd3b40
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testProcessTransactionWithdrawal" classname="ak.AccountWhiteBoxTest" time="0.403">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-e9853fa1
+Account created successfully for Test User
+Withdrawing 50.0 from account: ACC-141027
+Transaction recorded: TXN-f525bd3e
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testIsActivatedTrueInitially" classname="ak.AccountWhiteBoxTest" time="0.29">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-b974dcd4
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCreateCheckingAccount" classname="ak.AccountWhiteBoxTest" time="0.178">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-405359ef
+Database connection closed successfully.
+]]></system-out>
+    <system-err><![CDATA[Error creating account: ERROR: insert or update on table "accounts" violates foreign key constraint "accounts_customer_id_fkey"
+  Detail: Key (customer_id)=(C2) is not present in table "customers".
+]]></system-err>
+  </testcase>
+  <testcase name="toggleActivationTwiceRestoresOriginalState" classname="ak.AccountWhiteBoxTest" time="0.176">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-b71964ad
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="processTransactionWithNullTypeThrows" classname="ak.AccountWhiteBoxTest" time="0.281">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-3a8842d6
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="toggleActivationOffThenOn" classname="ak.AccountWhiteBoxTest" time="0.295">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-eae35048
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="depositZeroToInactiveThrows" classname="ak.AccountWhiteBoxTest" time="0.184">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-225016a8
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="addInterestOnZeroBalanceShouldStayZero" classname="ak.AccountWhiteBoxTest" time="0.286">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-ba4370af
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCreateAccountWithNegativeOverdraftLimit" classname="ak.AccountWhiteBoxTest" time="0.178">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-8fc388f8
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="constructorWithExplicitNumber" classname="ak.AccountWhiteBoxTest" time="0.278">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-2fc43236
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCheckingAccountCreationWithNegativeOverdraftLimit" classname="ak.AccountWhiteBoxTest" time="0.512">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-be1566dd
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testIsAccountOwnedByCustomer" classname="ak.AccountWhiteBoxTest" time="0.331">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-9e0af694
+Account created successfully for Test User
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="withdrawZeroFromInactiveThrows" classname="ak.AccountWhiteBoxTest" time="0.172">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-674738c3
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCheckingAccountWithdrawInactive" classname="ak.AccountWhiteBoxTest" time="0.296">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-4d1984d4
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="checkingWithdrawToLimit" classname="ak.AccountWhiteBoxTest" time="0.506">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-30489f6b
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testSavingsAccountAddInterest" classname="ak.AccountWhiteBoxTest" time="0.282">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-7846cf4c
+Deposited $50.0 to ACC-120821
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="constructorAutoGeneratesNumber" classname="ak.AccountWhiteBoxTest" time="0.172">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-c6b05964
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="addZeroPercentInterestShouldNotChangeBalance" classname="ak.AccountWhiteBoxTest" time="0.279">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-5df7198b
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testAccountNumberFormat" classname="ak.AccountWhiteBoxTest" time="0.169">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-6266bc5e
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testDeleteNonExistingAccount" classname="ak.AccountWhiteBoxTest" time="0.391">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-da700cc2
+Account not found.
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testGetAccountByNumber" classname="ak.AccountWhiteBoxTest" time="0.181">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-38039ffd
+Account created successfully for Test User
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testGetBalance" classname="ak.AccountWhiteBoxTest" time="0.181">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-3f25620d
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testGetCustomerId" classname="ak.AccountWhiteBoxTest" time="0.276">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-d7f71207
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="addInterestHighBalance" classname="ak.AccountWhiteBoxTest" time="0.177">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-341ecb50
+Deposited $50000.0 to ACC-325804
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="processTransaction_noMatchingAccount_noChange" classname="ak.AccountWhiteBoxTest" time="0.287">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-bf5fc36b
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testGetHolderName" classname="ak.AccountWhiteBoxTest" time="0.197">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-82ec6d22
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testProcessTransactionDeposit" classname="ak.AccountWhiteBoxTest" time="0.393">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-2f4d9c41
+Account created successfully for Test User
+Depositing 50.0 to account: ACC-936154
+Deposited $50.0 to ACC-936154
+Transaction recorded: TXN-6060fae4
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testDeleteAccount" classname="ak.AccountWhiteBoxTest" time="0.18">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-6d8b7449
+Account created successfully for Test User
+Account deleted.
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="overdraftSlightlyOverLimitRejected" classname="ak.AccountWhiteBoxTest" time="0.174">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-739726ef
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testProcessTransactionTransfer" classname="ak.AccountWhiteBoxTest" time="0.176">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-7e8de6b4
+Account created successfully for From User
+Account created successfully for To User
+Depositing 50.0 to account: ACC-491165
+Deposited $50.0 to ACC-491165
+Withdrawing 50.0 from account: ACC-051759
+Transaction recorded: TXN-5024ac07
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testSavingsAccountCreationWithNegativeInterestRate" classname="ak.AccountWhiteBoxTest" time="0.171">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-8bfeed26
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testDepositNegativeAmount" classname="ak.AccountWhiteBoxTest" time="0.291">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-b75c56b7
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testProcessInvalidTransaction" classname="ak.AccountWhiteBoxTest" time="0.167">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-502eefd3
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="addInterestWhenDeactivatedThrows" classname="ak.AccountWhiteBoxTest" time="0.177">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-8c38a9cb
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCreateSavingsAccount" classname="ak.AccountWhiteBoxTest" time="0.172">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-eb6b877e
+Database connection closed successfully.
+]]></system-out>
+    <system-err><![CDATA[Error creating account: ERROR: insert or update on table "accounts" violates foreign key constraint "accounts_customer_id_fkey"
+  Detail: Key (customer_id)=(C1) is not present in table "customers".
+]]></system-err>
+  </testcase>
+  <testcase name="processTransaction_invalidBothNull" classname="ak.AccountWhiteBoxTest" time="0.18">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-ae4b87c9
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testDepositPositiveAmount" classname="ak.AccountWhiteBoxTest" time="0.27">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-03766a6e
+Deposited $500.0 to ACC-694918
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testWithdrawNegativeAmount" classname="ak.AccountWhiteBoxTest" time="0.3">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-045a6e34
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testUpdateAccountActivation" classname="ak.AccountWhiteBoxTest" time="0.313">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-fa03c15b
+Account created successfully for Test User
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="setActivatedTogglesFlag" classname="ak.AccountWhiteBoxTest" time="0.168">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-b7fe3d94
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="depositToInactiveAccountThrows" classname="ak.AccountWhiteBoxTest" time="0.29">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-40cad7bb
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testDisplayAllAccounts" classname="ak.AccountWhiteBoxTest" time="0.281">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-ffb0dfbe
+Database connection closed successfully.
+]]></system-out>
+    <system-err><![CDATA[Error creating account: ERROR: insert or update on table "accounts" violates foreign key constraint "accounts_customer_id_fkey"
+  Detail: Key (customer_id)=(C12) is not present in table "customers".
+]]></system-err>
+  </testcase>
+  <testcase name="testWithdrawAmountGreaterThanBalance" classname="ak.AccountWhiteBoxTest" time="0.284">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-247a20e0
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testAccountCreationWithNegativeBalance" classname="ak.AccountWhiteBoxTest" time="0.177">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-51ee8ab5
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="savingsWithdrawLeavesZeroBalance" classname="ak.AccountWhiteBoxTest" time="0.173">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-0fbaf43f
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="depositRejectsZeroOrNegative" classname="ak.AccountWhiteBoxTest" time="0.167">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-b83230b0
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testCheckingAccountWithdrawWithinOverdraftLimit" classname="ak.AccountWhiteBoxTest" time="0.273">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-9a701d16
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testSavingsAccountAddInterestInactive" classname="ak.AccountWhiteBoxTest" time="0.282">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-545da62b
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
+  <testcase name="testAccountManagerInitialization" classname="ak.AccountWhiteBoxTest" time="0.185">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-5f832726
+Database connection closed successfully.
+]]></system-out>
+    <system-err><![CDATA[Error creating account: ERROR: insert or update on table "accounts" violates foreign key constraint "accounts_customer_id_fkey"
+  Detail: Key (customer_id)=(C0) is not present in table "customers".
+]]></system-err>
+  </testcase>
+  <testcase name="savingsWithdraw_exactBalance" classname="ak.AccountWhiteBoxTest" time="0.281">
+    <system-out><![CDATA[All data in the database has been erased.
+Customer added successfully with ID: CUST-5929dfa3
+Database connection closed successfully.
+]]></system-out>
+  </testcase>
 </testsuite>
